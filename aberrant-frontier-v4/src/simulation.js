@@ -91,12 +91,15 @@ function updatePlayer(dt){
    else if(inputBuffer.action==='melee'&&meleeCd<=0&&(dodgeTime<=.12)){inputBuffer=null;melee();}
    else if(inputBuffer.action==='heavy'&&meleeCd<=0&&dodgeTime<=0){inputBuffer=null;alternateAttack();}
   }
-  if(lockTarget&&!lockTarget.dead&&state==='playing'){
+  if(lockTarget&&!lockTarget.dead&&state==='playing'&&!freeLook){
    const lp=lockTarget.avatar.group.position,p=player.group.position;
    const targetYaw=Math.atan2(lp.x-p.x,-(lp.z-p.z));
    const diff=Math.atan2(Math.sin(targetYaw-yaw),Math.cos(targetYaw-yaw));
    yaw+=diff*Math.min(1,dt*8);
   }else if(lockTarget?.dead)lockTarget=null;
+  if(midDown&&!freeLook&&performance.now()-midPressAt>140){
+   freeLook=true;freeLookYaw=yaw;freeLookPitch=pitch;
+  }
  }
  if(input.ArrowLeft)yaw-=dt*1.8;if(input.ArrowRight)yaw+=dt*1.8;if(input.ArrowUp)pitch=clamp(pitch-dt*.7,-.22,1.05);if(input.ArrowDown)pitch=clamp(pitch+dt*.7,-.22,1.05);
  const ix=(input.KeyD?1:0)-(input.KeyA?1:0),iz=(input.KeyW?1:0)-(input.KeyS?1:0);vec2.set(ix*Math.cos(yaw)+iz*Math.sin(yaw),0,ix*Math.sin(yaw)-iz*Math.cos(yaw));const moving=vec2.lengthSq()>.1;
@@ -138,6 +141,17 @@ function updateCamera(dt){
   camera.lookAt(bp.x,bp.y+2.1,bp.z);camera.fov=lerp(camera.fov,48,dt*6);camera.updateProjectionMatrix();return;
  }
  const p=player.group.position;cameraTarget.set(p.x,p.y+1.65,p.z);
+ if(freeLook&&state==='playing'){
+  const orbitDist=5.4,h=Math.cos(freeLookPitch)*orbitDist;
+  cameraDesired.set(p.x-Math.sin(freeLookYaw)*h,Math.max(.55,p.y+1.55+Math.sin(freeLookPitch)*orbitDist),p.z+Math.cos(freeLookYaw)*h);
+  const delta=cameraDesired.clone().sub(cameraTarget);raycaster.set(cameraTarget,delta.clone().normalize());raycaster.far=delta.length();
+  const hit=raycaster.intersectObjects(cameraMeshes,false)[0];
+  if(hit)cameraDesired.copy(cameraTarget).addScaledVector(delta.normalize(),Math.max(.75,hit.distance-.35));
+  camera.position.lerp(cameraDesired,1-Math.exp(-dt*18));
+  camera.lookAt(p.x,p.y+1.45,p.z);
+  camera.fov=lerp(camera.fov,52,dt*8);camera.updateProjectionMatrix();
+  return;
+ }
  const bossRoom=rogueMode&&roomNow()?.type==='boss';
  const dist=!rogueMode&&mouseRight&&weaponNow().type==='ranged'?4.5:rogueMode?(bossRoom?9.2:8.1):6.35;
  cameraDesired.set(p.x-Math.sin(yaw)*dist+Math.cos(yaw)*(rogueMode?1.05:1.63),p.y+(rogueMode?3.55:2.3)+Math.sin(pitch)*5.5,p.z+Math.cos(yaw)*dist+Math.sin(yaw)*(rogueMode?1.05:1.63));cameraDesired.y=Math.max(.55,cameraDesired.y);const delta=cameraDesired.clone().sub(cameraTarget);raycaster.set(cameraTarget,delta.clone().normalize());raycaster.far=delta.length();const hit=raycaster.intersectObjects(cameraMeshes,false)[0];if(hit)cameraDesired.copy(cameraTarget).addScaledVector(delta.normalize(),Math.max(.55,hit.distance-.35));if(rogueMode&&hit)camera.position.copy(cameraDesired);else camera.position.lerp(cameraDesired,1-Math.exp(-dt*18));if(shake>0){camera.position.x+=(visualRoll()-.5)*shake;camera.position.y+=(visualRoll()-.5)*shake*(rogueMode?.58:1);}const target=cameraTarget.clone().add(new THREE.Vector3(Math.sin(yaw)*5+Math.cos(yaw)*.35,-pitch*3,-Math.cos(yaw)*5+Math.sin(yaw)*.35));camera.lookAt(target);camera.fov=lerp(camera.fov,!rogueMode&&mouseRight&&weaponNow().type==='ranged'?49:slowMo>0?52:dodgeTime>0?66:raid.sprinting?65:59,dt*9);camera.updateProjectionMatrix();if(rogueMode&&state==='playing'&&!raid.strike)faceReticle();
@@ -152,7 +166,7 @@ function updateHUD(){updateBaseHUD();updateRaidHUD();updateLookState();const w=w
   $('skill-melee').querySelector('span').textContent=forms[0][0];$('skill-spike').querySelector('span').textContent=forms[1][0];
  }else{$('weapon-slot-1').textContent='1 '+WEAPONS[loadout[0]].short;$('weapon-slot-2').textContent='2 '+WEAPONS[loadout[1]].short;$('weapon-slot-1').className=activeWeapon===0?'active':'';$('weapon-slot-2').className=activeWeapon===1?'active':'';}
  $('charge-meter').classList.toggle('visible',!rogueMode&&mouseRight);$('charge-meter').classList.toggle('charged',chargeTime>=w.charge);$('charge-meter').querySelector('i').style.width=Math.min(100,chargeTime/w.charge*100)+'%';$('combo-counter').innerHTML=comboHits>1?'<b>'+comboHits+'</b><span>连击 / COMBO</span>':'';
- $('buff-label').textContent=parryTime>0?'反制窗口':shieldTime>0?'骨盾 '+shieldTime.toFixed(1)+'s':buffTime>0?h.ultimate+' '+buffTime.toFixed(1)+'s':empowered>0?'下一击强化 +35':'';
+ $('buff-label').textContent=freeLook?'自由观察视角 · 松开中键回正':parryTime>0?'反制窗口':shieldTime>0?'骨盾 '+shieldTime.toFixed(1)+'s':buffTime>0?h.ultimate+' '+buffTime.toFixed(1)+'s':empowered>0?'下一击强化 +35':'';
  const solution=aimSolution();combatReadout(solution);$('crosshair').classList.toggle('on-target',solution.kind==='enemy');$('target-label').textContent=solution.enemy?solution.enemy.name+' · '+Math.ceil(solution.enemy.hp)+' HP':'';
  if(w.type==='ranged'){const origin=muzzlePosition(),dir=solution.point.clone().sub(origin).normalize(),block=sceneIntersection(origin,dir,Math.max(.1,origin.distanceTo(solution.point)-.2));aimBlocked=block.kind==='wall';if(aimBlocked)$('target-label').textContent='枪口受阻 · 移出掩体再射击';$('crosshair').classList.toggle('blocked',aimBlocked);}else $('crosshair').classList.remove('blocked');
 }

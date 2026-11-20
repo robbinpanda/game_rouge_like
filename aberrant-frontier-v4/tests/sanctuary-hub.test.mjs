@@ -45,3 +45,25 @@ test('Hades-style walkable Sanctuary Hub supports roaming, 3D companions, Skelly
  assert.equal(run('triggerSanctuaryInteract()'),true);
  assert.equal(run('sanctuaryHub.roam'),false);
 });
+
+test('holding middle mouse button unlocks camera orbit to view character front in combat and sanctuary',()=>{
+ const {run}=gameHarness(true);
+ // 1. In combat: holding middle mouse + moving mouse activates freeLook and orbits 180 deg WITHOUT rotating player body
+ run('yaw=0;player.group.rotation.y=Math.PI;player.group.position.set(0,0,0);midDown=true;midPressAt=-500;midMoved=0;freeLook=false;');
+ run('mouseLook.setLocked(true);mouseLook.setActive(true);mouseLook.move({movementX:100,movementY:0});');
+ assert.equal(run('freeLook'),true);
+ assert.equal(run('yaw'),0);
+ // Orbit around to the front (freeLookYaw = Math.PI -> camera moves to -Z looking back at player facing -Z!)
+ run('freeLookYaw=Math.PI;freeLookPitch=.15;for(let i=0;i<25;i++)updateCamera(.05);');
+ assert.ok(run('camera.position.z < -2.5'));
+ // Player body never turned away from the camera during freeLook!
+ assert.equal(run('player.group.rotation.y'),Math.PI);
+
+ // 2. Releasing middle button restores normal chase camera behind player (+Z)
+ run('midDown=false;freeLook=false;for(let i=0;i<25;i++)updateCamera(.05);');
+ assert.ok(run('camera.position.z > 2.5'));
+
+ // 3. In Sanctuary Hub: middle-hold supports full 360 deg close-up front inspection without angle clamp
+ run('returnMenu();buildSanctuaryHubProps();setSanctuaryRoamMode(true);player.group.position.set(0,0,22);player.group.rotation.y=Math.PI;sanctuaryHub.midOrbit=true;sanctuaryHub.yaw=Math.PI;sanctuaryHub.pitch=.18;for(let i=0;i<25;i++)updateSanctuaryHubCamera(.05);');
+ assert.ok(run('camera.position.z < 19'));
+});

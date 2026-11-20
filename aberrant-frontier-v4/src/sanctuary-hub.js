@@ -8,8 +8,11 @@ const sanctuaryHub={
  roam:false,
  drawerOpen:false,
  yaw:0,
+ pitch:.34,
  dragging:false,
+ midOrbit:false,
  lastX:0,
+ lastY:0,
  dashTime:0,
  dashCd:0,
  dashDir:new THREE.Vector3(0,0,-1),
@@ -595,6 +598,17 @@ function updateSanctuaryHubCamera(dt){
  if(!isSanctuaryRoam())return false;
  const p=player.group.position;
  const y=sanctuaryHub.yaw;
+ if(sanctuaryHub.midOrbit){
+  // Close-up 360° front/portrait inspection orbit while holding Middle Mouse Button!
+  const dist=5.2,pitch=clamp(sanctuaryHub.pitch,-.12,.92);
+  const h=Math.cos(pitch)*dist;
+  const goalPos=new THREE.Vector3(p.x+Math.sin(y)*h,Math.max(.65,p.y+1.65+Math.sin(pitch)*dist),p.z+Math.cos(y)*h);
+  camera.position.lerp(goalPos,1-Math.exp(-dt*12));
+  camera.lookAt(p.x,p.y+1.42,p.z);
+  camera.fov=lerp(camera.fov,50,dt*7);
+  camera.updateProjectionMatrix();
+  return true;
+ }
  // Hades-style elevated courtyard follow camera that always frames the Grand Archway & 3-Act Vista!
  const camDist=9.2,camH=6.1;
  const goalPos=new THREE.Vector3(p.x+Math.sin(y)*camDist,p.y+camH,p.z+Math.cos(y)*camDist);
@@ -614,7 +628,7 @@ function initSanctuaryHub(){
  const hud=document.createElement('div');
  hud.id='rg-hub-hud';
  hud.className='hidden';
- hud.innerHTML='<div class="rg-hub-top"><div class="rg-hub-brand"><small>SANCTUARY COURTYARD · '+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'v0.2')+'</small><strong>远征圣所</strong><div class="rg-hub-status"></div></div><div class="rg-hub-quick"><button data-hub-act="armory">⚔ 换装 / 难度</button><button data-hub-act="mirror">🪞 回响之镜</button><button data-hub-act="prophecy">📜 预言</button><button data-hub-act="vista">🌄 俯瞰 [V]</button><button data-hub-act="menu">☰ 菜单 [M]</button><button data-hub-act="intro">🎬 重播开场</button></div></div><div class="rg-hub-controls"><span><kbd>WASD</kbd> 自由走动</span><span><kbd>SHIFT</kbd> 冲刺</span><span><kbd>左/右键</kbd> <kbd>E/X/Q</kbd> 打桩试招</span><span><kbd>右键拖动</kbd> 旋转视角</span><span><kbd>F</kbd> 交互 / 从正前方拱门出发</span></div>';
+ hud.innerHTML='<div class="rg-hub-top"><div class="rg-hub-brand"><small>SANCTUARY COURTYARD · '+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'v0.3.1')+'</small><strong>远征圣所</strong><div class="rg-hub-status"></div></div><div class="rg-hub-quick"><button data-hub-act="armory">⚔ 换装 / 难度</button><button data-hub-act="mirror">🪞 回响之镜</button><button data-hub-act="prophecy">📜 预言</button><button data-hub-act="vista">🌄 俯瞰 [V]</button><button data-hub-act="menu">☰ 菜单 [M]</button><button data-hub-act="intro">🎬 重播开场</button></div></div><div class="rg-hub-controls"><span><kbd>WASD</kbd> 自由走动</span><span><kbd>SHIFT</kbd> 冲刺</span><span><kbd>左/右键</kbd> <kbd>E/X/Q</kbd> 打桩试招</span><span><kbd>长按中键</kbd> 360°看正面</span><span><kbd>F</kbd> 交互 / 从正前方拱门出发</span></div>';
  $('menu').after(hud);
  sanctuaryHub.hudEl=hud;
 
@@ -703,18 +717,30 @@ function initSanctuaryHub(){
  canvas.addEventListener('mousedown',e=>{
   if(!isSanctuaryRoam())return;
   if(e.button===0){sanctuaryAttack('melee');}
-  else if(e.button===2){
+  else if(e.button===1){
+   e.preventDefault();
+   sanctuaryHub.midOrbit=true;sanctuaryHub.lastX=e.clientX;sanctuaryHub.lastY=e.clientY;
+  }else if(e.button===2){
    sanctuaryHub.dragging=true;sanctuaryHub.lastX=e.clientX;
    sanctuaryHub._rDownTime=performance.now();sanctuaryHub._rMoved=0;
   }
  });
  window.addEventListener('mousemove',e=>{
-  if(!sanctuaryHub.dragging||!isSanctuaryRoam())return;
+  if(!isSanctuaryRoam())return;
+  if(sanctuaryHub.midOrbit){
+   const dx=e.clientX-sanctuaryHub.lastX,dy=e.clientY-sanctuaryHub.lastY;
+   sanctuaryHub.lastX=e.clientX;sanctuaryHub.lastY=e.clientY;
+   sanctuaryHub.yaw-=dx*.0075;
+   sanctuaryHub.pitch=clamp(sanctuaryHub.pitch+dy*.0055,-.12,.92);
+   return;
+  }
+  if(!sanctuaryHub.dragging)return;
   const dx=e.clientX-sanctuaryHub.lastX;sanctuaryHub.lastX=e.clientX;
   sanctuaryHub._rMoved+=Math.abs(dx);
-  sanctuaryHub.yaw=clamp(sanctuaryHub.yaw-dx*.0055,-1.25,1.25);
+  sanctuaryHub.yaw-=dx*.006;
  });
  window.addEventListener('mouseup',e=>{
+  if(e.button===1&&sanctuaryHub.midOrbit){sanctuaryHub.midOrbit=false;}
   if(e.button===2&&sanctuaryHub.dragging){
    sanctuaryHub.dragging=false;
    if(sanctuaryHub._rMoved<8&&isSanctuaryRoam())sanctuaryAttack('heavy');

@@ -1,4 +1,17 @@
-const mouseLook=new MouseLook((dx,dy)=>{yaw+=dx;pitch=clamp(pitch+dy,-.65,1.15);});
+const mouseLook=new MouseLook((dx,dy)=>{
+ if(midDown){
+  midMoved+=Math.abs(dx)+Math.abs(dy);
+  if(!freeLook&&(midMoved>.045||performance.now()-midPressAt>140)){
+   freeLook=true;freeLookYaw=yaw;freeLookPitch=pitch;
+  }
+ }
+ if(freeLook){
+  freeLookYaw+=dx;
+  freeLookPitch=clamp(freeLookPitch+dy,-.42,1.05);
+  return;
+ }
+ yaw+=dx;pitch=clamp(pitch+dy,-.65,1.15);
+});
 let lockPending=false,wantsLock=false,lockAttempt=0;
 let mouseHelp='M 地图 · T 切换撤离 · ALT 奔跑 · CTRL 潜行 · H 急救';
 

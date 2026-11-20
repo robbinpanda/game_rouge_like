@@ -1,4 +1,4 @@
-const GAME_VERSION='v0.3';
+const GAME_VERSION='v0.3.1';
 const chapterSizes=[7,8,8],expeditionLength=chapterSizes.reduce((sum,n)=>sum+n,0);
 const run={marks:[],gifts:{},random:seededRoll('menu')};
 const roomTypes={fight:'交战',elite:'精英',trial:'双系试炼',event:'回响祭坛',camp:'行商营地',shop:'整备站',boss:'区域首领'};
@@ -119,7 +119,7 @@ function enterChamber(){
  run.roomSchool=room.school||null;
  setChamber(run.act,room.layout,safe,room.type==='boss');
  player.group.position.set(0,0,9);player.group.rotation.y=Math.PI;yaw=0;pitch=.22;grounded=true;
- velocityY=dodgeTime=chargeTime=0;damageFlash=0;$('damage-flash').style.opacity=0;input={};mouseDown=mouseRight=false;grappleTarget=null;raid.velocity.set(0,0,0);
+ velocityY=dodgeTime=chargeTime=0;damageFlash=0;$('damage-flash').style.opacity=0;input={};mouseDown=mouseRight=midDown=freeLook=false;grappleTarget=null;raid.velocity.set(0,0,0);
  camera.position.copy(player.group.position).add(new THREE.Vector3(1.05,3.55,8.1));
  hp=Math.min(maxHp,hp+[0,7,12][rank('spring')]);if(safe)lightGate();else spawnRoomEnemies(room);
  if(run.bountyPending&&(room.type==='fight'||room.type==='elite'||room.type==='trial')){
@@ -717,7 +717,7 @@ function closeFieldGuide(){
  $('rg-guide').classList.add('hidden');$('rg-open-guide')?.focus?.();
 }
 function initializeExpedition(){
- mouseHelp='M 天赋图谱 · T 转向 · V 锁定 · F 门 · H 急救';
+ mouseHelp='长按中键 自由视角看正面 · M 天赋图谱 · T 转向 · V 锁定 · F 门 · H 急救';
  const panel=document.createElement('div');panel.id='rg-panel';panel.className='hidden';$('hud').after(panel);
  panel.setAttribute?.('role','dialog');panel.setAttribute?.('aria-labelledby','rg-panel-title');panel.setAttribute?.('aria-modal','true');
  panel.addEventListener('keydown',e=>{
@@ -780,7 +780,7 @@ function initializeExpedition(){
  if(typeof document!=='undefined'&&document.title)document.title='畸变前线 · 回响远征 '+GAME_VERSION;
  $('start').innerHTML='踏入回响 <span aria-hidden="true">⟶</span>';updateRecord();$('quit').textContent='结束本次远征';$('again').innerHTML='再次远征 <span aria-hidden="true">⟶</span>';
  document.querySelector('.timer small').textContent='远征用时';document.querySelector('.result-stats small').textContent='通过房间';
- document.querySelector('.game-footer span').textContent='WASD 移动 · SHIFT 冲刺 / 冲刺斩 · 左右键双招式 · V/中键 锁定 · C 反制 · F 门 · M 图谱 · H 急救';
+ document.querySelector('.game-footer span').textContent='WASD 移动 · SHIFT 冲刺斩 · 左右键双招式 · 长按中键 看正面 · V/短按中键 锁定 · C 反制 · F 门 · M 图谱';
  $('weapon-slot-2').style.display='none';
  document.querySelector('.menu-footer span:nth-child(2)').textContent='SHIFT 冲刺斩 · 左/右键招式 · C 反制 · E/X/Q 异能';
  document.querySelector('.help-grid span:nth-child(4)').textContent='右键 · 第二普攻';
