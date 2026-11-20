@@ -673,28 +673,28 @@ function stepOpeningCinematic(dt){
  const t=cinematicTime;
  const smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x);};
  const pos=new THREE.Vector3(),look=new THREE.Vector3();
- if(t<2.3){
-  // Stage 1: Intimate push behind hero on the Sanctuary cliff edge
-  const k=smooth(t/2.3);
-  pos.set(lerp(1.6,.2,k),lerp(2.1,3.2,k),lerp(24.5,19.8,k));
-  look.set(0,lerp(1.9,2.8,k),lerp(12,-28,k));
+ if(t<2.2){
+  // Stage 1 (01_圣所拂晓): Push through the Sanctuary Archway framing the bay & Prism Glasshouse
+  const k=smooth(t/2.2);
+  pos.set(lerp(1.4,0,k),lerp(2.4,3.5,k),lerp(25.2,18.2,k));
+  look.set(0,lerp(2.4,4.2,k),lerp(6,-65,k));
   $('rg-cinematic').dataset.stage='1';
- }else if(t<6.0){
-  // Stage 2: Zelda BotW Cliff Leap Reveal — soaring over the edge into the vast 3-Act Panorama!
-  const k=smooth((t-2.3)/3.7);
-  pos.set(lerp(.2,22,k),lerp(3.2,21.5,Math.pow(k,.78)),lerp(19.8,4,k));
-  look.set(lerp(0,-2,k),lerp(2.8,-4,k),lerp(-28,-74,k));
+ }else if(t<6.2){
+  // Stage 2 (04_三域同框): Zelda BotW Cliff Leap Reveal — soaring above the bay to reveal all 3 sculpted Acts!
+  const k=smooth((t-2.2)/4.0);
+  pos.set(Math.sin(k*Math.PI)*9.5,lerp(3.5,26.8,Math.pow(k,.72)),lerp(18.2,20.5,k));
+  look.set(lerp(0,1.5,k),lerp(4.2,-6.5,k),lerp(-65,-62,k));
   $('rg-cinematic').dataset.stage='2';
- }else if(t<8.4){
-  // Stage 3: Majestic sweeping descent back to Sanctuary Overlook Hub
-  const k=smooth((t-6.0)/2.4);
-  pos.set(lerp(22,3.4,k),lerp(21.5,3.7,k),lerp(4,31.2,k));
-  look.set(lerp(-2,-1.2,k),lerp(-4,1.6,k),lerp(-74,10,k));
+ }else if(t<8.6){
+  // Stage 3 (03_镜光归台): Graceful sweep back down to the Sanctuary Compass Terrace & Hero
+  const k=smooth((t-6.2)/2.4);
+  pos.set(lerp(0,3.2,k),lerp(26.8,4.0,k),lerp(20.5,31.4,k));
+  look.set(lerp(1.5,-.8,k),lerp(-6.5,1.6,k),lerp(-62,8.0,k));
   $('rg-cinematic').dataset.stage='3';
  }else{
   finishOpeningCinematic();return;
  }
- camera.position.copy(pos);camera.lookAt(look);camera.fov=lerp(50,62,smooth((t-2)/3.5));camera.updateProjectionMatrix();
+ camera.position.copy(pos);camera.lookAt(look);camera.fov=lerp(52,64,smooth((t-1.8)/3.8));camera.updateProjectionMatrix();
 }
 function finishOpeningCinematic(){
  if(state!=='cinematic')return;

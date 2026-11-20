@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import {packEmber} from './pack-ember.mjs';
 import {packCreatures} from './pack-creatures.mjs';
+import {packSanctuary} from './pack-sanctuary.mjs';
 const rogue=process.argv.includes('--rogue');
 if(rogue){
  const {writeEffectIndex}=await import('../game-workbench/tools/index-echo-effects.mjs');
@@ -20,7 +21,7 @@ const cacheMesh=fs.readFileSync(new URL('../game-workbench/library/models/field-
 pieces.unshift('const cacheMesh='+cacheMesh+';');
 pieces.unshift('const emberAsset='+JSON.stringify(packEmber())+';\n'+emberRuntime);
 pieces.unshift('const rogueMode='+rogue+';');
-if(rogue)pieces.unshift('const creatureFiles='+JSON.stringify(packCreatures())+';');
+if(rogue)pieces.unshift('const creatureFiles='+JSON.stringify(packCreatures())+';\nconst sanctuaryFile='+JSON.stringify(packSanctuary())+';');
 const setup=rogue?'environment=createExpeditionWorld();':'environment=createStylizedWorld();enrichWorld();dressCheckpoint();plazaPaving();batchStaticWorld();';
 pieces.push(setup+"initializeV2();initializeV4();if(rogueMode)initializeExpedition();loadEmberTextures();configureMouseLook();$('loading').classList.add('hidden');$('menu').classList.remove('hidden');requestAnimationFrame(loop);");
 fs.writeFileSync(new URL(rogue?'./dist/rogue-game.js':'./dist/game.js',import.meta.url),pieces.join('\n\n'));

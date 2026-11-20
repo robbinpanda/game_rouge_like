@@ -122,11 +122,11 @@ function updateCamera(dt){
   menuOrbit+=dt*.14;
   if(rogueMode){
    let goalPos,goalLook;
-   if(sanctuaryView==='mirror'){goalPos=new THREE.Vector3(-2.4,3.1,28.4);goalLook=new THREE.Vector3(-6.4,2.4,22.2);}
-   else if(sanctuaryView==='panorama'){goalPos=new THREE.Vector3(Math.sin(menuOrbit*.6)*12,13.5,24);goalLook=new THREE.Vector3(0,-2,-58);}
-   else{goalPos=new THREE.Vector3(3.4+Math.sin(menuOrbit)*1.6,3.7,31.2);goalLook=new THREE.Vector3(-1.2,1.6,10);}
+   if(sanctuaryView==='mirror'){goalPos=new THREE.Vector3(-2.6,3.2,28.8);goalLook=new THREE.Vector3(-7.4,2.5,22.0);}
+   else if(sanctuaryView==='panorama'){goalPos=new THREE.Vector3(Math.sin(menuOrbit*.55)*12,26.0,22.0);goalLook=new THREE.Vector3(0,-6.0,-60);}
+   else{goalPos=new THREE.Vector3(3.2+Math.sin(menuOrbit)*1.5,4.0,31.4);goalLook=new THREE.Vector3(-.8,1.6,8.0);}
    camera.position.lerp(goalPos,1-Math.exp(-dt*3.5));
-   camera.lookAt(goalLook);camera.fov=lerp(camera.fov,54,dt*4);camera.updateProjectionMatrix();return;
+   camera.lookAt(goalLook);camera.fov=lerp(camera.fov,sanctuaryView==='panorama'?62:54,dt*4);camera.updateProjectionMatrix();return;
   }
   camera.position.set(6+Math.sin(menuOrbit),3.2,30.5);camera.lookAt(.1,1.7,22);return;
  }
