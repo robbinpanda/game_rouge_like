@@ -43,10 +43,10 @@ const sanctuaryHub={
 };
 
 const SANCTUARY_NPC_SPOTS=[
- {x:-4.4,z:25.8,yaw:.45},
- {x:4.6,z:25.6,yaw:-.45},
- {x:-7.8,z:17.8,yaw:.72},
- {x:7.8,z:17.8,yaw:-.72}
+ {x:-4.6,z:25.2,yaw:.52},
+ {x:4.6,z:25.2,yaw:-.52},
+ {x:-3.4,z:19.4,yaw:.45},
+ {x:3.4,z:19.4,yaw:-.45}
 ];
 const SANCTUARY_DEFAULT_WEAPONS={ember:'katana',frost:'rifle',shade:'dual',bastion:'hammer',reaper:'spear'};
 const DUMMY_BARKS=[
@@ -131,11 +131,11 @@ function buildSanctuaryHubProps(){
  sanctuaryHub.prophecyGem=mesh(crystalGeo,glow(0xffd66e),-5.0,3.18,17.5,g);
  sanctuaryHub.prophecyGem.scale.set(.34,.58,.34);sanctuaryHub.prophecyGem.castShadow=false;
 
- // 5. Chronicle & Field Guide Lectern (-2.8, 27.6)
- floorRing(-2.8,27.6,1.45,0x8be2f0);
- cylinder(-2.8,.62,27.6,.34,.56,1.24,chamberMat(0x27404a),g,8);
- const desk=box(-2.8,1.3,27.6,1.15,.14,.8,chamberMat(0xdcbd80),g);desk.rotation.x=.32;
- const page=box(-2.8,1.42,27.6,.86,.08,.56,glow(0x9ef0ff),g);page.rotation.x=.32;
+ // 5. Chronicle & Field Guide Lectern (0, 28.4) — South center balancing North Archway!
+ floorRing(0,28.4,1.45,0x8be2f0);
+ cylinder(0,.62,28.4,.34,.56,1.24,chamberMat(0x27404a),g,8);
+ const desk=box(0,1.3,28.4,1.15,.14,.8,chamberMat(0xdcbd80),g);desk.rotation.x=-.32;
+ const page=box(0,1.42,28.4,.86,.08,.56,glow(0x9ef0ff),g);page.rotation.x=-.32;
 
  // 6. Hades Skelly-Style Training Dummy ("试刃靶偶 · 老铁桩") at (+5.0, 17.5)
  floorRing(5.0,17.5,1.95,0xff9666);
@@ -218,7 +218,7 @@ function getSanctuaryStations(){
   {id:'arsenal',kind:'arsenal',label:'军械与换装台',sub:'切换角色 · 武器 · 信物 · 难度',key:'F',pos:new THREE.Vector3(6.6,0,21.8),r:3.1,color:'#ffd580',height:3.4},
   {id:'dummy',kind:'dummy',label:'试刃靶偶 · 老铁桩',sub:'左/右键/E/Q 打桩试招 · 按 F 触发蓝光练反制',key:'F',pos:new THREE.Vector3(5.0,0,17.5),r:3.0,color:'#ffa070',height:3.0},
   {id:'prophecy',kind:'prophecy',label:'共鸣预言碑',sub:'查看命运预言与残片奖励',key:'F',pos:new THREE.Vector3(-5.0,0,17.5),r:2.9,color:'#ffe082',height:3.4},
-  {id:'chronicle',kind:'chronicle',label:'晴湾纪事台',sub:'失电纪事 · 区域图鉴',key:'F',pos:new THREE.Vector3(-2.8,0,27.6),r:2.7,color:'#9be8f5',height:2.4}
+  {id:'chronicle',kind:'chronicle',label:'晴湾纪事台',sub:'失电纪事 · 区域图鉴',key:'F',pos:new THREE.Vector3(0,0,28.4),r:2.7,color:'#9be8f5',height:2.4}
  ];
  for(const npc of sanctuaryHub.npcs){
   const unread=typeof hasUnreadDialogue==='function'?hasUnreadDialogue(npc.id):false;
@@ -422,7 +422,7 @@ function clampSanctuaryPos(p){
   if(r>10.5){p.x=dx/r*10.5;p.z=21.5+dz/r*10.5;}
  }
  // Gentle collision around Mirror (-7.4, 22.0), Arsenal (+7.4, 22.0), Dummy (+5.0, 17.5), Prophecy (-5.0, 17.5)
- const blockers=[[-7.4,22.0,1.45],[7.4,22.0,1.45],[5.0,17.5,1.05],[-5.0,17.5,1.05],[-2.8,27.6,.9]];
+ const blockers=[[-7.4,22.0,1.45],[7.4,22.0,1.45],[5.0,17.5,1.05],[-5.0,17.5,1.05],[0,28.4,.9]];
  for(const [bx,bz,br] of blockers){
   const ox=p.x-bx,oz=p.z-bz,d=Math.hypot(ox,oz);
   if(d<br&&d>.001){p.x=bx+ox/d*br;p.z=bz+oz/d*br;}

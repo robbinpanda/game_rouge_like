@@ -34,8 +34,11 @@ const amber=glow(0xf1a250),mint=glow(0x8cecac),redGlow=glow(0xed715a),purpleGlow
 let environment;
 
 function createMutant(type='reaper',isPlayer=false){
+ if(isPlayer&&rogueMode&&type!=='ember'&&typeof heroFiles!=='undefined'&&heroFiles[type]){
+  return createHeroModel(type);
+ }
  if(isPlayer&&HEROES[type]?.human){
-  const avatar=(rogueMode||type==='ember')?createEmber(type):createHumanoid(type);
+  const avatar=type==='ember'?createEmber('ember'):createHumanoid(type);
   return rogueMode?expeditionRegalia(avatar):avatar;
  }
  const group=new THREE.Group(),rig=new THREE.Group();group.add(rig);actors.add(group);
