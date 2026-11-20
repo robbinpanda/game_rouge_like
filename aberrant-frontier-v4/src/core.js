@@ -35,7 +35,7 @@ let environment;
 
 function createMutant(type='reaper',isPlayer=false){
  if(isPlayer&&HEROES[type]?.human){
-  const avatar=type==='ember'?createEmber():createHumanoid(type);
+  const avatar=(rogueMode||type==='ember')?createEmber(type):createHumanoid(type);
   return rogueMode?expeditionRegalia(avatar):avatar;
  }
  const group=new THREE.Group(),rig=new THREE.Group();group.add(rig);actors.add(group);
@@ -51,7 +51,6 @@ function createMutant(type='reaper',isPlayer=false){
   const muzzle=mesh(icoGeo,armor,0,2.36,.425,rig);muzzle.scale.set(.235,.125,.26);
   for(const side of [-1,1]){
    const plate=mesh(icoGeo,armor,side*.28,1.82,.2,rig);plate.scale.set(.31,.19,.20);plate.rotation.z=side*.34;
-   const flap=mesh(icoGeo,mats.lavender,side*.24,.91,-.03,rig);flap.scale.set(.17,.37,.17);flap.rotation.z=-side*.26;
   }
  }
  const arms=[],legs=[];
@@ -178,7 +177,7 @@ function animateMutant(avatar,dt,moving){avatar.phase+=dt*(moving?9:2);const swi
   avatar.knees[i].rotation.x=moving?Math.max(0,stride)*.72:.055;
   avatar.elbows[i].rotation.x=avatar.attack>0?-.58:moving?-.32+stride*.13:-.18;
  }
- avatar.body.material.color.setHex(avatar.hurt>0?0xffbab0:0xffffff);return;}avatar.skin.emissive.setHex(avatar.hurt>0?0x9f4936:0x000000);avatar.skin.emissiveIntensity=avatar.hurt>0?.8:0;}
+ avatar.body.material.color.setHex(avatar.hurt>0?0xffbab0:(avatar.baseTint??0xffffff));return;}avatar.skin.emissive.setHex(avatar.hurt>0?0x9f4936:0x000000);avatar.skin.emissiveIntensity=avatar.hurt>0?.8:0;}
 
 
 function formatTime(t){return String(Math.max(0,Math.floor(t/60))).padStart(2,'0')+':'+String(Math.max(0,Math.floor(t%60))).padStart(2,'0');}
@@ -216,7 +215,9 @@ function loop(now){requestAnimationFrame(loop);if(rogueMode)syncAmbience();const
   if(rogueMode){if(typeof updateAmbientMotes==='function')updateAmbientMotes(dt);if(typeof updateMagnetOrbs==='function')updateMagnetOrbs(dt);if(typeof updateThreatIndicators==='function')updateThreatIndicators();}
   shake=Math.max(0,shake-dt*2);damageFlash=Math.max(0,damageFlash-dt*2);$('damage-flash').style.opacity=damageFlash;toastTime-=dt;if(toastTime<=0)$('toast').classList.remove('show');hitMarker-=dt;if(hitMarker<=0)$('crosshair').querySelector('b').style.opacity=0;if(now>=nextHUD){updateHUD();nextHUD=now+80;}
  }else if(state==='menu'){
-  time+=dt;animateMutant(player,dt,false);poseWeapon(player,null,true);
+  time+=dt;
+  if(rogueMode&&typeof updateSanctuaryHub==='function')updateSanctuaryHub(dt);
+  else{animateMutant(player,dt,false);poseWeapon(player,null,true);}
   if(rogueMode&&typeof updateAmbientMotes==='function')updateAmbientMotes(dt);
  }
  if(state!=='paused'){for(const l of loots){if(l.collected)continue;l.body.rotation.y+=dt;l.body.position.y=.65+Math.sin(now*.002+l.phase)*.12;}environment.ash.rotation.y+=dt*.001;environment.beam.material.opacity=.065+Math.sin(now*.002)*.015;updateCamera(dt);}if(environment)environment.ash.position.copy(player.group.position);updatePresentation(dt);const sx=Math.round(player.group.position.x/4)*4,sz=Math.round(player.group.position.z/4)*4;sun.position.set(sx-42,38,sz+33);sun.target.position.set(sx,0,sz);renderer.render(scene,camera);}

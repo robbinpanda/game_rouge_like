@@ -1,74 +1,91 @@
 function expeditionRegalia(avatar){
- const {type,rig,arms,legs}=avatar;
+ const {type,rig,arms}=avatar;
  const materials={
-  ember:[0x301f32,0xb64847,0xf0b66d,0xff784c],
-  frost:[0x192b49,0x3689ae,0xe0e9ea,0x6fdded],
-  shade:[0x1f1936,0x5f4694,0xd6c3f4,0xc394ff],
-  reaper:[0x203a38,0x477e68,0xe0c8a9,0xb2ed9d],
-  bastion:[0x273342,0x616e7e,0xd8ad72,0xffd597]
+  ember:[0x2e1e2b,0xc94f3d,0xf2c272,0xff7f4d],
+  frost:[0x182b47,0x3c91b8,0xeaf6fa,0x7ceeff],
+  shade:[0x1c1633,0x674ba3,0xdfd0fa,0xc996ff],
+  reaper:[0x1e3836,0x438067,0xe3cca8,0xa6f092],
+  bastion:[0x253242,0x5a6b7d,0xe2b76d,0xffd685]
  };
  if(!materials[type])return avatar;
  const [dark,armor,trim]=materials[type].map(color=>mat(color));
- const crystal=mat(materials[type][3],{roughness:.24,metalness:.27,emissive:materials[type][3],emissiveIntensity:.24});
+ const crystal=mat(materials[type][3],{roughness:.22,metalness:.28,emissive:materials[type][3],emissiveIntensity:.75});
  const owned=avatar.regaliaResources=[dark,armor,trim,crystal];
  function facet(parent,x,y,z,w,h,d,material,tilt=0){
   const piece=mesh(icoGeo,material,x,y,z,parent);
   piece.scale.set(w,h,d);piece.rotation.z=tilt;return piece;
  }
- function panel(parent,points,position,material,thickness=.038){
+ function panel(parent,points,position,material,thickness=.022){
   const shape=new THREE.Shape();
   points.forEach(([x,y],i)=>i===0?shape.moveTo(x,y):shape.lineTo(x,y));
   shape.closePath();
-  const g=new THREE.ExtrudeGeometry(shape,{depth:thickness,bevelEnabled:true,bevelSize:.016,bevelThickness:.013,bevelSegments:1});
+  const g=new THREE.ExtrudeGeometry(shape,{depth:thickness,bevelEnabled:true,bevelSize:.009,bevelThickness:.008,bevelSegments:1});
   owned.push(g);
-  const m=mesh(g,material,...position,parent);return m;
+  return mesh(g,material,...position,parent);
  }
- const coat=new THREE.Group();coat.position.set(0,1.84,-.28);rig.add(coat);avatar.regalia=coat;
- const width=type==='bastion'?.35:type==='reaper'?.20:.28;
- for(const side of [-1,1]){
-  const x=side*(width*.75+.08),size=type==='bastion'?.97:type==='reaper'?.83:1.37;
-  panel(coat,[[-width,0],[width,-.03],[width*.79,-size*.58],[side*width*.57,-size],[-width*.8,-size*.74]],[x,0,-.02],dark).rotation.z=side*.11;
-  panel(coat,[[-width*.78,-.12],[width*.80,-.1],[width*.54,-size*.57],[side*width*.42,-size*.86],[-width*.48,-size*.60]],[x,0,-.077],armor,.02).rotation.z=side*.11;
-  facet(rig,side*.24,1.88,-.34,.18,.16,.11,trim,side*.34);
-  if(type!=='ember'){
-   const arm=arms[side===1?1:0],leg=legs[side===1?1:0];
-   facet(leg,0,-.45,.11,.135,.15,.12,trim);
-   facet(leg,0,-.71,.10,.14,.22,.145,dark);
-   facet(arm,side*.07,-.08,-.09,.33,.21,.31,armor,side*.25);
-   facet(arm,side*.12,-.015,-.14,.29,.095,.30,trim,side*.25);
-   facet(arm,side*.18,-.58,-.09,.125,.24,.15,dark);
-  }
- }
+ // Clean anime upper-collar anchor (NO split twin butt-lobes!)
+ const scarf=new THREE.Group();scarf.position.set(0,1.98,-.17);rig.add(scarf);avatar.regalia=scarf;
+
  if(type==='ember'){
-  facet(rig,-.29,2.03,-.19,.20,.18,.22,armor,.24);
-  panel(coat,[[0,-.09],[.065,-.21],[0,-.39],[-.065,-.21]],[0,0,-.115],crystal);
+  // Sleek single asymmetric crimson-gold scarf tail flowing from collar — jacket back stays crisp & unobstructed!
+  const tail=panel(scarf,[[-.07,0],[.11,0],[.18,-.46],[.07,-.86],[-.01,-.74],[-.04,-.36]],[.09,.02,-.02],armor,.018);
+  tail.rotation.y=-.16;tail.rotation.z=.09;
+  const stripe=panel(scarf,[[.01,-.08],[.08,-.08],[.12,-.48],[.05,-.72]],[.09,.02,-.042],trim,.012);
+  stripe.rotation.y=-.16;stripe.rotation.z=.09;
+  // Subtle glowing collar pin + sleek shoulder edge
+  facet(scarf,.09,.02,-.05,.048,.078,.032,crystal,0);
  }else if(type==='frost'){
-  const pair=[[-.13,2.27,-.18,.24,.37,.22],[.14,2.37,-.12,.19,.28,.22]];
-  for(const [x,y,z,w,h,d] of pair)facet(rig,x,y,z,w,h,d,trim,x*2);
-  panel(rig,[[-.33,.16],[.19,.13],[.32,-.04],[-.09,-.14],[-.28,-.07]],[0,2.04,.21],armor);
-  for(let i=0;i<5;i++){
-   const shard=facet(arms[0],-.14-i%2*.09,-.24-i*.115,-.07,.105,.26,.13,crystal,-.38);
-   shard.rotation.x=.2+i*.14;
+  // Ethereal floating crystalline prism halo behind upper shoulders + frost crystal bracer
+  for(const [x,y,z,s,tilt] of [[-.26,.18,-.10,.095,.36],[0,.29,-.14,.115,0],[.26,.18,-.10,.095,-.36]]){
+   const shard=facet(scarf,x,y,z,s*.68,s*1.65,s*.55,crystal,tilt);
+   shard.rotation.x=-.12;
   }
-  facet(coat,0,-.24,-.14,.14,.31,.115,crystal);
+  // Delicate short translucent-feeling silver-ice shoulder mantle (stops above mid-back!)
+  const mantle=panel(scarf,[[-.22,.02],[.22,.02],[.14,-.34],[0,-.44],[-.14,-.34]],[0,.01,-.02],trim,.016);
+  mantle.rotation.x=-.08;
+  for(let i=0;i<3;i++){
+   const c=facet(arms[0],-.06,-.18-i*.085,-.04,.045,.11,.05,crystal,-.32);
+   c.rotation.x=.22;
+  }
+ }else if(type==='shade'){
+  // Sleek single midnight-violet ninja scarf streamer + glowing amethyst nape diamond
+  const ribbon=panel(scarf,[[-.05,0],[.09,0],[.15,-.52],[.03,-.96],[-.06,-.76],[-.02,-.38]],[-.06,.02,-.02],armor,.015);
+  ribbon.rotation.y=.18;ribbon.rotation.z=-.12;
+  const edge=panel(scarf,[[-.01,-.08],[.05,-.08],[.09,-.54],[.02,-.84]],[-.06,.02,-.038],crystal,.01);
+  edge.rotation.y=.18;edge.rotation.z=-.12;
+  for(const side of [-1,1]){
+   const fin=facet(rig,side*.24,2.04,-.06,.11,.045,.15,dark,side*.32);
+   fin.rotation.y=-side*.22;
+  }
+  facet(scarf,0,.04,-.05,.05,.09,.035,crystal,0);
  }else if(type==='bastion'){
+  // Clean armored hexagonal pauldrons + compact upper-back amber reactor core (strictly above waist!)
   for(const side of [-1,1]){
-   panel(coat,[[-.16,.10],[.16,.06],[.14,-.56],[0,-.72],[-.16,-.47]],[side*.33,.17,-.26],trim).rotation.z=side*.22;
    const arm=arms[side===1?1:0];
-   facet(arm,side*.23,.115,-.09,.24,.23,.24,trim,side*.43);
+   facet(arm,side*.08,.04,0,.16,.13,.17,armor,side*.28);
+   facet(arm,side*.11,.08,0,.13,.055,.15,trim,side*.28);
   }
-  facet(coat,0,-.27,-.30,.23,.34,.22,dark);facet(coat,0,-.24,-.49,.084,.17,.057,crystal);
+  const pack=box(0,-.18,-.08,.34,.36,.18,dark,scarf);pack.castShadow=true;
+  box(0,-.18,-.17,.22,.24,.04,trim,scarf);
+  facet(scarf,0,-.18,-.21,.075,.12,.04,crystal,0);
  }else{
+  // Reaper: clean glowing dorsal crystal ridge & forearm energy claws (zero hip lobes!)
+  for(let i=0;i<3;i++){
+   facet(scarf,0,-.06-i*.16,-.14-i*.03,.05,.12,.08,crystal,0);
+  }
   for(const side of [-1,1]){
-   facet(rig,side*.36,1.64,-.22,.25,.30,.19,armor,-side*.40);
-   panel(coat,[[0,.1],[.18,-.20],[.06,-.49],[-.13,-.44]],[side*.24,-.04,-.20],trim).rotation.z=-side*.67;
-   facet(arms[side===1?1:0],side*.19,-.55,-.13,.14,.28,.15,crystal,side*.21);
+   facet(arms[side===1?1:0],side*.17,-.56,-.08,.11,.24,.12,crystal,side*.2);
   }
  }
  return avatar;
 }
 function releasePlayer(avatar){
  avatar.skeleton?.dispose();
+ if(avatar.body?.material&&typeof emberMaterials!=='undefined'){
+  const idx=emberMaterials.indexOf(avatar.body.material);
+  if(idx>=0)emberMaterials.splice(idx,1);
+  if(avatar.body.material!==emberMaterial)avatar.body.material.dispose();
+ }
  for(const resource of avatar.regaliaResources||[])resource.dispose();
  actors.remove(avatar.group);
 }

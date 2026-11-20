@@ -118,6 +118,57 @@
 #rg-panel button[aria-pressed=true]{background:#bfdfcc;color:#193e43;border-color:#c6ecd4}
 .rg-routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr));gap:10px;max-height:47vh;overflow:auto;padding:2px}
 .rg-routes article{background:#2c4954;border-top:3px solid var(--ink);border-radius:6px;padding:12px;display:flex;flex-direction:column;align-items:flex-start}
+/* Hades-Style Walkable 3D Sanctuary Courtyard Hub */
+#menu.rg-hub-roam{opacity:0;pointer-events:none;transition:opacity .28s ease}
+#rg-hub-hud{position:fixed;inset:0;z-index:26;pointer-events:none;font-family:"Microsoft YaHei",sans-serif}
+#rg-hub-hud.hidden,#rg-hub-labels.hidden,#rg-hub-prompt.hidden{display:none}
+.rg-hub-top{position:absolute;top:16px;left:20px;right:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.rg-hub-brand{pointer-events:auto;padding:10px 16px;background:linear-gradient(112deg,#122931e6,#1d3d45cc);border:1px solid #dcbd8088;border-left:4px solid #f0c46c;box-shadow:0 8px 24px #09182077;color:#fff4dc}
+.rg-hub-brand small{display:block;font-size:10px;letter-spacing:.22em;color:#e5c583}
+.rg-hub-brand strong{display:block;margin:2px 0 4px;font:900 22px "STKaiti","KaiTi",serif;letter-spacing:.12em;color:#fff6e2}
+.rg-hub-status{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:#d6e9e2}
+.rg-hub-status b{color:#ffe29a}
+.rg-hub-status em{font-style:normal;color:#d9b8ff;font-weight:700}
+.rg-hub-status i{font-style:normal;color:#6c9696}
+.rg-hub-dps{margin-left:6px;padding:1px 8px;background:#4a251ee8;border:1px solid #ff9c6e;border-radius:99px;color:#ffdca6;font-weight:700}
+.rg-hub-quick{pointer-events:auto;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.rg-hub-quick button{padding:7px 12px;background:#142e36dd;color:#f7edd4;border:1px solid #c9b07c99;font:600 12px "Microsoft YaHei",sans-serif;cursor:pointer;backdrop-filter:blur(4px);transition:background .15s,transform .15s,border-color .15s}
+.rg-hub-quick button:hover{background:#234c54;border-color:#ffe3a8;transform:translateY(-1px)}
+.rg-hub-controls{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:7px 16px;background:#10252cd8;border:1px solid #91b3ad66;border-radius:99px;color:#dcebe5;font-size:12px;white-space:nowrap;box-shadow:0 6px 20px #08161d66}
+.rg-hub-controls kbd{display:inline-block;padding:1px 6px;margin-right:4px;background:#244750;border:1px solid #dcbd80aa;border-radius:4px;color:#ffe7ad;font:700 11px Consolas,monospace}
+#rg-hub-hud.vista .rg-hub-controls{opacity:0}
+/* 3D Projected World Station Labels */
+#rg-hub-labels{position:fixed;inset:0;z-index:22;pointer-events:none;overflow:hidden}
+.rg-world-tag{position:absolute;transform:translate(-50%,-100%);padding:3px 9px;background:#10262ed4;border:1px solid var(--ink,#dcbd80);border-radius:6px;color:#fff4dc;font:700 12px "Microsoft YaHei",sans-serif;white-space:nowrap;text-shadow:0 1px 3px #08161d;opacity:.86;transition:transform .14s,opacity .14s,box-shadow .14s}
+.rg-world-tag.active{opacity:1;transform:translate(-50%,-114%) scale(1.1);background:#1b3e47f0;box-shadow:0 0 16px var(--ink,#ffe29a)}
+.rg-world-tag.unread{border-color:#ffd05c;color:#ffefb8;box-shadow:0 0 12px #ffbe4d88}
+/* Bottom-Center Interactive Station Prompt */
+#rg-hub-prompt{position:fixed;left:50%;bottom:66px;transform:translateX(-50%);z-index:28;pointer-events:none;display:flex;align-items:center;gap:11px;padding:10px 18px;background:linear-gradient(108deg,#122931f0,#21444de6);border:1px solid var(--ink,#ffe29a);border-left:5px solid var(--ink,#ffe29a);border-radius:8px;box-shadow:0 10px 30px #07161e99;color:#fff6e2;animation:rgCardIn .18s ease}
+#rg-hub-prompt kbd{width:32px;height:32px;display:grid;place-items:center;background:var(--ink,#ffe29a);color:#14282e;border-radius:6px;font:900 16px Consolas,monospace;flex-shrink:0}
+#rg-hub-prompt b{display:block;font:800 16px "STKaiti","KaiTi",serif;letter-spacing:.06em;color:#fff5dc}
+#rg-hub-prompt small{display:block;font-size:12px;color:#cde3dc;margin-top:1px}
+/* Sanctuary Armory Live Switcher Modal */
+.rg-armory-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:16px;margin-top:12px}
+.rg-armory-grid h4{margin:0 0 8px;color:#e6c782;font-size:12px;letter-spacing:.14em}
+.rg-armory-heroes{display:grid;gap:7px}
+.rg-armory-hero{display:flex;align-items:center;gap:10px;width:100%;padding:9px 11px;text-align:left;background:#1b353e;border:1px solid #597c7e;border-left:4px solid var(--ink,#dcbd80);border-radius:6px;color:#f5edd6;cursor:pointer}
+.rg-armory-hero.selected{background:#2d545e;border-color:#ffe39e;box-shadow:0 0 14px #f5c97640}
+.rg-armory-hero strong{width:34px;height:34px;display:grid;place-items:center;background:#12252c;border:1px solid var(--ink,#dcbd80);border-radius:6px;color:var(--ink,#ffe29a);font-size:18px;flex-shrink:0}
+.rg-armory-hero b{display:block;font-size:15px;color:#fff4dc}.rg-armory-hero small{display:block;font-size:11px;color:#b8d4ce}.rg-armory-hero span{display:block;font-size:11px;color:#e5d8b8;margin-top:2px}
+.rg-armory-weps{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.rg-armory-wep{display:flex;align-items:center;gap:8px;padding:7px 9px;text-align:left;background:#1b353e;border:1px solid #597c7e;border-radius:6px;color:#f5edd6;cursor:pointer;position:relative}
+.rg-armory-wep.selected{background:#2d545e;border-color:#ffe39e}
+.rg-armory-wep img{width:36px;height:36px;object-fit:contain;flex-shrink:0}
+.rg-armory-wep b{display:block;font-size:13px;color:#fff4dc}.rg-armory-wep small{display:block;font-size:10px;color:#bdd5cf}
+.rg-armory-wep em{margin-left:auto;font-style:normal;font-size:10px;color:#9cf5cf;font-weight:700}
+.rg-armory-ks-list{display:grid;gap:6px;max-height:175px;overflow:auto}
+.rg-armory-ks{padding:7px 10px;text-align:left;background:#183038;border:1px solid #597c7e;border-radius:6px;color:#f5edd6;cursor:pointer}
+.rg-armory-ks.equipped{background:#2c5750;border-color:#8ef5cf}
+.rg-armory-ks:disabled{opacity:.48;cursor:default}
+.rg-armory-ks b{display:block;font-size:13px;color:#ffe7ad}.rg-armory-ks small{display:block;font-size:11px;color:#c7ddd7}
+.rg-armory-run{display:flex;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid #4d6f72;font-size:12px;color:#d6e6e0}
+.rg-armory-run select,.rg-armory-run input{background:#12252c;color:#fff4dc;border:1px solid #7aa3a0;padding:4px 8px;border-radius:4px;margin-left:4px}
+@media(max-width:760px){.rg-armory-grid{grid-template-columns:1fr}.rg-hub-controls{display:none}}
 .rg-routes .rg-tree-icon{width:42px;height:42px;object-fit:contain}
 .rg-routes small{font-size:11px;color:var(--ink);margin-top:6px}
 .rg-routes h3{font-size:18px;margin:4px 0 6px}

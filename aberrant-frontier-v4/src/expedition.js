@@ -1,4 +1,4 @@
-const GAME_VERSION='v0.2';
+const GAME_VERSION='v0.3';
 const chapterSizes=[7,8,8],expeditionLength=chapterSizes.reduce((sum,n)=>sum+n,0);
 const run={marks:[],gifts:{},random:seededRoll('menu')};
 const roomTypes={fight:'交战',elite:'精英',trial:'双系试炼',event:'回响祭坛',camp:'行商营地',shop:'整备站',boss:'区域首领'};

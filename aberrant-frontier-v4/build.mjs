@@ -13,7 +13,7 @@ const effect=name=>library+name+'.js';
 const files=[source('core'),effect('shared-effects'),...['arsenal','characters','world','combat','simulation','frontier','scenery','raid','presentation','battle','input'].map(source)];
 if(rogue){
  files.push(...['studies','skill-effects','weapon-effects','talent-effects'].map(effect),
-  ...['expedition-combat','expedition-audio','expedition-fx','gifts','chambers','creature-rigs','encounters','expedition'].map(source));
+  ...['expedition-combat','expedition-audio','expedition-fx','gifts','chambers','creature-rigs','encounters','expedition','expedition-narrative','sanctuary-hub'].map(source));
 }
 const pieces=files.map(file=>fs.readFileSync(new URL(file,import.meta.url),'utf8'));
 const emberRuntime=fs.readFileSync(new URL('./src/ember.js',import.meta.url),'utf8');

@@ -5,7 +5,7 @@ const mime={'.png':'image/png','.svg':'image/svg+xml','.jpg':'image/jpeg','.webp
 const rogue=process.argv.includes('--rogue');
 const assets=Object.fromEntries(fs.readdirSync(new URL('assets/',base)).filter(file=>!file.endsWith('.png')&&(rogue||!file.startsWith('echo-'))).map(file=>[file,'data:'+mime[path.extname(file)]+';base64,'+fs.readFileSync(new URL('assets/'+file,base)).toString('base64')]));
 let html=read('index.html');
-if(rogue)html=html.replace('</head>','<link rel="stylesheet" href="expedition.css"><link rel="stylesheet" href="harbor-ui.css"></head>').replace('<title>畸变前线 IV · 晴湾远征</title>','<title>畸变前线 · 回响远征</title>');
+if(rogue)html=html.replace('</head>','<link rel="stylesheet" href="expedition.css"><link rel="stylesheet" href="harbor-ui.css"><link rel="stylesheet" href="narrative.css"></head>').replace('<title>畸变前线 IV · 晴湾远征</title>','<title>畸变前线 · 回响远征</title>');
 html=html.replace(/<link rel="stylesheet" href="([^"]+)">/g,(_,file)=>'<style>'+read(file).replace(/url\(['"]?assets\/([^)'"\s]+)['"]?\)/g,(_,name)=>'url("'+assets[name]+'")')+'</style>');
 let game=read(rogue?'rogue-game.js':'game.js');
 const three=read('vendor/three.module.js');

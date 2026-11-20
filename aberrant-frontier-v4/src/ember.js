@@ -1,11 +1,19 @@
-let emberGeometry, emberMaterial;
+let emberGeometry, emberMaterial, emberToonSteps, emberBaseTexture;
+const emberMaterials = [];
+const heroBodyStyles = {
+ ember:   { tint: 0xffffff, emissive: 0x240c08, scale: [1.34, 1.34, 1.34] },
+ frost:   { tint: 0xbfeaff, emissive: 0x0b2638, scale: [1.28, 1.33, 1.28] },
+ shade:   { tint: 0xcab6ff, emissive: 0x1d0f3d, scale: [1.29, 1.34, 1.29] },
+ bastion: { tint: 0xf2dbb8, emissive: 0x24190c, scale: [1.46, 1.38, 1.42] },
+ reaper:  { tint: 0xc2f0cf, emissive: 0x0c281c, scale: [1.34, 1.34, 1.34] }
+};
 function unpackEmber(encoded, Type) {
  const binary = atob(encoded);
  const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
  return new Type(bytes.buffer);
 }
 
-function createEmber() {
+function createEmber(type = 'ember') {
  if (!emberGeometry) {
   const a = emberAsset;
   emberGeometry = new THREE.BufferGeometry();
@@ -16,10 +24,19 @@ function createEmber() {
   emberGeometry.setAttribute('skinIndex', new THREE.BufferAttribute(unpackEmber(a.joints, Uint8Array), 4));
   emberGeometry.setAttribute('skinWeight', new THREE.BufferAttribute(unpackEmber(a.weights, Uint8Array), 4, true));
   emberGeometry.setIndex(new THREE.BufferAttribute(unpackEmber(a.indices, Uint16Array), 1));
-  const steps=new THREE.DataTexture(new Uint8Array([135,135,135,255,176,176,176,255,224,224,224,255,248,248,248,255]),4,1);
-  steps.minFilter=steps.magFilter=THREE.NearestFilter;steps.needsUpdate=true;
-  emberMaterial = new THREE.MeshToonMaterial({gradientMap:steps});
+  emberToonSteps = new THREE.DataTexture(new Uint8Array([135,135,135,255,176,176,176,255,224,224,224,255,248,248,248,255]),4,1);
+  emberToonSteps.minFilter = emberToonSteps.magFilter = THREE.NearestFilter; emberToonSteps.needsUpdate = true;
+  emberMaterial = new THREE.MeshToonMaterial({gradientMap:emberToonSteps});
  }
+ const style = heroBodyStyles[type] || heroBodyStyles.ember;
+ const bodyMat = new THREE.MeshToonMaterial({
+  color: style.tint,
+  emissive: style.emissive,
+  emissiveIntensity: .32,
+  gradientMap: emberToonSteps,
+  map: emberBaseTexture || null
+ });
+ emberMaterials.push(bodyMat);
  const group = new THREE.Group(), rig = new THREE.Group(), model = new THREE.Group();
  group.add(rig); rig.add(model);
  const bones = emberAsset.bones.map(def => {
@@ -33,11 +50,11 @@ function createEmber() {
  model.add(...bones.filter(b => !b.parent));
  const inverses = unpackEmber(emberAsset.inverseBind, Float32Array);
  const skeleton = new THREE.Skeleton(bones,bones.map((_,i) => new THREE.Matrix4().fromArray(inverses,i*16)));
- const body = new THREE.SkinnedMesh(emberGeometry, emberMaterial);
- body.name = '烬刃 · 远征装'; body.castShadow = true; body.receiveShadow = true; body.frustumCulled = false;
+ const body = new THREE.SkinnedMesh(emberGeometry, bodyMat);
+ body.name = (HEROES[type]?.name || '烬刃') + ' · 远征装'; body.castShadow = true; body.receiveShadow = true; body.frustumCulled = false;
  model.add(body); body.bind(skeleton,new THREE.Matrix4());
  if(typeof getCelOutlineMaterial==='function'){
-  const outline=new THREE.SkinnedMesh(emberGeometry,getCelOutlineMaterial(.012));
+  const outline=new THREE.SkinnedMesh(emberGeometry,getCelOutlineMaterial(.011));
   outline.castShadow=false;outline.receiveShadow=false;outline.frustumCulled=false;
   model.add(outline);outline.bind(skeleton,new THREE.Matrix4());
  }
@@ -59,9 +76,9 @@ function createEmber() {
   hand.getWorldPosition(socket.position); socket.position.y -= .055;
   model.add(socket); hand.attach(socket); return socket;
  });
- model.scale.setScalar(1.34);
+ model.scale.set(...style.scale);
  group.rotation.y = Math.PI; actors.add(group);
- return {type:'ember', human:true, group,rig,arms,legs,elbows,knees,grips,skeleton,body,
+ return {type, human:true, group,rig,arms,legs,elbows,knees,grips,skeleton,body,baseTint:style.tint,
   phase:0, attack:0,hurt:0,weaponGroup:null,weaponId:null};
 }
 
@@ -72,6 +89,8 @@ function loadEmberTextures(){
   const map=loader.load(assetURL('tripo-'+name+'.webp'));
   map.flipY=false;if(srgb)map.colorSpace=THREE.SRGBColorSpace;return map;
  };
- emberMaterial.map=load('basecolor',true);
- emberMaterial.needsUpdate=true;
+ emberBaseTexture = load('basecolor',true);
+ emberMaterial.map = emberBaseTexture;
+ emberMaterial.needsUpdate = true;
+ for(const m of emberMaterials){m.map = emberBaseTexture; m.needsUpdate = true;}
 }

@@ -121,6 +121,7 @@ function updateCamera(dt){
  if(state==='menu'){
   menuOrbit+=dt*.14;
   if(rogueMode){
+   if(typeof updateSanctuaryHubCamera==='function'&&updateSanctuaryHubCamera(dt))return;
    let goalPos,goalLook;
    if(sanctuaryView==='mirror'){goalPos=new THREE.Vector3(-2.6,3.2,28.8);goalLook=new THREE.Vector3(-7.4,2.5,22.0);}
    else if(sanctuaryView==='panorama'){goalPos=new THREE.Vector3(Math.sin(menuOrbit*.55)*12,26.0,22.0);goalLook=new THREE.Vector3(0,-6.0,-60);}
