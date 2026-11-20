@@ -1,0 +1,790 @@
+{
+  "generator": "image_gen",
+  "assets": [
+    {
+      "id": "brand",
+      "name": "引燃刃",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/引燃刃.png",
+      "iconSheet": "base1",
+      "cell": 1
+    },
+    {
+      "id": "cinder",
+      "name": "炎步",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/炎步.png",
+      "iconSheet": "base1",
+      "cell": 2
+    },
+    {
+      "id": "flare",
+      "name": "赤焰回路",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/赤焰回路.png",
+      "iconSheet": "base1",
+      "cell": 3
+    },
+    {
+      "id": "wildfire",
+      "name": "飞烬",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/飞烬.png",
+      "iconSheet": "base1",
+      "cell": 4
+    },
+    {
+      "id": "furnace",
+      "name": "炉心",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/炉心.png",
+      "iconSheet": "base1",
+      "cell": 5
+    },
+    {
+      "id": "chill",
+      "name": "冷凝",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/冷凝.png",
+      "iconSheet": "base1",
+      "cell": 6
+    },
+    {
+      "id": "iceStep",
+      "name": "冰径",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/冰径.png",
+      "iconSheet": "base1",
+      "cell": 7
+    },
+    {
+      "id": "spring",
+      "name": "回潮",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/回潮.png",
+      "iconSheet": "base1",
+      "cell": 8
+    },
+    {
+      "id": "shatter",
+      "name": "碎冰",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/碎冰.png",
+      "iconSheet": "base1",
+      "cell": 9
+    },
+    {
+      "id": "rime",
+      "name": "冻脉",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/冻脉.png",
+      "iconSheet": "base1",
+      "cell": 10
+    },
+    {
+      "id": "spark",
+      "name": "弧光",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/弧光.png",
+      "iconSheet": "base1",
+      "cell": 11
+    },
+    {
+      "id": "capacitor",
+      "name": "蓄能",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/蓄能.png",
+      "iconSheet": "base1",
+      "cell": 12
+    },
+    {
+      "id": "surge",
+      "name": "短路",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/短路.png",
+      "iconSheet": "base2",
+      "cell": 1
+    },
+    {
+      "id": "relay",
+      "name": "中继",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/中继.png",
+      "iconSheet": "base2",
+      "cell": 2
+    },
+    {
+      "id": "feedback",
+      "name": "反向充能",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/反向充能.png",
+      "iconSheet": "base2",
+      "cell": 3
+    },
+    {
+      "id": "edge",
+      "name": "开刃",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/开刃.png",
+      "iconSheet": "base2",
+      "cell": 4
+    },
+    {
+      "id": "tempo",
+      "name": "快切",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/快切.png",
+      "iconSheet": "base2",
+      "cell": 5
+    },
+    {
+      "id": "plate",
+      "name": "铸甲",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/铸甲.png",
+      "iconSheet": "base2",
+      "cell": 6
+    },
+    {
+      "id": "echo",
+      "name": "回锋",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/回锋.png",
+      "iconSheet": "base2",
+      "cell": 7
+    },
+    {
+      "id": "engine",
+      "name": "过载机芯",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/过载机芯.png",
+      "iconSheet": "base2",
+      "cell": 8
+    },
+    {
+      "id": "steam",
+      "name": "蒸汽裂解",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/蒸汽裂解.png",
+      "iconSheet": "base2",
+      "cell": 9
+    },
+    {
+      "id": "firewire",
+      "name": "电火花",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/电火花.png",
+      "iconSheet": "base2",
+      "cell": 10
+    },
+    {
+      "id": "icewire",
+      "name": "超导",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/超导.png",
+      "iconSheet": "base2",
+      "cell": 11
+    },
+    {
+      "id": "hotEdge",
+      "name": "赤炼",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/赤炼.png",
+      "iconSheet": "base2",
+      "cell": 12
+    },
+    {
+      "id": "iceEdge",
+      "name": "冰砧",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/冰砧.png",
+      "iconSheet": "base3",
+      "cell": 1
+    },
+    {
+      "id": "liveEdge",
+      "name": "磁刃",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/磁刃.png",
+      "iconSheet": "base3",
+      "cell": 2
+    },
+    {
+      "id": "hound",
+      "name": "裂脊猎犬",
+      "group": "creatures",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Single full-body bestiary key art on transparent background. Entire creature and extremities inside frame, clear 3/4 view, 10 percent padding, athletic action pose. Compact expressive animation-model-sheet design with warm ivory bone armor. No environment, ground plane, type or additional characters. lean jade quadrupedal hound, ivory wedge muzzle, three split dorsal spines, amber eyes, crouched in a springing lunge.",
+      "transparent": true,
+      "source": "aberrant-character-kit/小怪/独立立绘/裂脊猎犬.png"
+    },
+    {
+      "id": "crab",
+      "name": "铆甲钳卫",
+      "group": "creatures",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Single full-body bestiary key art on transparent background. Entire creature and extremities inside frame, clear 3/4 view, 10 percent padding, athletic action pose. Compact expressive animation-model-sheet design with warm ivory bone armor. No environment, ground plane, type or additional characters. sturdy blue-slate compact armored crab, two oversize cream riveted pincer gauntlets, six little supporting legs; braced for a sideways sweep.",
+      "transparent": true,
+      "source": "aberrant-character-kit/小怪/独立立绘/铆甲钳卫.png"
+    },
+    {
+      "id": "ray",
+      "name": "浮翼针鳐",
+      "group": "creatures",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Single full-body bestiary key art on transparent background. Entire creature and extremities inside frame, clear 3/4 view, 10 percent padding, athletic action pose. Compact expressive animation-model-sheet design with warm ivory bone armor. No environment, ground plane, type or additional characters. turquoise aerial manta ray, broad triangular wings, ivory dorsal plate, thin needle tail, amber eye dots; a banked flying pose.",
+      "transparent": true,
+      "source": "aberrant-character-kit/小怪/独立立绘/浮翼针鳐.png"
+    },
+    {
+      "id": "bloom",
+      "name": "棱镜孢囊",
+      "group": "creatures",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Single full-body bestiary key art on transparent background. Entire creature and extremities inside frame, clear 3/4 view, 10 percent padding, athletic action pose. Compact expressive animation-model-sheet design with warm ivory bone armor. No environment, ground plane, type or additional characters. small rooted amethyst plant creature, five ivory faceted petal plates around a mint crystal spike, low squat purple bulb body, small luminous eye slits.",
+      "transparent": true,
+      "source": "aberrant-character-kit/小怪/独立立绘/棱镜孢囊.png"
+    },
+    {
+      "id": "warden",
+      "name": "断轨镇守者",
+      "group": "bosses",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Single full-body bestiary key art on transparent background. Entire creature and extremities inside frame, clear 3/4 view, 10 percent padding, athletic action pose. Compact expressive animation-model-sheet design with warm ivory bone armor. No environment, ground plane, type or additional characters. colossal fortress crab with coral train-nose carapace, cream riveted pincers, broken railway sleeper ridges, turquoise signal jewel in an imposing crown; both heavy claws framed.",
+      "transparent": true,
+      "source": "aberrant-character-kit/区域首领/独立立绘/断轨镇守者.png"
+    },
+    {
+      "id": "carrier",
+      "name": "潮鸣母舰",
+      "group": "bosses",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Single full-body bestiary key art on transparent background. Entire creature and extremities inside frame, clear 3/4 view, 10 percent padding, athletic action pose. Compact expressive animation-model-sheet design with warm ivory bone armor. No environment, ground plane, type or additional characters. huge marine-blue airborne manta carrier, wide ochre yellow wing armor, two lateral parallel emitter rails, navy belly, golden dorsal fin crown with pale teal reactor; regal banked wingspan.",
+      "transparent": true,
+      "source": "aberrant-character-kit/区域首领/独立立绘/潮鸣母舰.png"
+    },
+    {
+      "id": "crown",
+      "name": "镜冠花王",
+      "group": "bosses",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Single full-body bestiary key art on transparent background. Entire creature and extremities inside frame, clear 3/4 view, 10 percent padding, athletic action pose. Compact expressive animation-model-sheet design with warm ivory bone armor. No environment, ground plane, type or additional characters. towering lavender crystal flower monarch with broad faceted petal mantle, mint mirror core and high radial amethyst crown; tightly massed blossom around dark purple rooted body.",
+      "transparent": true,
+      "source": "aberrant-character-kit/区域首领/独立立绘/镜冠花王.png"
+    },
+    {
+      "id": "daybreak",
+      "name": "晴湾断轨",
+      "group": "regions",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Wide 16:9 environment key art, clean three-quarter elevated establishing view of playable arena. A single unmistakable gate in the far wall, uncluttered center with two or three cover pieces, layered landmark silhouettes. Crisp sunny geometry, soft lavender shadows. No text, UI, characters, map labels or miniature inset. cream and coral elevated train station on the turquoise coast, broken overhead rail with a parked streamlined train, teal glazed arched station hall, lilac tree canopies, warm station paving with graphic lane markings.",
+      "transparent": false,
+      "source": "aberrant-art-direction/场景示意图/晴湾断轨.png"
+    },
+    {
+      "id": "dock",
+      "name": "鸣潮船坞",
+      "group": "regions",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Wide 16:9 environment key art, clean three-quarter elevated establishing view of playable arena. A single unmistakable gate in the far wall, uncluttered center with two or three cover pieces, layered landmark silhouettes. Crisp sunny geometry, soft lavender shadows. No text, UI, characters, map labels or miniature inset. sea blue dock surrounded by turquoise water; amber gantry cranes, stacked navy teal and ochre shipping containers, yellow hazard stripes, boatyard gate framed by crane supports. Clearly industrial maritime silhouette.",
+      "transparent": false,
+      "source": "aberrant-art-direction/场景示意图/鸣潮船坞.png"
+    },
+    {
+      "id": "garden",
+      "name": "紫晶温室",
+      "group": "regions",
+      "prompt": "Use case: stylized-concept. Original game 畸变前线 / Echo Expedition. Bright minimalist cel animation. Strong large angular shapes, clean confident dark petrol contours, two flat shadow values, cream edge highlights, generous negative space, no lettering, no watermark, no numbers, no UI frame. Wide 16:9 environment key art, clean three-quarter elevated establishing view of playable arena. A single unmistakable gate in the far wall, uncluttered center with two or three cover pieces, layered landmark silhouettes. Crisp sunny geometry, soft lavender shadows. No text, UI, characters, map labels or miniature inset. amethyst and mint faceted glasshouse structure, pale lavender stone floor, huge rose-violet crystal flower clusters outside the arena, vaulted mint greenhouse ribs, a single flowering arch gate. Soft spring daylight.",
+      "transparent": false,
+      "source": "aberrant-art-direction/场景示意图/紫晶温室.png"
+    },
+    {
+      "id": "thermalStep",
+      "name": "霜燃步",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/霜燃步.png",
+      "iconSheet": "base3",
+      "cell": 3
+    },
+    {
+      "id": "arcPin",
+      "name": "引雷针",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/引雷针.png",
+      "iconSheet": "base3",
+      "cell": 4
+    },
+    {
+      "id": "kilnGuard",
+      "name": "炉壁反震",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/炉壁反震.png",
+      "iconSheet": "base3",
+      "cell": 5
+    },
+    {
+      "id": "glideEdge",
+      "name": "追霜刃",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/追霜刃.png",
+      "iconSheet": "base3",
+      "cell": 6
+    },
+    {
+      "id": "stormVent",
+      "name": "蒸雷涌",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/蒸雷涌.png",
+      "iconSheet": "base3",
+      "cell": 7
+    },
+    {
+      "id": "quench",
+      "name": "霜火淬锋",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/霜火淬锋.png",
+      "iconSheet": "base3",
+      "cell": 8
+    },
+    {
+      "id": "backdraft",
+      "name": "余烬返流",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/余烬返流.png",
+      "iconSheet": "base3",
+      "cell": 9
+    },
+    {
+      "id": "pilotLight",
+      "name": "留火",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/留火.png",
+      "iconSheet": "base3",
+      "cell": 10
+    },
+    {
+      "id": "afterburn",
+      "name": "二重焰",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/二重焰.png",
+      "iconSheet": "base3",
+      "cell": 11
+    },
+    {
+      "id": "serrated",
+      "name": "倒钩",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/倒钩.png",
+      "iconSheet": "base3",
+      "cell": 12
+    },
+    {
+      "id": "bloodMeal",
+      "name": "啜血",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/啜血.png",
+      "iconSheet": "role",
+      "cell": 1
+    },
+    {
+      "id": "packHunt",
+      "name": "追腥",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/追腥.png",
+      "iconSheet": "role",
+      "cell": 2
+    },
+    {
+      "id": "bedrock",
+      "name": "沉肩",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/沉肩.png",
+      "iconSheet": "role",
+      "cell": 3
+    },
+    {
+      "id": "fault",
+      "name": "断层",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/断层.png",
+      "iconSheet": "role",
+      "cell": 4
+    },
+    {
+      "id": "mountain",
+      "name": "不动山",
+      "group": "talents",
+      "transparent": true,
+      "source": "aberrant-character-kit/天赋/技能图标/不动山.png",
+      "iconSheet": "role",
+      "cell": 5
+    },
+    {
+      "id": "item-katana",
+      "name": "余烬长刀",
+      "group": "weapons",
+      "source": "aberrant-character-kit/武器图标/余烬长刀.png",
+      "transparent": true,
+      "iconSheet": "weapons",
+      "cell": 1
+    },
+    {
+      "id": "item-spear",
+      "name": "脊骨长枪",
+      "group": "weapons",
+      "source": "aberrant-character-kit/武器图标/脊骨长枪.png",
+      "transparent": true,
+      "iconSheet": "weapons",
+      "cell": 2
+    },
+    {
+      "id": "item-dual",
+      "name": "蝶影双刃",
+      "group": "weapons",
+      "source": "aberrant-character-kit/武器图标/蝶影双刃.png",
+      "transparent": true,
+      "iconSheet": "weapons",
+      "cell": 3
+    },
+    {
+      "id": "item-hammer",
+      "name": "断层重锤",
+      "group": "weapons",
+      "source": "aberrant-character-kit/武器图标/断层重锤.png",
+      "transparent": true,
+      "iconSheet": "weapons",
+      "cell": 4
+    },
+    {
+      "id": "item-crossbow",
+      "name": "猎隼连弩",
+      "group": "weapons",
+      "source": "aberrant-character-kit/武器图标/猎隼连弩.png",
+      "transparent": true,
+      "iconSheet": "weapons",
+      "cell": 5
+    },
+    {
+      "id": "item-rifle",
+      "name": "蚀能长铳",
+      "group": "weapons",
+      "source": "aberrant-character-kit/武器图标/蚀能长铳.png",
+      "transparent": true,
+      "iconSheet": "weapons",
+      "cell": 6
+    },
+    {
+      "id": "skill-emberE",
+      "name": "炎步",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/炎步.png",
+      "transparent": true,
+      "iconSheet": "ember-actions",
+      "cell": 1
+    },
+    {
+      "id": "skill-emberX",
+      "name": "灰烬封线",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/灰烬封线.png",
+      "transparent": true,
+      "iconSheet": "skills",
+      "cell": 2
+    },
+    {
+      "id": "skill-emberQ",
+      "name": "焚身领域",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/焚身领域.png",
+      "transparent": true,
+      "iconSheet": "ember-actions",
+      "cell": 2
+    },
+    {
+      "id": "skill-reaperE",
+      "name": "猎扑",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/猎扑.png",
+      "transparent": true,
+      "iconSheet": "skills",
+      "cell": 4
+    },
+    {
+      "id": "skill-reaperX",
+      "name": "脉冲嗅猎",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/脉冲嗅猎.png",
+      "transparent": true,
+      "iconSheet": "skills",
+      "cell": 5
+    },
+    {
+      "id": "skill-reaperQ",
+      "name": "狂猎",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/狂猎.png",
+      "transparent": true,
+      "iconSheet": "skills",
+      "cell": 6
+    },
+    {
+      "id": "skill-bastionE",
+      "name": "骨盾",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/骨盾.png",
+      "transparent": true,
+      "iconSheet": "skills",
+      "cell": 7
+    },
+    {
+      "id": "skill-bastionX",
+      "name": "骨垒",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/骨垒.png",
+      "transparent": true,
+      "iconSheet": "skills",
+      "cell": 8
+    },
+    {
+      "id": "skill-bastionQ",
+      "name": "地裂震荡",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/地裂震荡.png",
+      "transparent": true,
+      "iconSheet": "skills",
+      "cell": 9
+    },
+    {
+      "id": "hammer-1",
+      "name": "沉钟",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/沉钟.png",
+      "transparent": true,
+      "iconSheet": "studies2",
+      "cell": 1
+    },
+    {
+      "id": "hammer-2",
+      "name": "余震",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/余震.png",
+      "transparent": true,
+      "iconSheet": "studies2",
+      "cell": 2
+    },
+    {
+      "id": "hammer-3",
+      "name": "震心",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/震心.png",
+      "transparent": true,
+      "iconSheet": "studies2",
+      "cell": 3
+    },
+    {
+      "id": "crossbow-1",
+      "name": "隼印",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/隼印.png",
+      "transparent": true,
+      "iconSheet": "studies2",
+      "cell": 4
+    },
+    {
+      "id": "crossbow-2",
+      "name": "折翼",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/折翼.png",
+      "transparent": true,
+      "iconSheet": "studies2",
+      "cell": 5
+    },
+    {
+      "id": "crossbow-3",
+      "name": "群隼",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/群隼.png",
+      "transparent": true,
+      "iconSheet": "studies2",
+      "cell": 6
+    },
+    {
+      "id": "rifle-1",
+      "name": "远星",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/远星.png",
+      "transparent": true,
+      "iconSheet": "studies2",
+      "cell": 7
+    },
+    {
+      "id": "rifle-2",
+      "name": "极光",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/极光.png",
+      "transparent": true,
+      "iconSheet": "studies2",
+      "cell": 8
+    },
+    {
+      "id": "rifle-3",
+      "name": "星落",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/星落.png",
+      "transparent": true,
+      "iconSheet": "studies2",
+      "cell": 9
+    },
+    {
+      "id": "katana-1",
+      "name": "余烬刀痕",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/余烬刀痕.png",
+      "transparent": true,
+      "iconSheet": "studies1b",
+      "cell": 1
+    },
+    {
+      "id": "katana-2",
+      "name": "煅红",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/煅红.png",
+      "transparent": true,
+      "iconSheet": "studies1b",
+      "cell": 2
+    },
+    {
+      "id": "katana-3",
+      "name": "返照",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/返照.png",
+      "transparent": true,
+      "iconSheet": "studies1b",
+      "cell": 3
+    },
+    {
+      "id": "spear-1",
+      "name": "枪尖距",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/枪尖距.png",
+      "transparent": true,
+      "iconSheet": "studies1b",
+      "cell": 4
+    },
+    {
+      "id": "spear-2",
+      "name": "钉潮",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/钉潮.png",
+      "transparent": true,
+      "iconSheet": "studies1b",
+      "cell": 5
+    },
+    {
+      "id": "spear-3",
+      "name": "霜贯",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/霜贯.png",
+      "transparent": true,
+      "iconSheet": "studies1b",
+      "cell": 6
+    },
+    {
+      "id": "dual-1",
+      "name": "双蝶",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/双蝶.png",
+      "transparent": true,
+      "iconSheet": "studies1b",
+      "cell": 7
+    },
+    {
+      "id": "dual-2",
+      "name": "掠影",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/掠影.png",
+      "transparent": true,
+      "iconSheet": "studies1b",
+      "cell": 8
+    },
+    {
+      "id": "dual-3",
+      "name": "蝶群",
+      "group": "talents",
+      "source": "aberrant-character-kit/天赋/技能图标/蝶群.png",
+      "transparent": true,
+      "iconSheet": "studies1b",
+      "cell": 9
+    },
+    {
+      "id": "action-charge",
+      "name": "蓄力攻击",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/蓄力攻击.png",
+      "transparent": true,
+      "iconSheet": "actions",
+      "cell": 1
+    },
+    {
+      "id": "action-counter",
+      "name": "反制",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/反制.png",
+      "transparent": true,
+      "iconSheet": "actions",
+      "cell": 2
+    },
+    {
+      "id": "action-dodge",
+      "name": "掠影闪避",
+      "group": "skills",
+      "source": "aberrant-character-kit/技能图标/掠影闪避.png",
+      "transparent": true,
+      "iconSheet": "actions",
+      "cell": 3
+    }
+  ],
+  "iconPrompts": {
+    "weapons": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. Layout: 3 columns by 2 rows of square cells, canvas aspect 3:2. one complete hero prop per cell, broad readable silhouette angled lower left to upper right. Top row: long gently curved charcoal single-edge sword with coral cutting edge, ivory guard and dark grip; long mint shaft spear with an ivory leaf-shaped point and split bone flanges; two short mirrored butterfly-wing crescent blades, lavender with brass hinges. Bottom row: chunky rectangular graphite sledgehammer with amber end caps, ivory dark handle; geometric ivory and jade crossbow with mint falcon-wing limbs and coral string; bulky violet and charcoal fictional crystal energy carbine with long barrel and chunky rear stock.",
+    "skills": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. Layout: 3 columns by 3 rows of square cells, canvas aspect 3:3. Nine simple ability vignettes, chunky cropped silhouettes with a single clear action. Top row coral flame swordsman: a boot lunging forward with two orange speed streaks; a low horizontal segmented fire barricade slashed across the ground; armored torso enveloped in a circular ember aura. Middle row mint predator: a hooked ivory claw lunging diagonally with a jade trail; a wolf muzzle sending three mint scent pulses; a roaring angular wolf head inside a jade burst. Bottom row ochre bone guardian: a convex ivory rib shield with a gold center; three upright jagged ivory rock barricade slabs; a jagged ochre ground fissure sending two rocks upward.",
+    "base1": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. Layout: 4 columns by 3 rows of square cells, canvas aspect 4:3. Row1: flaming blade tip; boot escaping a single ground fire ring; circular coral flame circuit; two airborne drifting ember seeds. Row2: hot orange furnace core held in an iron cage; cyan triple-faceted ice bud; boot cutting a slick ice trail; turquoise healing wave cupping a teardrop. Row3: ice crystal bursting into three shards; frosty branching vein; forked lavender chain lightning linking two nodes; violet energy capacitor with two prongs.",
+    "base2": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. Layout: 4 columns by 3 rows of square cells, canvas aspect 4:3. Row1: two broken purple electrical contacts arcing together; relay beacon with concentric purple pulses; violet lightning turning back into its cell; honed silver blade edge with a single golden glint. Row2: two fast alternating ivory blade arcs; interlocked ivory and brass armor plates; golden blade sweeping a second afterimage; golden turbine in a compact dark housing. Row3: split coral and ice crystal erupting one ivory steam plume; violet bolt igniting coral flame; forked lightning inside a cyan ice diamond; orange-hot hammer face striking a bright spark.",
+    "base3": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. Layout: 4 columns by 3 rows of square cells, canvas aspect 4:3. Row1: frosted cyan anvil; violet magnetic blade with one curling arc; runner boot leaving split coral flame and blue frost trail; amethyst lightning rod struck by a single spark. Row2: ivory shield with coral shock ring; silver chasing blade skimming a cyan glide trail; angular steam cloud discharging violet lightning; coral-hot blade quenched in cyan splash. Row3: hooked orange flame curling back toward a sword; small preserved ember in a cupped ivory gauntlet; two concentric orange fire bursts; two serrated ivory hooked fangs.",
+    "role": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. Layout: 3 columns by 2 rows of square cells, canvas aspect 3:2. Row1: one ruby droplet drawn toward an ivory fang with a mint healing spark; three staggered hunting claw marks in a jade pursuit arc; a broad bone pauldron braced above an ochre foundation stone. Row2: a dark stone slab splitting across a jagged lavender fault; an immovable ochre mountain bastion with a large ivory cap; leave LAST cell totally empty.",
+    "studies2": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. Layout: 3 columns by 3 rows of square cells, canvas aspect 3:3. Row1, amber hammer: a brass bell struck with one impact; two rhythmic amber aftershock ripples through stone; cracked ochre ground radial epicenter with stone shards. Row2, jade falcon bow: falcon eye over an arrowhead; emerald feathered bolt splitting into two paths; three mint wing-shaped bolts flying in formation. Row3, violet star rifle: a long amethyst tracer ending in one star; violet and mint aurora ribbon around a crystal; a falling purple star with a delayed second starburst.",
+    "studies1b": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. 3 columns, 3 rows, canvas aspect 3:3. Row1, coral sword route: three diagonal ember cut marks; an incandescent blade tip glowing red; single blade above a round ground fire halo. Row2, cyan spear route: ivory spear point closing a gap marked by two chevrons; a spear pinning a cyan wave crest; an icy spear point bursting through a cyan snow crystal. Row3, butterfly blades: two lavender crescents forming a butterfly; a single lavender wing sweeping with a mint trail; three purple butterfly silhouettes in a spiral. True fully transparent clear cutout PNG, transparent negative space, NO white background, no light box or bloom, crisp hard cutout edges. Matte ivory armor with brass hardware, strong painted silhouettes.",
+    "ember-actions": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. 2 columns, 1 rows, canvas aspect 2:1. Two square ability emblems side by side across a 2:1 horizontal transparent canvas. Left: cropped close-up of a single deep petrol and ivory armored runner's boot thrusting off the ground, behind it a chunky coral flame speed streak. Right: cropped headless torso of the original coral-jacketed swordsman with one broad ivory shoulder plate, crossed charcoal gauntlets and an orange circular flame aura. No faces, heads, lettering, or framed rectangles. Each subject in comfortable margins.",
+    "actions": "Use case: stylized-concept. Production game UI sprite atlas for Aberrant Frontier Echo Expedition, matching a sunny retrofuturist coastal expedition illustrated in clean angular cel-shaded anime key art. Disciplined big polygonal planes like carved painted resin, warm ivory lit faces, cool petroleum teal shadows, a little muted brass trim and precisely one vivid accent hue per subject. Warm directional light from upper left. Strong two-value silhouette, chunky graphic cuts, minimal interior marks, small-size first, mature field manual art direction. Real transparent background, isolated floating subjects with no backplate or border, no grid lines, no shadow outside subjects, absolutely no lettering or numerals. Exact regular equal cells, all centers precisely on the invisible mathematical grid, each subject fully contained at 75% of its cell span with generous uniform empty gutters. No touching edges or other cells. Left-to-right reading order. A single panoramic horizontal strip of THREE square icons side by side, 3 columns x 1 row. Left: a single ivory gauntlet clenching a brilliant amber diamond energy core with two small inward energy strokes suggesting a charged attack. Center: two bold crossed short ivory blades meeting in a single brass deflection spark, a parry. Right: a teal expedition boot with two parallel horizontal mint speed streaks, a sidestep. One isolated cutout each, broad and simple, separated by large truly transparent gutters, no backdrop or panel, no text."
+  }
+}

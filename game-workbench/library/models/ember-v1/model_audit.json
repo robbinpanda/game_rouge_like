@@ -1,0 +1,183 @@
+{
+  "blender": "5.3.0",
+  "stage": "first_pass_review",
+  "meshes": [
+    {
+      "name": "EMBER_Body",
+      "vertices": 648,
+      "triangles": 1216,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_Pants",
+      "vertices": 304,
+      "triangles": 596,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_Armor",
+      "vertices": 65,
+      "triangles": 106,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_Boot",
+      "vertices": 334,
+      "triangles": 620,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_Jacket",
+      "vertices": 563,
+      "triangles": 1062,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_Glove",
+      "vertices": 300,
+      "triangles": 544,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_Gear",
+      "vertices": 162,
+      "triangles": 296,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_FX",
+      "vertices": 55,
+      "triangles": 98,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_Face",
+      "vertices": 144,
+      "triangles": 236,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_Hair",
+      "vertices": 376,
+      "triangles": 676,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "EMBER_Weapon",
+      "vertices": 198,
+      "triangles": 348,
+      "uv_layers": 1,
+      "unweighted_vertices": 0,
+      "over_four_influences": 0,
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "bones": 43,
+  "clips": [
+    {
+      "name": "EMBER_Idle_Loop",
+      "frames": [
+        1.0,
+        91.0
+      ]
+    },
+    {
+      "name": "EMBER_Walk_Test_InPlace",
+      "frames": [
+        1.0,
+        31.0
+      ]
+    },
+    {
+      "name": "EMBER_Joint_Range_Test",
+      "frames": [
+        1.0,
+        61.0
+      ]
+    }
+  ],
+  "limitations": [
+    "Face likeness and hair need art review.",
+    "Smart-projected UVs; flat color materials, no painted textures.",
+    "Joint range / walk clips are tests, not authored skill animations.",
+    "No face rig or IK controls; FK skeleton with finger joints.",
+    "Not yet integrated into v4 runtime."
+  ],
+  "total_triangles": 5798,
+  "total_vertices": 3149,
+  "glb_bytes": 925696
+}

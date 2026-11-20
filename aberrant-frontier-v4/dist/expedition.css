@@ -1,0 +1,151 @@
+#hud #cargo-strip,#hud #contract-line,#hud .inventory>b,#hud .inventory>div:last-child,.menu-footer .version-link,#hud .map-legend,#hud .compass{display:none}
+#hud .minimap-box{width:136px;height:136px;opacity:.86;transition:opacity .2s}
+#hud .minimap-box:hover{opacity:1}
+#hud .minimap-box canvas{width:100%;height:100%}
+/* Top Act Room Progress Stepper */
+#rg-progress{position:absolute;left:50%;top:10px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:6px 14px;background:linear-gradient(90deg,#152f36d8,#1e3f45e8,#152f36d8);border:1px solid #cfb17d88;box-shadow:0 4px 16px #0d212866}
+#rg-progress span{width:24px;height:24px;display:grid;place-items:center;font-size:12px;color:#9eb5b2;background:#11272d;border:1px solid #4c6c70;transition:transform .2s,background .2s}
+#rg-progress span.done{color:#9ff0c8;background:#1e4a47;border-color:#74c9a8}
+#rg-progress span.now{color:#fff3d2;background:#cf714c;border-color:#ffe3a8;transform:scale(1.18);box-shadow:0 0 10px #ff9b6699}
+#rg-progress i{width:10px;height:2px;background:#5e7c7d}
+/* Dash Charge Pips & Death Defiance Flames */
+.rg-vitals-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px;font-size:11px;color:#d6e4da}
+.rg-dash-bar{display:inline-flex;align-items:center;gap:6px}
+#rg-dashes{display:inline-flex;gap:4px}
+#rg-dashes i{width:18px;height:6px;background:#132b32;border:1px solid #6b9a94;display:inline-block;transition:background .15s,box-shadow .15s}
+#rg-dashes i.on{background:linear-gradient(90deg,#8bf0d0,#ffe39e);border-color:#e8ffef;box-shadow:0 0 8px #8cf0cf88}
+#rg-revives{display:inline-flex;gap:3px;font-size:13px}
+#rg-revives span{opacity:.25;filter:grayscale(1)}
+#rg-revives span.on{opacity:1;filter:drop-shadow(0 0 6px #ff9c4a)}
+/* Boss Intro Dramatic Banner */
+#rg-boss-intro{position:fixed;inset:auto 0 38% 0;z-index:35;pointer-events:none;text-align:center;opacity:0;transform:scale(1.06);background:linear-gradient(90deg,transparent,#132b33ee 22% 78%,transparent);border-top:2px solid #e7c27c;border-bottom:2px solid #e7c27c;padding:18px 20px}
+#rg-boss-intro.show{animation:rgBossIntro 2.6s cubic-bezier(.16,1,.3,1) forwards}
+#rg-boss-intro small{display:block;letter-spacing:.35em;color:#f0c67d;font:600 12px Georgia,serif}
+#rg-boss-intro b{display:block;font:900 clamp(30px,4.5vw,56px)/1.18 "STKaiti","KaiTi","SimSun",serif;color:#fff3d6;letter-spacing:.16em;text-shadow:0 3px 16px #091a21}
+#rg-boss-intro span{display:block;color:#c9dfd8;font-size:13px;letter-spacing:.18em}
+@keyframes rgBossIntro{0%{opacity:0;transform:scale(1.12)}14%{opacity:1;transform:scale(1)}78%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.97)}}
+/* Tiered Damage & Resonance Callouts */
+.damage-number.ember{color:#ff9457;text-shadow:0 2px 4px #451608}
+.damage-number.frost{color:#90f0ff;text-shadow:0 2px 4px #0a3447}
+.damage-number.arc{color:#d7a8ff;text-shadow:0 2px 4px #2a124a}
+.damage-number.dash{color:#9bf7cf;font-size:24px;font-weight:900;text-shadow:0 2px 6px #0f3d33}
+.damage-number.callout{font:900 22px/1 "STKaiti","KaiTi","Microsoft YaHei",sans-serif;letter-spacing:.08em;padding:2px 8px;text-shadow:0 2px 0 #142a32,0 4px 12px #0b1c22;animation:rgCallout 1.05s cubic-bezier(.16,1,.3,1) forwards}
+.damage-number.callout.gold{color:#ffe28a;font-size:26px}
+@keyframes rgCallout{0%{opacity:0;transform:translate(-50%,8px) scale(.7)}18%{opacity:1;transform:translate(-50%,-10px) scale(1.14)}75%{opacity:1;transform:translate(-50%,-28px) scale(1)}100%{opacity:0;transform:translate(-50%,-46px) scale(.94)}}
+/* Juicy Boon Card Animations & Rarity Glows */
+@keyframes rgCardIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+#rg-panel[data-view=draft] .rg-card,#rg-panel[data-view=hammer] .rg-card{animation:rgCardIn .28s cubic-bezier(.16,1,.3,1) both;transition:transform .16s,box-shadow .16s,background .16s}
+#rg-panel[data-view=draft] .rg-card:nth-child(2){animation-delay:.06s}
+#rg-panel[data-view=draft] .rg-card:nth-child(3){animation-delay:.12s}
+#rg-panel .rg-card:hover:enabled{transform:translateY(-2px);box-shadow:0 8px 24px #08182080}
+#rg-panel .rg-card[data-rarity=resonant]{box-shadow:inset 0 0 18px #b994ff38}
+#rg-panel .rg-card[data-rarity=legendary]{box-shadow:inset 0 0 22px #ffd47344,0 0 14px #f5c26430}
+/* Hades Sanctuary Hub Controls, Mirror & Prophecies */
+.rg-hub-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px}
+.rg-hub-actions button{padding:5px 10px;background:#224046;color:#f5ebd0;border:1px solid #baa572;font:600 12px "Microsoft YaHei",sans-serif;cursor:pointer;transition:background .15s,transform .15s}
+.rg-hub-actions button:hover{background:#32595d;transform:translateY(-1px)}
+.rg-hub-actions #rg-open-mirror{background:linear-gradient(110deg,#392c54,#24424c);border-color:#d4b3ff;color:#f9efff}
+.rg-hub-actions #rg-open-prophecy{background:linear-gradient(110deg,#4c3c24,#264042);border-color:#e8c578;color:#fff3d0}
+.rg-sanctuary-modal header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid #9a997d;padding-bottom:10px}
+.rg-sanctuary-modal header small{display:block;color:#dcbd80;letter-spacing:.18em;font-size:11px}
+.rg-shard-pill{margin-left:auto;padding:5px 12px;background:#152c33;border:1px solid #c9a7ff;color:#f2e2ff;font-size:13px}
+.rg-modal-sub{margin:10px 0 14px;font-size:13px;color:#cde0d8}
+.rg-mirror-list{display:grid;gap:8px;max-height:58vh;overflow:auto;padding-right:4px}
+.rg-mirror-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 15px;background:linear-gradient(108deg,#2c484d,#1d353c);border:1px solid #6b847d;border-left:4px solid #c9a7ff}
+.rg-mirror-item.done{border-left-color:#ffd778;background:linear-gradient(108deg,#424b3d,#243d40)}
+.rg-mirror-item small{color:#dcbd80;font-size:10px;letter-spacing:.14em}
+.rg-mirror-item h3{margin:2px 0 4px;font:700 18px "STKaiti","KaiTi",serif;color:#fff3d6;display:flex;align-items:center;gap:8px}
+.rg-mirror-item p{margin:0;font-size:12px;color:#d7e5df;line-height:1.45}
+.rg-mirror-item button{flex-shrink:0;min-width:118px;padding:8px 12px;background:#32585e;border:1px solid #a8d4c4;color:#fff4dc;font-weight:700;cursor:pointer}
+.rg-mirror-item button.rg-claim{background:linear-gradient(110deg,#d89d47,#e7c56d);color:#1d2e29;border-color:#fff2c9}
+.rg-mirror-item button:disabled{opacity:.45;cursor:default}
+.rg-pips{display:inline-flex;gap:4px}
+.rg-pips i{width:10px;height:10px;border:1px solid #b69fe0;background:#162930;display:inline-block}
+.rg-pips i.on{background:#d7b4ff;box-shadow:0 0 6px #d7b4ff}
+/* Zelda BotW-Style Grand Overlook Opening Cinematic */
+#rg-cinematic{position:fixed;inset:0;z-index:70;pointer-events:auto;cursor:pointer;display:grid;place-items:center}
+#rg-cinematic.hidden{display:none}
+.rg-cine-bar{position:fixed;left:0;right:0;height:9.5vh;background:#09181f;transition:transform .8s ease}
+.rg-cine-bar.top{top:0}.rg-cine-bar.bottom{bottom:0}
+.rg-cine-title{text-align:center;opacity:0;transform:translateY(14px);transition:opacity 1.3s ease,transform 1.3s ease;padding:24px 40px;background:radial-gradient(ellipse,#0d252e88,transparent 72%)}
+#rg-cinematic[data-stage="2"] .rg-cine-title{opacity:1;transform:translateY(0)}
+#rg-cinematic[data-stage="3"] .rg-cine-title{opacity:0;transform:translateY(-10px)}
+.rg-cine-title small{display:block;font:600 13px Georgia,serif;letter-spacing:.38em;color:#ffe6b0;text-shadow:0 2px 8px #0c2229}
+.rg-cine-title h1{margin:8px 0;font:900 clamp(38px,6vw,84px)/1.12 "STKaiti","KaiTi","SimSun",serif;letter-spacing:.14em;color:#fff6df;text-shadow:0 4px 0 #1f3c42,0 10px 30px #091d24aa}
+.rg-cine-title p{margin:0;font:600 15px "Microsoft YaHei",sans-serif;letter-spacing:.24em;color:#e8f4ee;text-shadow:0 2px 8px #0c2229}
+.rg-cine-title i{color:#ffd885;font-style:normal;margin:0 8px}
+#rg-cine-skip{position:fixed;right:28px;bottom:2.8vh;z-index:72;background:#142d35cc;color:#f3e7cb;border:1px solid #c6ae7c;padding:6px 14px;font:600 12px "Microsoft YaHei",sans-serif;letter-spacing:.1em;cursor:pointer}
+#rg-cine-skip:hover{background:#244850}
+#hud .minimap-box,#hud .minimap-box canvas{border-radius:9px}
+#hud .minimap-box{overflow:visible}
+#rg-room-nav{position:absolute;top:100px;left:2.5vw;max-width:225px;padding:11px 15px;background:#233e4be8;border-left:4px solid #ff9c7e;border-radius:0 10px 10px 0;color:#fff7dd}
+#rg-room-nav[data-mode=exit]{border-color:#8de0bf}
+#rg-room-nav b,#rg-room-nav span,#rg-room-nav small{display:block}
+#rg-room-nav b{font-size:17px;letter-spacing:1px}
+#rg-room-nav span{font-size:11px;margin:4px 0 8px;color:#e2eee7}
+#rg-room-nav small{font:10px "Microsoft YaHei",sans-serif;color:#b0ced1}
+#rg-power{margin-top:7px;padding-top:6px;border-top:1px solid #718c8c;color:#d4dfd2;font-size:12px}
+#rg-power[data-ready=yes]{color:#ffdb80;font-weight:700}
+.rg-gauge{margin:4px 0;height:4px;background:#132d39;border-radius:3px;overflow:hidden}
+.rg-gauge i{display:block;height:100%;background:var(--role-color);transition:width .14s}
+#loadout-menu #heroes{grid-template-columns:repeat(3,minmax(0,1fr))}
+#rg-marker{pointer-events:none;position:absolute;transform:translate(-50%,-100%);display:grid;justify-items:center;gap:1px;color:#ffb19a;font:600 11px "Microsoft YaHei",sans-serif;text-shadow:0 1px 3px #142d38}
+#rg-marker i{font:900 23px/1 Arial;color:inherit;text-shadow:-1px 0 #2a4147,0 1px #2a4147,1px 0 #2a4147,0 -1px #2a4147}
+#rg-marker b{background:#203943e8;border-radius:5px;padding:3px 7px;white-space:nowrap}
+#rg-marker[data-mode=exit]{color:#aaf3cf}
+#rg-panel{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:#19323c9c;backdrop-filter:blur(4px);color:#f8f3de;font-family:"Microsoft YaHei",sans-serif}
+#rg-panel>section{width:min(860px,92vw);max-height:88vh;overflow:auto;box-sizing:border-box;background:#233e4b;border:2px solid #97cfc1;border-radius:15px;box-shadow:0 16px 60px #16334455;padding:clamp(16px,3vw,34px)}
+#rg-panel>section>small{color:#aadccf;letter-spacing:3px}
+#rg-panel h2{font-size:clamp(24px,3vw,39px);margin:9px 0 4px;color:#fff2dd}
+#rg-panel>section>p{font-size:14px;color:#c4d8d8;margin:0 0 20px}
+.rg-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#rg-panel button{cursor:pointer;color:#f9f3dc;font:inherit}
+#rg-panel button:disabled{opacity:.47;cursor:default}
+#rg-panel .rg-card{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:12px;min-height:150px;background:#304e59;padding:18px 16px;border:1px solid #658083;border-top:5px solid var(--ink);border-radius:9px}
+#rg-panel .rg-card:hover:enabled,#rg-panel .rg-card:focus-visible{background:#395c66;border-color:var(--ink)}
+.rg-card small,.rg-tree h3{color:var(--ink)}
+.rg-card strong{font-size:23px}.rg-card span,.rg-tree p{color:#d9e8e6;font-size:13px;line-height:1.6}
+#rg-panel footer{display:flex;justify-content:flex-end;margin-top:16px}
+#rg-panel footer{gap:14px;align-items:center}
+#rg-panel footer span{font-size:13px;color:#d4d9c6}
+.rg-cards:has([data-pick=bounty]){grid-template-columns:repeat(2,minmax(0,1fr))}
+#rg-panel footer button,.rg-tree button{background:#345762;border:1px solid #78acaa;border-radius:6px;padding:7px 13px}
+.rg-tree{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-height:48vh;overflow:auto}
+.rg-tree article{border-top:4px solid var(--ink);background:#2e4a55;padding:12px;border-radius:6px}
+.rg-tree h3,.rg-tree p{margin:6px 0 12px}.rg-tree p span,.rg-tree em{display:block}.rg-tree em{color:#edcda4;font-size:11px}
+.rg-tree-tabs{display:flex;gap:8px;margin:0 0 12px}
+.rg-tree-tabs button,.rg-routes button{background:#304f59;border:1px solid #7e9a99;border-radius:5px;padding:5px 10px}
+#rg-panel button[aria-pressed=true]{background:#bfdfcc;color:#193e43;border-color:#c6ecd4}
+.rg-routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr));gap:10px;max-height:47vh;overflow:auto;padding:2px}
+.rg-routes article{background:#2c4954;border-top:3px solid var(--ink);border-radius:6px;padding:12px;display:flex;flex-direction:column;align-items:flex-start}
+.rg-routes .rg-tree-icon{width:42px;height:42px;object-fit:contain}
+.rg-routes small{font-size:11px;color:var(--ink);margin-top:6px}
+.rg-routes h3{font-size:18px;margin:4px 0 6px}
+.rg-routes p{font-size:13px;line-height:1.5;color:#e0e9e2;margin:6px 0 12px}
+.rg-routes button{margin-top:auto}
+.rg-recipe{font-size:12px;color:#d0d9d9}.rg-recipe .owned{color:#a6f0ca}
+.rg-card em{display:block;font-size:12px;color:var(--ink);font-style:normal;margin-top:8px}
+#rg-panel footer{flex-wrap:wrap}
+#rg-marker.hidden,#rg-panel.hidden{display:none}
+#hud #toast{top:auto;bottom:18%;max-width:55vw;text-align:center}
+.rg-talent-art{width:74px;height:74px;object-fit:contain;align-self:center;filter:drop-shadow(0 3px 1px #142e3555)}
+.rg-tree-icon{width:36px;height:36px;object-fit:contain;vertical-align:middle;margin-right:4px}
+#rg-foe-portrait{position:absolute;width:48px;height:48px;object-fit:contain;right:100%;top:-4px;border-radius:8px;background:#253f4ada;border-bottom:2px solid #eea27f}
+.rg-brief-cover{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+#rg-open-guide{display:block;margin:7px auto 0;padding:4px 12px;background:#254554;color:#d2eee5;border:1px solid #8ebbb1;border-radius:4px;font:12px "Microsoft YaHei",sans-serif;cursor:pointer}
+#rg-guide{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:#162f3aab;color:#f4f0db;backdrop-filter:blur(4px);font-family:"Microsoft YaHei",sans-serif}
+#rg-guide.hidden{display:none}
+#rg-guide>section{box-sizing:border-box;width:min(850px,94vw);max-height:92vh;overflow:auto;padding:clamp(14px,2.4vw,26px);background:#223e49;border:1px solid #8fb9b4;border-radius:14px}
+#rg-guide header,#rg-guide nav{display:flex;align-items:center;gap:8px}
+#rg-guide header{justify-content:space-between}#rg-guide h2{margin:0;color:#fff1da}
+#rg-guide nav{margin:16px 0 12px;flex-wrap:wrap}#rg-guide button{padding:7px 13px;border:1px solid #728e90;border-radius:5px;background:#304e59;color:#e4e9d8;cursor:pointer}
+#rg-guide button[aria-pressed=true]{background:#b9dbcc;color:#234653}
+#rg-guide figure{margin:0;overflow:hidden;border-radius:8px;background:#304f59}
+#rg-guide figure img{display:block;width:100%}#rg-guide figcaption{padding:7px 10px;background:#2e4953;color:#fff0d9;font-weight:600}
+#rg-guide figcaption small{font-size:11px;color:#b8d4cd;margin-left:9px;font-weight:400}
+.rg-guide-lead{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.rg-guide-lead img{height:clamp(125px,27vh,244px)}.rg-region-art{object-fit:cover}.rg-boss-art,.rg-guide-creatures img{object-fit:contain}
+.rg-guide-creatures{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.rg-guide-creatures img{height:clamp(72px,15vh,144px)}
+@media(max-width:640px){.rg-guide-creatures{grid-template-columns:repeat(2,1fr)}.rg-talent-art{width:44px;height:44px}#rg-guide figcaption small{display:block;margin:2px 0 0}}
+@media(max-width:750px){#rg-room-nav{top:61px;padding:6px 8px;max-width:166px}#rg-room-nav b{font-size:14px}.rg-tree{grid-template-columns:1fr 1fr}.rg-cards{gap:6px}#rg-panel .rg-card{min-height:100px;padding:10px}.rg-card strong{font-size:17px}}

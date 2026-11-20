@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const base=new URL('./dist/',import.meta.url),read=file=>fs.readFileSync(new URL(file,base),'utf8');
+const mime={'.png':'image/png','.svg':'image/svg+xml','.jpg':'image/jpeg','.webp':'image/webp'};
+const rogue=process.argv.includes('--rogue');
+const assets=Object.fromEntries(fs.readdirSync(new URL('assets/',base)).filter(file=>!file.endsWith('.png')&&(rogue||!file.startsWith('echo-'))).map(file=>[file,'data:'+mime[path.extname(file)]+';base64,'+fs.readFileSync(new URL('assets/'+file,base)).toString('base64')]));
+let html=read('index.html');
+if(rogue)html=html.replace('</head>','<link rel="stylesheet" href="expedition.css"><link rel="stylesheet" href="harbor-ui.css"></head>').replace('<title>畸变前线 IV · 晴湾远征</title>','<title>畸变前线 · 回响远征</title>');
+html=html.replace(/<link rel="stylesheet" href="([^"]+)">/g,(_,file)=>'<style>'+read(file).replace(/url\(['"]?assets\/([^)'"\s]+)['"]?\)/g,(_,name)=>'url("'+assets[name]+'")')+'</style>');
+let game=read(rogue?'rogue-game.js':'game.js');
+const three=read('vendor/three.module.js');
+game=game.replace(/import \* as THREE from [^;]+;/,()=>`const THREE=await import(URL.createObjectURL(new Blob([${JSON.stringify(three)}],{type:'application/javascript'})));`);
+for(const file of ['data.js','mouse-look.js','raid-rules.js'])game=game.replace(new RegExp("import \\{[^}]+\\} from './"+file.replaceAll('.','\\.')+"';"),()=>read(file).replaceAll('export const ','const ').replaceAll('export function ','function ').replaceAll('export class ','class '));
+game=game.replace("function assetURL(name){return 'assets/'+name;}",()=>`const EMBEDDED_ASSETS=${JSON.stringify(assets)};function assetURL(name){return EMBEDDED_ASSETS[name];}`);
+if(/^import /m.test(game)||!game.includes('EMBEDDED_ASSETS='))throw new Error('Offline bundle still has unresolved imports or assets');
+html=html.replace('<script type="module" src="game.js"></script>',()=>'<script type="module">'+game.replace(/<\/script/gi,'<\\/script')+'</script>');
+const output=new URL(rogue?'../畸变前线-回响远征.html':'../畸变前线-第四版.html',import.meta.url);fs.writeFileSync(output,html);console.log('Offline V4: '+(fs.statSync(output).size/1024/1024).toFixed(1)+' MB');

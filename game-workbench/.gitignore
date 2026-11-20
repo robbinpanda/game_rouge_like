@@ -1,0 +1,5 @@
+data/*.tmp
+data/*.log
+data/*.bak
+node_modules/
+public/__preview_test__/

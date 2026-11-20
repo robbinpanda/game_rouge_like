@@ -1,0 +1,30 @@
+# Legacy extraction versions & temporary build folders
+/aberrant-frontier/
+/aberrant-frontier-v2/
+/aberrant-frontier-v3/
+/packaging-v1/
+/output/
+/tmp/
+/美术资产/
+/build-offline.mjs
+/packaging-compat.cjs
+/畸变前线-原版.html
+/畸变前线-更新版.html
+/畸变前线-第三版.html
+/畸变前线-第四版.html
+
+# Large raw workbench sources & scratch previews
+/game-workbench/sources/
+/game-workbench/library/previews/
+/game-workbench/library/references/
+/game-workbench/library/animations/
+/game-workbench/library/rigs/
+/game-workbench/app/
+/game-workbench/node_modules/
+
+# Dependencies, caches & logs
+node_modules/
+.npm-cache/
+*.log
+.DS_Store
+Thumbs.db

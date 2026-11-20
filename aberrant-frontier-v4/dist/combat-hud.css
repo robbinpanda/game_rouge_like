@@ -1,0 +1,79 @@
+/* Combat information follows the screen edges. The centre is reserved for a
+   target under threat, the reticle and time-limited interaction feedback. */
+#hud{--ivory:#fff2d2;--brass:#e7bd73;--coal:#181c1d;--edge:#ead8af63;font-family:"Microsoft YaHei",sans-serif}
+.vignette{background:radial-gradient(ellipse at 51% 45%,transparent 40%,#23212120 77%,#24202058 100%)}
+#hud .hud-top{left:2.5vw;right:2.5vw;top:22px;filter:drop-shadow(0 1px 3px #191812)}
+.zone-label{border-left:2px solid var(--brass);padding:3px 15px;background:linear-gradient(90deg,#242722b8,transparent)}
+.zone-label>i{display:none}.zone-label b{font-family:"SimSun",serif;font-size:21px;letter-spacing:3px;color:var(--ivory)}
+.zone-label small{color:#e6dec9;letter-spacing:1px;font-size:10px}
+.compass{color:#fbebcfb8;gap:24px;padding-bottom:10px;background:repeating-linear-gradient(90deg,#e5d7bd77 0 1px,transparent 1px 8px) bottom/100% 3px no-repeat}
+#hud .timer{background:linear-gradient(270deg,#161b1dc4,transparent);padding:4px 12px 4px 20px;border-right:2px solid var(--brass)}
+#hud .timer b{font:600 22px/1.1 Consolas,monospace;color:var(--ivory)}.timer .live-dot{display:none}
+#hud .objectives,#hud .game-footer,#hud #target-label:empty{display:none}
+#hud #contract-line{display:block;top:96px;left:2.5vw;width:auto;max-width:220px;padding:7px 13px;border:0;border-left:2px solid #cfb07577;background:linear-gradient(90deg,#22251fd6,transparent);text-shadow:0 1px 2px #242220}
+#contract-line small{color:#edd59d;letter-spacing:1px}#contract-line b{margin:4px 0;font-size:12px}#contract-line span{color:#cbc5af}
+#hud.engaged #contract-line{opacity:.35}
+#hud .minimap-box{top:83px;right:2.5vw;width:133px;height:133px;padding:4px;border:1px solid #d8c499ad;border-radius:50%;background:#222923cc;box-shadow:0 2px 13px #151a174a}
+#hud .minimap-box canvas{width:100%;height:100%;border-radius:50%;display:block;filter:saturate(.72)}
+#hud .map-legend{display:none}#hud .map-label{position:absolute;top:calc(100% + 5px);left:0;width:100%;padding:2px 4px;text-align:center;color:#eee6cf;text-shadow:0 1px 3px #171713;background:linear-gradient(90deg,transparent,#20221dcb 24%,#20221dcb 76%,transparent)}
+#hud .map-label span{float:none;margin-left:6px;color:#ffe0a3}
+#hud #raid-route{top:252px;right:2.5vw;left:auto;width:170px;padding:8px 10px;background:linear-gradient(270deg,#20231fcf,transparent);border:0;border-right:2px solid #c4b48c;line-height:1.35;text-align:right}
+#raid-route>small{font-size:0}#raid-route>small>span{float:none;font:9px "Microsoft YaHei";color:#e5dbc0}#raid-route>b{margin:3px 0;font-size:13px}
+#raid-route>p{margin:2px 0;font-size:10px;color:#d5d4bf}#route-distance{justify-content:flex-end;margin-top:4px;gap:3px}#route-distance b{font:17px Consolas}#route-distance i{font-size:16px}#route-distance span{display:none}
+#hud #cargo-strip{width:auto;max-width:240px;left:2.5vw;right:auto;top:auto;bottom:114px;padding:4px 9px;background:linear-gradient(90deg,#191d1cbd,#20231f60);border:0;border-left:2px solid #d2b379;align-items:center;gap:10px}
+#cargo-strip>b{width:auto;font-size:12px}#cargo-strip>span{font-size:10px;color:#eee5cf}#noise-meter{height:2px}
+#hud .bottom-hud{bottom:21px;left:2.5vw;right:2.5vw;align-items:flex-end;filter:drop-shadow(0 2px 2px #1a191975)}
+#hud .vitals{position:relative;width:clamp(189px,21vw,290px);min-height:66px;padding:10px 12px 8px 63px;background:linear-gradient(90deg,#1f2525ed,#20211dd4 65%,#20211d42);border:0;border-bottom:1px solid var(--edge)}
+.identity{margin:0 0 6px;gap:5px}.identity small,.vital-label{display:none}.identity b{font:600 16px "SimSun",serif;color:var(--ivory)}
+#hud .specimen{position:absolute;left:3px;bottom:5px;width:52px;height:57px;overflow:hidden;background:linear-gradient(135deg,#94836c,#393b36);border:1px solid var(--edge);clip-path:polygon(0 0,100% 0,100% 83%,82% 100%,0 100%)}
+.specimen img{width:155%;height:225%;max-width:none;object-fit:cover;object-position:50% 0;position:absolute;left:-27%;top:-8%}
+.identity em{font:10px Consolas;color:#fbf1d7;white-space:nowrap}.health-bar,.stamina-bar{padding:0;transform:none;background:#090e0ed6;border:0}
+.health-bar{height:7px;position:relative}.health-bar:after,.duel-health:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(20% - 1px),#28221a8c calc(20% - 1px) 20%)}
+.stamina-bar{height:3px;margin-top:4px}.stamina-bar i{background:#e7ba67}
+#hud .skills{bottom:0;gap:4px;align-items:flex-end}
+#hud .skill{width:49px;height:59px;overflow:hidden;background:linear-gradient(170deg,#292d29dd,#101713e8);border:1px solid #d6c49a85;border-bottom:2px solid var(--brass);backdrop-filter:none}
+#hud .skill strong{color:var(--ivory);font-size:22px;line-height:29px;margin-top:11px}
+#hud .skill .art-skill{background-size:30px;filter:brightness(1.6) saturate(.75)}
+#hud .skill span{font-size:9px;line-height:13px;color:#f8edce}
+#hud .skill kbd{color:#f3d49a;font:bold 8px Consolas;left:4px;top:2px}
+#hud .skill:after{content:attr(data-cooldown);position:absolute;left:0;right:0;top:12px;text-align:center;font:bold 18px Consolas;color:white;text-shadow:0 1px 4px black;z-index:2}
+#hud #skill-melee,#hud #skill-spike{display:none}
+#hud .inventory{width:170px;padding:7px 9px;background:linear-gradient(270deg,#1c201cdd,transparent);border:0;border-right:2px solid var(--brass);text-align:right}
+#hud .inventory>b{display:inline;font:17px Consolas;color:var(--ivory);margin:0}#hud .inventory>small{display:none}
+#hud .inventory>div:last-child{display:inline;margin-left:9px;color:#e4dbc1}
+#hud .weapon-slots{display:flex;align-items:center;gap:5px;margin:0 0 5px}.weapon-slots span{border:0;border-bottom:1px solid #c9c2ad77;color:#c9c4b7}
+.weapon-slots span.active{background:#b7975a25;border-bottom:2px solid #e9c080;color:#fff3d3}
+#duel-target{position:absolute;top:73px;left:50%;transform:translateX(-50%);width:min(310px,37vw);padding:4px 12px 8px;color:#fff6dc;background:linear-gradient(90deg,transparent,#202321cb 15%,#202321cb 85%,transparent);text-shadow:0 1px 3px #000}
+#duel-target>div:first-child{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px}
+#duel-name{font:600 15px "SimSun",serif;letter-spacing:1px}#duel-state{font:10px "Microsoft YaHei";color:#ded1ac}
+.duel-health,.duel-stance{position:relative;height:5px;background:#191d1ad9}.duel-stance{height:2px;margin-top:3px}
+.duel-health i,.duel-stance i{height:100%;display:block;transition:width .15s;background:#dc8570}.duel-stance i{background:#ebc37e}#duel-target[data-threat=windup] #duel-state{color:#a9e9ff}
+#follow-up{position:absolute;top:60%;left:50%;transform:translateX(-50%);border-bottom:2px solid #7ae1ee;padding:6px 12px;background:#132a2cdd;color:#d6fcff;font:bold 14px "Microsoft YaHei"}
+#hud #area-banner{top:18%;text-shadow:0 2px 9px #151812}#area-banner b{font-family:"SimSun",serif}
+#hud #toast{max-width:65vw;background:linear-gradient(90deg,transparent,#22231ed6 18%,#22231ed6 82%,transparent);border:0;color:#f5e8c4}
+#hud.engaged #area-banner{visibility:hidden}
+#hud #buff-label,#hud #combo-counter{color:#ffe5ad;text-shadow:0 1px 5px #211b16}
+#hud .damage-number{font-family:Consolas,monospace;font-style:italic}
+@media(max-width:820px){#hud .bottom-hud{bottom:12px}#hud .skills{bottom:72px}#hud .skill{width:40px;height:54px}#hud .vitals{width:176px}#hud #cargo-strip{bottom:87px}#hud .minimap-box{width:99px;height:99px}#hud #raid-route{top:218px;width:145px}#hud #contract-line{max-width:155px;top:82px}.compass{display:none}}
+@media(max-height:620px){#hud .hud-top{top:8px}#hud .minimap-box{top:57px;width:89px;height:89px}#hud #raid-route{top:172px}#hud .skills{bottom:0}#hud .bottom-hud{bottom:9px}#hud #cargo-strip{bottom:84px}#duel-target{top:47px}}
+/* Project palette: warm white, jade frames, coral and periwinkle shadows. */
+#hud{--ivory:#fff5e4;--brass:#99e2dc;--coal:#273847;--edge:#b5e3e683}
+#hud .zone-label{border-left:3px solid #f48a70;background:linear-gradient(90deg,#253948db,#34465562 70%,transparent)}
+#hud .zone-label b,#hud #duel-name,#hud .identity b,#hud #area-banner b{font-family:"Microsoft YaHei",sans-serif}
+#hud .timer{background:linear-gradient(270deg,#263d4cde,transparent);border-right-color:#f39378}
+#hud #contract-line,#hud #raid-route{background:linear-gradient(90deg,#283e4bdb,#293d4b55 75%,transparent);border-color:#82d4ca}
+#hud #raid-route{background:linear-gradient(270deg,#283e4bdd,#293d4b66 75%,transparent)}
+#hud #contract-line small,#hud #raid-route small span{color:#b9eee4}
+#hud .minimap-box{border:2px solid #b4e6dc;background:#24444c;box-shadow:0 0 0 2px #2c596599,0 2px 10px #27384739}
+#hud #cargo-strip,#hud .vitals{background:linear-gradient(90deg,#283c49ee,#284554ca 72%,#28455475);border-color:#89cfc3}
+#hud .specimen{background:linear-gradient(140deg,#c2e5df,#67a6ac)}
+#hud .skill{background:linear-gradient(145deg,#365763ee,#273e4beb);border:1px solid #d0efdf9c;border-bottom:2px solid #73c6bc}
+#hud .skill kbd{color:#fff3df}#hud #skill-burst{border-bottom-color:#fc9677}
+#hud .inventory{background:linear-gradient(270deg,#28404ce6,transparent);border-color:#f59c7d}
+#hud .weapon-slots span.active{background:#ee927038;border-color:#f8b191}
+#hud #duel-target{background:linear-gradient(90deg,transparent,#263b4bd9 13%,#263b4bd9 87%,transparent)}
+#hud #duel-state{color:#c7e9e5}#hud #duel-target[data-threat=windup] #duel-state{color:#8adaff}
+#hud #follow-up{color:#fff3e9;background:#763d4be0;border-color:#ff8c79}
+#hud .stamina-bar i,#hud .duel-stance i{background:#7acec8}
+#hud .duel-health i{background:#ee8d78}
+#hud #toast{background:linear-gradient(90deg,transparent,#293e4cda 18%,#293e4cda 82%,transparent);color:#fff5e1}
