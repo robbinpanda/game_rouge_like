@@ -1,3 +1,4 @@
+const GAME_VERSION='v0.2';
 const chapterSizes=[7,8,8],expeditionLength=chapterSizes.reduce((sum,n)=>sum+n,0);
 const run={marks:[],gifts:{},random:seededRoll('menu')};
 const roomTypes={fight:'交战',elite:'精英',trial:'双系试炼',event:'回响祭坛',camp:'行商营地',shop:'整备站',boss:'区域首领'};
@@ -775,7 +776,8 @@ function initializeExpedition(){
  const portrait=document.createElement('img');portrait.id='rg-foe-portrait';$('duel-target').appendChild(portrait);
  $('loadout-menu').querySelector('h1').textContent='远征圣所';
  $('loadout-menu').querySelector('.selection-label').textContent='选择异变者';
- document.querySelector('.operator-title > span').textContent='';document.querySelector('.menu-top .build').textContent='圣所高台　／　三幕 '+expeditionLength+' 室　／　3 位首领';
+ document.querySelector('.operator-title > span').textContent='';document.querySelector('.menu-top .build').textContent=GAME_VERSION+'　／　圣所高台　／　三幕 '+expeditionLength+' 室　／　3 位首领';
+ if(typeof document!=='undefined'&&document.title)document.title='畸变前线 · 回响远征 '+GAME_VERSION;
  $('start').innerHTML='踏入回响 <span aria-hidden="true">⟶</span>';updateRecord();$('quit').textContent='结束本次远征';$('again').innerHTML='再次远征 <span aria-hidden="true">⟶</span>';
  document.querySelector('.timer small').textContent='远征用时';document.querySelector('.result-stats small').textContent='通过房间';
  document.querySelector('.game-footer span').textContent='WASD 移动 · SHIFT 冲刺 / 冲刺斩 · 左右键双招式 · V/中键 锁定 · C 反制 · F 门 · M 图谱 · H 急救';
@@ -783,7 +785,7 @@ function initializeExpedition(){
  document.querySelector('.menu-footer span:nth-child(2)').textContent='SHIFT 冲刺斩 · 左/右键招式 · C 反制 · E/X/Q 异能';
  document.querySelector('.help-grid span:nth-child(4)').textContent='右键 · 第二普攻';
  document.querySelector('.help-grid span:nth-child(8)').textContent='X · 战术异能';
- document.querySelector('.menu-footer span').textContent='单人肉鸽 · 回响远征';document.querySelector('.help-grid span:last-child').textContent='F · 选择下一扇门';
+ document.querySelector('.menu-footer span').textContent='单人肉鸽 · 回响远征 '+GAME_VERSION;document.querySelector('.help-grid span:last-child').textContent='F · 选择下一扇门';
  // Automatically play the Zelda-style Grand Overlook Opening Cinematic in real browser sessions!
  if(typeof window!=='undefined'&&typeof document.body?.appendChild==='function'&&window.innerWidth>0){
   setTimeout(()=>{if(state==='menu')startOpeningCinematic();},60);

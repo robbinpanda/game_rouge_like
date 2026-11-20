@@ -1,6 +1,15 @@
-# 畸变前线 · 回响远征 (Aberrant Frontier: Echo Expedition)
+# 畸变前线 · 回响远征 (Aberrant Frontier: Echo Expedition) `v0.2`
 
 一款基于 **Three.js + Blender 5.3** 打造的 3D 赛璐璐风格动作 Roguelite（肉鸽）游戏，支持单文件离线即开即玩。
+
+## 版本记录
+
+- **`v0.2`（当前版本）**
+  - **Blender 5.3 精细建模 3D 圣所与三域同框全景**：重制开局俯瞰大场景（前景罗盘圣所高台与双色拱门、左翼晴湾断轨高架与列车、右翼鸣潮船坞巨型熔金龙门吊与钴蓝货轮、远景云海孤岛珠白紫晶温室与双瀑布），并同步升级三段式开场运镜与大厅「俯瞰世界」视角。
+  - **黄金三域高区分度配色**：参照《哈迪斯》三幕视觉辨识度重构三幕天空盒、地砖质感、建筑配色、Boss 二阶段变天与环境粒子——第一幕「奶油薄荷 × 墨松绿」、第二幕「砖红 × 熔金 × 深钴蓝」、第三幕「珠白雾灰 × 冰蓝琉璃 × 紫晶焦点」。
+  - **版本标识**：大厅顶栏、页脚、标题栏与 Git Tag 统一标注 `v0.2`。
+- **`v0.1`**
+  - 完整肉鸽玩法闭环：哈迪斯式三门分支选择、12 项武器质变锻炉、回响之镜 7 项永久强化、10 项共鸣预言碑、5 位异变者（新增岚影）、多段闪避与冲刺斩、目标软锁定、360° 威胁提示、Blender 5.3 首领与怪物重制及 4 阶卡通描边、开场动画与 77 项自动化测试。
 
 ## 快速开始
 
@@ -13,7 +22,8 @@
   ```
 - **Blender 模型重建**：
   ```bash
-  blender -b -P game-workbench/tools/build-echo-creatures.py
+  blender -b -P game-workbench/tools/build-echo-creatures.py       # 怪物与首领模型
+  blender -b -P game-workbench/tools/build-sanctuary-panorama.py   # 3D 圣所与三域全景
   ```
 
 ## 核心特色
