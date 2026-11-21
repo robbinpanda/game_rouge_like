@@ -53,6 +53,9 @@ PAL = {
     # Sea & Mountains
     "SEA_DEEP": "2279A2", "SEA_MID": "329FC2", "SEA_SHALLOW": "4AC0CF", "SEA_FOAM": "ECFDFF",
     "MT_FAR": "8AAAD0", "MT_MID": "688FB5", "MT_NEAR": "527A9E", "FIRE": "FFAD4A", "FIRE_HI": "FFF099",
+    "HILL": "92B65C", "HILL_SHADE": "6D9863", "LIMESTONE": "DFC9AB", "LANE": "EBCFA8",
+    "BLUE_RAIL": "447D9B", "WINDOW_BLUE": "49869E", "PAVILION": "82BDD2",
+    "PANE_LIGHT": "C5A7EC", "PANE_BLUE": "859AD2", "PANE_VIOLET": "A17ACE", "RIB_SHADOW": "817399",
 }
 
 
@@ -61,7 +64,7 @@ class Builder:
         self.name = name
         self.emissive = emissive
         self.bm = bmesh.new()
-        self.color_layer = self.bm.loops.layers.color.new("Pigment")
+        self.color_layer = self.bm.loops.layers.float_color.new("Pigment")
 
     def paint_faces(self, faces, hex_key):
         r, g, b = lin(PAL[hex_key])
@@ -83,7 +86,7 @@ class Builder:
 
     def _from_verts(self, verts, color):
         vset = set(v for v in verts if v.is_valid)
-        faces = [f for f in self.bm.faces if all(v in vset for v in f.verts)]
+        faces = list({f for v in vset for f in v.link_faces if all(p in vset for p in f.verts)})
         bmesh.ops.recalc_face_normals(self.bm, faces=faces)
         self.paint_faces(faces, color)
         return faces
@@ -94,6 +97,21 @@ class Builder:
         mat = Matrix.Translation((bx, by, bz)) @ Euler((rot[0], -rot[2], rot[1]), 'XYZ').to_matrix().to_4x4() @ Matrix.Diagonal((sx, sy, sz, 1))
         ret = bmesh.ops.create_cube(self.bm, size=1.0, matrix=mat)
         return self._from_verts(ret["verts"], color)
+
+    def panel(self, points, pigment):
+        verts = [self.bm.verts.new((x, -z, y)) for x, y, z in points]
+        face = self.bm.faces.new(verts)
+        face.normal_update()
+        self.paint_faces([face], pigment)
+
+    def gable(self, x, eave, z, w, rise, depth, roof):
+        # The ridge runs away from the viewer; both sloping planes meet above the gable wall.
+        for side in (-1,1):
+            self.panel([(x+side*w/2,eave,z-depth/2),(x+side*w/2,eave,z+depth/2),
+                        (x,eave+rise,z+depth/2),(x,eave+rise,z-depth/2)],roof)
+        for end in (-1,1):
+            self.panel([(x-w/2,eave,z+end*depth/2),(x+w/2,eave,z+end*depth/2),
+                        (x,eave+rise,z+end*depth/2)],"CREAM_DARK")
 
     def cyl(self, pos, r1, r2, h, segs, color, rot=(0, 0, 0)):
         bx, by, bz = pos[0], -pos[2], pos[1]
@@ -234,6 +252,101 @@ class Builder:
         return obj
 
 
+def hillside_height(x, z):
+    slope = max(0, min(1, (-z-37)/99))
+    undulation = 1.25*math.sin(x*.093+z*.057) + .85*math.cos(x*.058-z*.088)
+    return -10.2 + slope*24.5 + undulation
+
+
+def terrace_road(solid, knots, width):
+    """A continuous crowned deck. Shared section corners avoid gaps on the hairpins."""
+    knots = [Vector(p) for p in knots]
+    path = []
+    for i in range(len(knots)-1):
+        a,b,c,d = knots[max(0,i-1)],knots[i],knots[i+1],knots[min(len(knots)-1,i+2)]
+        for step in range(6):
+            t=step/6
+            path.append(.5*(2*b+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t))
+    path.append(knots[-1])
+    edges = []
+    for i,p in enumerate(path):
+        tangent=path[min(len(path)-1,i+1)]-path[max(0,i-1)]
+        normal=Vector((-tangent.z,0,tangent.x)).normalized()
+        edges.append((p+normal*width*.5,p-normal*width*.5))
+    up=Vector((0,1,0))
+    for i,((l,r),(ll,rr)) in enumerate(zip(edges,edges[1:])):
+        solid.panel([l,r,rr,ll],"LANE")
+        for a,b in ((l,ll),(r,rr)):
+            solid.panel([a,b,b-up*1.15,a-up*1.15],"CREAM_DARK")
+            solid.beam(a+up*.22,b+up*.22,.26,"CREAM")
+            solid.beam(a+up*.95,b+up*.95,.16,"BLUE_RAIL")
+            if i%2==0:
+                solid.box(tuple(a+up*.48),(.34,.98,.34),"CREAM")
+        if i%3==0:
+            p=path[i]
+            bottom=min(p.y-1.2,hillside_height(p.x,p.z)-1.6)
+            solid.box((p.x,(p.y+bottom)/2-.4,p.z),(width*.7,p.y-bottom,1.3),"LIMESTONE")
+
+
+def build_hillside(solid):
+    # A single mainland climbs behind the quay. Only its outer edges meet the water.
+    cols,rows=31,21
+    points=[]
+    for j in range(rows):
+        t=j/(rows-1)
+        row=[]
+        for i in range(cols):
+            x=-115+i*7.4
+            shore=-17-7*math.sin(x*.067)-6*math.cos(x*.109)
+            z=shore*(1-t)-166*t
+            row.append((x,hillside_height(x,z),z))
+        points.append(row)
+    for j in range(rows-1):
+        for i in range(cols-1):
+            a,b,c,d=points[j][i],points[j][i+1],points[j+1][i+1],points[j+1][i]
+            for tri in ((a,b,c),(a,c,d)):
+                col="HILL" if j>1 else "LIMESTONE"
+                solid.panel(tri,col)
+            if j==0:
+                solid.panel([a,b,(b[0],-19,b[2]),(a[0],-19,a[2])],"CLIFF")
+    terrace_road(solid,[(-32,-5.8,-21),(-20,-6,-13),(-5,-6.5,-12),(10,-6.6,-17),(23,-7.25,-29)],5.0)
+    terrace_road(solid,[(23,-7.25,-29),(9,-4.0,-41),(1,-.2,-52),(8,2.4,-62),
+                         (31,5.5,-69),(42,7.7,-78),(37,9.1,-85),(24,11.9,-87)],4.35)
+    # Stepped villas, open loggias and street gardens follow the uphill route.
+    lots=[(-16,-39),(-5,-36),(-24,-48),(-12,-53),(-2,-68),(9,-73),(-20,-72),
+          (-32,-85),(-15,-89),(0,-94),(-46,-97),(-35,-108),(-15,-113),
+          (22,-48),(34,-55),(48,-62),(61,-70),(57,-86),(68,-98),(72,-114)]
+    for i,(x,z) in enumerate(lots):
+        base=hillside_height(x,z)-.35
+        w=5.4+i%3*.8
+        h=4.1+(i%3)*.85
+        roof=("BRICK_LIGHT","ROOF_TEAL","PAVILION")[i%3]
+        solid.box((x,base-.15,z),(w+2.3,.95,7.5),"LIMESTONE")
+        solid.box((x,base+h*.5,z),(w,h,5.0),"CREAM")
+        solid.gable(x,base+h,z,w+.75,1.45,5.85,roof)
+        for dx in (-w*.29,0,w*.29):
+            solid.box((x+dx,base+h*.62,z+2.54),(.95,1.62,.09),"WINDOW_BLUE")
+            solid.box((x+dx,base+h*.62-.85,z+2.62),(1.12,.13,.24),"CREAM_DARK")
+        solid.box((x,base+h*.36,z+2.91),(w+.35,.23,1.02),"CREAM_DARK")
+        if i%3==0:
+            for dx in (-w*.43,w*.43):
+                solid.cyl((x+dx,base+.72,z+3.20),.17,.14,1.5,6,"CREAM")
+        tx,tz=x+w*.64,z+2
+        y=hillside_height(tx,tz)
+        solid.cyl((tx,y+1.25,tz),.30,.20,3.0,7,"BARK")
+        solid.ico((tx,y+3.9,tz),(1.15,3.4,1.1),"PINE_MID",subdiv=2)
+        if i%2==0:
+            solid.tree((x-w*.69,base,z-.6),1.25,("LEAF","LEAF_HI","LEAF_DARK"),lush=False)
+    for i in range(46):
+        x=-102+(i*43%207)
+        z=-88-(i*17%65)
+        if abs(x-24)<45 and abs(z+126)<25:
+            continue
+        y=hillside_height(x,z)
+        solid.ico((x,y+.8,z),(3.9+i%3,2.4+i%2,3.4),"HILL_SHADE",subdiv=2)
+        solid.ico((x+.7,y+2.2,z+.5),(3.0+i%3,1.7,2.8),"LEAF" if i%4 else "SAKURA",subdiv=2)
+
+
 def build_panorama():
     bpy.ops.wm.read_factory_settings(use_empty=True)
     solid = Builder("Panorama_Solid", emissive=False)
@@ -316,27 +429,11 @@ def build_panorama():
     solid.cyl((0, 9.15, 13.95), 0.82, 0.82, 0.35, 16, "CORAL", (PI / 2, 0, 0))
     glow.cyl((0, 9.15, 14.08), 0.42, 0.42, 0.22, 12, "GOLD", (PI / 2, 0, 0))
 
-    # Ornate Mirror of Echoes Shrine (-7.4, 22.0) — stepped gothic frame + fluted columns!
-    m_rot = (0, 0.35, 0)
-    solid.box((-7.4, 0.25, 22.0), (3.8, 0.5, 1.5), "CREAM_DARK", m_rot)
-    solid.box((-7.4, 2.35, 22.0), (3.1, 4.2, 0.72), "INK", m_rot)
-    solid.box((-7.4, 4.60, 22.0), (3.5, 0.38, 0.96), "BRASS", m_rot)
-    solid.box((-7.4, 4.98, 22.0), (2.7, 0.42, 0.82), "TEAL", m_rot)
-    for ox in (-1.38, 1.38):
-        px = -7.4 + ox * math.cos(0.35)
-        pz = 22.0 - ox * math.sin(0.35)
-        solid.cyl((px, 2.35, pz), 0.26, 0.24, 4.2, 8, "CREAM")
-        solid.cyl((px, 4.55, pz), 0.34, 0.32, 0.24, 8, "BRASS")
-    glow.box((-7.26, 2.35, 22.24), (2.15, 3.45, 0.14), "MINT", m_rot)
-    glow.box((-7.22, 2.35, 22.29), (1.75, 2.95, 0.10), "WATERFALL", m_rot)
-
-    # Ornate Arsenal Pedestal (+7.4, 22.0) — stepped carved stone & brass table!
-    a_rot = (0, -0.35, 0)
-    solid.box((7.4, 0.22, 22.0), (3.6, 0.44, 2.1), "CREAM_DARK", a_rot)
-    solid.box((7.4, 0.88, 22.0), (3.0, 1.05, 1.65), "INK", a_rot)
-    solid.box((7.4, 0.88, 22.0), (3.12, 0.24, 1.75), "TEAL", a_rot)
-    solid.box((7.4, 1.52, 22.0), (3.35, 0.22, 1.92), "BRASS", a_rot)
-    solid.box((7.4, 1.66, 22.0), (2.85, 0.10, 1.52), "CREAM", a_rot)
+    # Low carved stone plinth pads for the Tripo Mirror of Echoes (-7.2, 22.0) and Tripo Armory Stand (+7.2, 22.0)
+    m_rot = (0, 0.78, 0)
+    solid.box((-7.2, 0.07, 22.0), (2.7, 0.14, 2.2), "CREAM_DARK", m_rot)
+    a_rot = (0, -0.78, 0)
+    solid.box((7.2, 0.07, 22.0), (3.5, 0.14, 2.1), "CREAM_DARK", a_rot)
 
     # Lush Multi-Cluster Blossom Trees framing the Sanctuary!
     solid.tree((-11.2, -0.2, 18.0), 2.35, ("LILAC", "BLOSSOM", "BLOSSOM_HI"))
@@ -354,6 +451,8 @@ def build_panorama():
         z = -8 - i * 5.6
         w = 3.6 + (i % 4) * 2.1
         glow.box((math.sin(i * 1.6) * 11.0, -17.68, z), (w, 0.10, 0.42), "SEA_FOAM")
+
+    build_hillside(solid)
 
     # =========================================================================
     # 3. ACT I LEFT VISTA: DAYBREAK LINE (晴湾断轨 · 奶油薄荷 × 墨松绿)
@@ -402,11 +501,13 @@ def build_panorama():
     # Detailed 3-Car Streamlined Commuter Train (with individual windows, bogies, pantograph!)
     for car_i, cx in enumerate([-72, -55, -39]):
         solid.box((cx, 0.95, -24), (14.5, 2.55, 3.35), "TRAIN_WHITE")
-        solid.box((cx, 0.22, -22.25), (14.6, 0.52, 0.18), "PINE_MID")
+        solid.box((cx, 0.22, -22.25), (14.6, 0.52, 0.18), "CORAL")
+        for bogie_x in (-4.8,4.8):
+            solid.box((cx+bogie_x,-.28,-24),(2.1,.55,2.6),"IRON")
         solid.box((cx, 2.38, -24), (11.5, 0.38, 2.2), "CREAM_DARK")  # Roof AC unit
         # Individual dark passenger windows!
         for w_i in range(5):
-            solid.box((cx - 5.2 + w_i * 2.6, 1.25, -22.25), (1.75, 0.85, 0.14), "WIN_DARK")
+            solid.box((cx - 5.2 + w_i * 2.6, 1.25, -22.25), (1.75, 0.85, 0.14), "WINDOW_BLUE")
         if car_i == 1:
             # Scissor pantograph on middle car
             solid.beam((cx - 1.2, 2.55, -24), (cx, 4.2, -24), 0.14, "IRON")
@@ -426,6 +527,14 @@ def build_panorama():
     # Station entrance portico arches
     for ax in (-35, -30, -25):
         solid.arch((ax, -5.6, -27.5), 2.0, 2.8, 1.2, 0.55, 10, "PINE")
+    # The station's glazed fanlight is visible beyond the passing train.
+    solid.arch((-30,1.4,-26.7),8.3,8.1,.72,.85,22,"CORAL")
+    solid.arch((-30,1.4,-26.3),7.6,7.4,.48,.38,22,"CREAM")
+    for i in range(1,10):
+        a=i*PI/10
+        solid.beam((-30,1.4,-26.85),(-30+7.2*math.cos(a),1.4+7.2*math.sin(a),-26.85),.20,"BLUE_RAIL")
+    for side in (-1,1):
+        solid.gable(-30+side*10.6,1.4,-33.0,5.7,1.8,10.5,"BRICK_LIGHT")
     # Iconic Station Clock Tower!
     solid.box((-43, 3.5, -35), (5.2, 16.5, 5.2), "CREAM")
     solid.box((-43, 12.0, -35), (5.8, 0.75, 5.8), "PINE")
@@ -472,12 +581,19 @@ def build_panorama():
         solid.box((42, -12.4, kz), (7.2, 2.2, 0.95), "BRICK")
 
     # HIGH-DETAIL OCEAN CARGO FREIGHTER SHIP inside Drydock!
-    solid.box((42, -7.6, -24), (9.4, 6.2, 27), "COBALT")
-    solid.box((42, -11.2, -24), (8.8, 1.9, 26.2), "BRICK")
-    solid.box((42, -4.2, -24), (9.8, 0.95, 27.6), "CREAM")
-    # Flared tapered bow facing viewer (+Z) + anchor hawse
-    solid.cyl((42, -7.6, -8.8), 4.7, 0.35, 7.2, 8, "COBALT", (PI / 2, 0, 0))
-    solid.cyl((42, -11.0, -9.2), 4.2, 0.3, 6.2, 8, "BRICK", (PI / 2, 0, 0))
+    # Taper both sheer and waterline through the bow stations; deck and rail follow the hull.
+    stations=[(-38,3.8),(-34.7,4.7),(-20,4.8),(-14,4.65),(-10.1,3.25),(-6.8,.32)]
+    for (za,wa),(zb,wb) in zip(stations,stations[1:]):
+        solid.panel([(42-wa,-3.75,za),(42+wa,-3.75,za),(42+wb,-3.75,zb),(42-wb,-3.75,zb)],"DOCK_DECK")
+        for s in (-1,1):
+            def chine(z,w,h,k):
+                return (42+s*w*k,h,z)
+            for top,kt,bot,kb,col in [(-3.75,1,-4.25,.99,"CREAM"),(-4.25,.99,-8.65,.83,"COBALT"),(-8.65,.83,-11.45,.62,"BRICK")]:
+                solid.panel([chine(za,wa,top,kt),chine(zb,wb,top,kt),chine(zb,wb,bot,kb),chine(za,wa,bot,kb)],col)
+            solid.beam(chine(za,wa,-3.04,.98),chine(zb,wb,-3.04,.98),.11,"CREAM")
+            solid.beam(chine(za,wa,-3.75,.98),chine(za,wa,-3.04,.98),.13,"CREAM")
+    for z,w in (stations[0],stations[-1]):
+        solid.panel([(42-w,-3.75,z),(42+w,-3.75,z),(42+w*.62,-11.45,z),(42-w*.62,-11.45,z)],"COBALT")
     # Deck cargo hatches + deck containers!
     for hz in (-14, -19, -24):
         solid.box((42, -3.3, hz), (6.6, 0.85, 3.8), "COBALT_HI")
@@ -536,9 +652,12 @@ def build_panorama():
     solid.box((61, -3.2, -38), (22, 9.4, 28), "BRICK")
     solid.box((61, -4.8, -38), (22.6, 3.6, 28.4), "DOCK_DECK")
     # Sawtooth industrial roof bays + clerestory glass strip
-    for rz in (-47, -41, -35, -29):
-        solid.box((61, 2.8, rz), (23.2, 2.6, 5.4), "BRICK_LIGHT", (0.28, 0, 0))
-        solid.box((61, 3.0, rz + 2.5), (21.5, 1.1, 0.22), "WIN_WARM")
+    for gx in (55.5,66.5):
+        solid.gable(gx,1.6,-38,11.4,3.75,28.8,"BRICK_LIGHT")
+        for s in (-1,1):
+            solid.beam((gx,5.38,-23.45),(gx+s*5.6,1.65,-23.45),.24,"BRICK_DARK")
+        solid.box((gx,-2.2,-23.92),(7.5,6.1,.18),"COBALT")
+        solid.box((gx,1.1,-23.76),(8.6,.7,.17),"WINDOW_BLUE")
     # External steel buttress columns & giant recessed cobalt hangar doors
     for bz in (-49, -43, -37, -31, -25):
         solid.box((49.6, -3.0, bz), (0.8, 9.8, 0.8), "IRON")
@@ -574,6 +693,9 @@ def build_panorama():
     #    Sculpted Craggy Multi-Tier Island (ZERO smooth flowerpot cone!)
     # =========================================================================
     AZ = -148.0
+    mainland,main_lights=solid,glow
+    solid=Builder("Glasshouse_Stone")
+    glow=Builder("Glasshouse_Glow",emissive=True)
     # 12 Staggered craggy rock buttresses forming a dramatic floating cliff island!
     for i in range(10):
         ang = i * (2 * PI / 10)
@@ -581,7 +703,11 @@ def build_panorama():
         rx = math.sin(ang) * rad
         rz = AZ + math.cos(ang) * (rad * 0.85)
         h_r = 14.0 + (i % 3) * 4.5
-        solid.ico((rx, -9.5 + (i % 2) * 2.5, rz), (14.5 + (i % 2) * 3.5, h_r, 13.5), "CLIFF" if i % 2 == 0 else "CLIFF_MID", subdiv=2, rot=(0.15, ang, 0))
+        solid.ico((rx,-8.0,rz),(13.8,h_r*.48,11.5),"LIMESTONE" if i%2==0 else "CLIFF",subdiv=2,rot=(.12,ang,0))
+        for k in range(4):
+            u=ang+k*.45
+            solid.ico((rx+math.cos(u)*5,-6+h_r*.44,rz+math.sin(u)*4),
+                      (5.5+k*.6,2.3,4.2),"HILL_SHADE" if k==0 else "LEAF",subdiv=2,rot=(0,u,.08))
     solid.ico((0, -8.0, AZ), (30, 16, 26), "CLIFF", subdiv=2)
     # Stepped Carved Pearl-White Marble Terraces & Retaining Arcades
     solid.cyl((0, 3.8, AZ), 32.5, 29.5, 6.2, 20, "PEARL_SHADE")
@@ -593,6 +719,11 @@ def build_panorama():
         ax = math.sin(ang) * 29.5
         az = AZ + math.cos(ang) * 29.5
         solid.arch((ax, 1.2, az), 2.8, 3.6, 1.2, 0.65, 8, "PEARL", rot_y=-ang)
+        for side in (-1,1):
+            solid.cyl((ax+side*2.6,1.85,az),.38,.33,3.5,8,"CREAM_DARK")
+        if abs(i)>1:
+            solid.ico((ax,7.7,az),(3.3,.95,2.1),"HILL_SHADE",subdiv=2)
+            solid.ico((ax+.65,8.12,az+.5),(2.9,.75,1.52),"SAKURA",subdiv=2)
 
     # Multi-Strand Cascading Waterfalls plunging over cliff ledges into billowing foam pools!
     for wx in (-9.6, 9.6):
@@ -613,21 +744,24 @@ def build_panorama():
     solid.arch((0, 9.4, AZ + 21.5), 6.2, 5.9, 1.8, 0.65, 14, "SAKURA")
 
     # CATHEDRAL-GRADE 12-RIBBED PEARL & ICE-GLASS DOME + LANTERN CUPOLA!
-    dome_ret = bmesh.ops.create_uvsphere(solid.bm, u_segments=24, v_segments=12, radius=19.2,
-        matrix=Matrix.Translation((0, -AZ, 9.0)) @ Matrix.Diagonal((1.26, 1.0, 0.84, 1)))
-    lower_verts = [v for v in dome_ret["verts"] if v.co.z < 8.8]
-    if lower_verts:
-        bmesh.ops.delete(solid.bm, geom=lower_verts, context='VERTS')
-    solid._from_verts(dome_ret["verts"], "GLASS_ICE")
-    # 12 Ornate Pearl-White Structural Ribs + Horizontal Ring Purlins
-    for r_i in range(12):
-        ang = r_i * PI / 12
-        solid.arch((0, 9.0, AZ), 24.8, 16.6, 0.82, 0.98, 16, "PEARL", rot_y=ang)
-    for hy, hrad in [(14.5, 22.8), (19.5, 17.5), (23.2, 10.6)]:
-        for s_i in range(16):
-            a0, a1 = s_i * 2 * PI / 16, (s_i + 1) * 2 * PI / 16
-            solid.beam((math.cos(a0) * hrad, hy, AZ + math.sin(a0) * hrad * 0.8),
-                       (math.cos(a1) * hrad, hy, AZ + math.sin(a1) * hrad * 0.8), 0.55, "SILVER")
+    # Every pane and rib follows the same elliptical shell in all three axes.
+    def dome_point(u,v):
+        return (25.2*math.cos(v)*math.cos(u),9.0+17.0*math.sin(v),
+                AZ+19.6*math.cos(v)*math.sin(u))
+    colors=("PAVILION","PANE_BLUE","PANE_VIOLET","PANE_LIGHT","PANE_VIOLET","PANE_LIGHT")
+    for bay in range(28):
+        u0,u1=bay*2*PI/28,(bay+1)*2*PI/28
+        for band in range(6):
+            v0,v1=band*PI/12,(band+1)*PI/12
+            a,b,c,d=dome_point(u0,v0),dome_point(u1,v0),dome_point(u1,v1),dome_point(u0,v1)
+            solid.panel([a,b,d],colors[band])
+            if band<5:
+                solid.panel([b,c,d],colors[min(5,band+(bay%3==0))])
+            solid.beam(a,b,.27 if band else .62,"RIB_SHADOW")
+            if bay%2==0:
+                solid.beam(a,d,.46,"PEARL")
+            if band in (1,2,3):
+                solid.beam(a,c,.17,"SILVER")
     # Ornate Front Gothic Cathedral Portal with Rose-Window Tracery!
     solid.arch((0, 9.2, AZ + 18.6), 11.8, 12.4, 1.8, 1.45, 16, "PEARL")
     solid.arch((0, 9.2, AZ + 18.8), 10.2, 10.8, 1.1, 0.82, 16, "SILVER")
@@ -650,9 +784,17 @@ def build_panorama():
         solid.box((s * 35, 13.6, AZ), (25.2, 1.1, 9.4), "SILVER")
         for a_i in range(5):
             ax = s * (24.5 + a_i * 4.9)
+            solid.box((ax,10.1,AZ+4.39),(3.95,3.85,.18),"PAVILION")
             solid.arch((ax, 8.2, AZ + 4.5), 1.9, 3.5, 0.95, 0.55, 10, "GLASS_ICE")
             solid.box((ax + s * 2.45, 11.2, AZ + 4.8), (0.75, 6.4, 0.9), "PEARL")
             solid.cyl((ax + s * 2.45, 15.1, AZ + 4.8), 0.52, 0.06, 1.8, 6, "PEARL")  # Gothic pinnacle!
+        # Retaining walls carry the wings onto the hillside on either side of the central terrace.
+        solid.box((s*36,1.1,AZ),(23.0,11.5,8.1),"PEARL_SHADE")
+        solid.cyl((s*47,-1.3,AZ),6.3,6.05,17.3,10,"LIMESTONE")
+        for k in range(5):
+            wx=s*(27+k*4.6)
+            solid.arch((wx,-2.0,AZ+4.2),1.8,3.8,.56,.38,8,"CREAM_DARK")
+            solid.ico((wx+.45,-3.5,AZ+4.7),(2.35,1.95,2.15),"HILL_SHADE",subdiv=2)
         # Octagonal ribbed side pavilion dome
         solid.cyl((s * 47, 11.2, AZ), 6.2, 6.2, 7.6, 8, "PEARL")
         solid.ico((s * 47, 15.2, AZ), (6.0, 4.8, 6.0), "GLASS_ICE", subdiv=2)
@@ -673,44 +815,19 @@ def build_panorama():
         glow.crystal((cx - cr * 0.65, cy, cz + cr * 0.35), cr * 0.52, ch * 0.56, "AMETHYST_DEEP", (tilt[0] - 0.15, tilt[1], tilt[2] + 0.30))
 
     # =========================================================================
-    # 6. DREAMY LAYERED CLOUD SEA & DOUBLE-LAYER MOUNTAIN HORIZON
-    # =========================================================================
-    for i in range(14):
-        ang = -PI * 0.85 + i * (PI * 1.7 / 13)
-        rad = 38 + (i % 3) * 8
-        cx = math.sin(ang) * rad
-        cz = AZ + 6 + math.cos(ang) * (rad * 0.55)
-        cy = -1.2 + (i % 3) * 2.4
-        solid.cloud_bank((cx, cy, cz), 15.0 + (i % 3) * 3.5, 4.8, 9.5, "CLOUD" if i % 2 == 0 else "CLOUD_SHADE")
-    for i in range(12):
-        cx = -155 + i * 28
-        cy = 48 + (i % 3) * 10
-        cz = -175 - (i % 3) * 22
-        solid.cloud_bank((cx, cy, cz), 22.0 + (i % 3) * 5.0, 6.8, 11.0, "CLOUD")
-    # Two layered broad coastal mountain ranges (soft horizon depth!)
-    for i in range(14):
-        mx = -205 + i * 32
-        mz = -198 - (i % 3) * 18
-        mh = 26 + ((i * 17) % 24)
-        mw = 36 + (i % 3) * 10
-        solid.ico((mx, -12 + mh * 0.35, mz), (mw, mh, mw * 0.62), "MT_MID" if i % 2 == 0 else "MT_NEAR", subdiv=2, rot=(0, i * 0.35, 0))
-    for i in range(12):
-        mx = -220 + i * 40
-        mz = -235 - (i % 2) * 18
-        mh = 38 + ((i * 23) % 28)
-        mw = 48 + (i % 3) * 12
-        solid.ico((mx, -10 + mh * 0.35, mz), (mw, mh, mw * 0.65), "MT_FAR", subdiv=2, rot=(0, i * 0.5, 0))
-
-    obj_solid = solid.finish()
-    obj_glow = glow.finish()
+    # Place the conservatory uphill, to the right of the station axis. Bake the
+    # translation into vertices as the offline panorama uses world-space batches.
+    for layer in (solid,glow):
+        bmesh.ops.translate(layer.bm,verts=list(layer.bm.verts),vec=Vector((24,-22,15)))
+    objects=[layer.finish() for layer in (mainland,main_lights,solid,glow)]
 
     OUT_BLEND.parent.mkdir(parents=True, exist_ok=True)
     OUT_GLB.parent.mkdir(parents=True, exist_ok=True)
     bpy.context.preferences.filepaths.save_version = 0
     bpy.ops.wm.save_as_mainfile(filepath=str(OUT_BLEND), compress=True)
     bpy.ops.object.select_all(action='DESELECT')
-    obj_solid.select_set(True)
-    obj_glow.select_set(True)
+    for obj in objects:
+        obj.select_set(True)
     bpy.ops.export_scene.gltf(
         filepath=str(OUT_GLB),
         export_format="GLB",
@@ -718,7 +835,7 @@ def build_panorama():
         export_yup=True,
         export_apply=True,
     )
-    print(f"BUILT DETAILED PANORAMA V2: solid={len(obj_solid.data.vertices)}v, glow={len(obj_glow.data.vertices)}v -> {OUT_GLB.name} ({OUT_GLB.stat().st_size/1024:.1f} KB)", flush=True)
+    print(f"Built coastal city: {sum(len(o.data.vertices) for o in objects)} source vertices, {OUT_GLB.stat().st_size//1024} KiB", flush=True)
 
 
 if __name__ == "__main__":

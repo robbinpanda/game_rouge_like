@@ -2546,7 +2546,8 @@
         "回响远征",
         "场景原画",
         "晴湾断轨",
-        "晴湾连城"
+        "晴湾连城",
+        "晴湾开场存档"
       ],
       "versionIds": [
         "v4"
@@ -2558,7 +2559,8 @@
         "回响远征",
         "场景原画",
         "鸣潮船坞",
-        "晴湾连城"
+        "晴湾连城",
+        "晴湾开场存档"
       ],
       "versionIds": [
         "v4"
@@ -2570,7 +2572,8 @@
         "回响远征",
         "场景原画",
         "紫晶温室",
-        "晴湾连城"
+        "晴湾连城",
+        "晴湾开场存档"
       ],
       "versionIds": [
         "v4"
@@ -2582,7 +2585,125 @@
         "回响远征",
         "开场全景",
         "场景原画",
-        "晴湾连城"
+        "晴湾连城",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "1df0bba1ca89818d7a": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "37f89096c0aa121fb5": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "a509d9c12c156dff74": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "2afe162ddfc3dce736": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "007b446307c3f79dea": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "a7e7e9e9fd9c8ba2c5": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "656a6b47e3f40b586f": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "3ea3bb0b3a85a3c81e": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "e73ad40fa32f6153b4": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "12c14909c5ef008a57": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "bb7a50109074717e93": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "5b0991ccd6b8edb787": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "versionIds": [
+        "v4"
+      ]
+    },
+    "afba10e03910a50090": {
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
       ],
       "versionIds": [
         "v4"
@@ -2676,8 +2797,8 @@
         "晴湾连城"
       ],
       "notes": "晴湾失电之夜、三幕地标与灾变线索、圣所和开场叙事。",
-      "size": 3547,
-      "modifiedAt": "2026-11-20T02:53:18.867Z"
+      "size": 3624,
+      "modifiedAt": "2026-11-20T06:08:07.226Z"
     },
     {
       "id": "d0bb2b2b492c54b637",
@@ -2698,8 +2819,23 @@
         "晴湾连城"
       ],
       "notes": "三域配色、开场镜头、环境模块、可复用资产与制作验收。",
-      "size": 7170,
-      "modifiedAt": "2026-11-20T02:53:06.280Z"
+      "size": 7301,
+      "modifiedAt": "2026-11-20T09:06:13.329Z"
+    },
+    {
+      "id": "77c68cc05798c41928",
+      "name": "回响远征叙事与对话总纲",
+      "path": "game-workbench/library/echo-art/回响远征叙事与对话总纲.md",
+      "ext": "md",
+      "type": "document",
+      "category": "document",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 7373,
+      "modifiedAt": "2026-11-20T06:01:48.934Z"
     },
     {
       "id": "1475ce10935c134531",
@@ -2718,8 +2854,8 @@
         "场景示意图"
       ],
       "notes": "内置图像生成原画。运行时资源 echo-dock.webp。",
-      "size": 1839325,
-      "modifiedAt": "2026-11-19T03:10:41.958Z"
+      "size": 1766246,
+      "modifiedAt": "2026-11-20T15:51:13.550Z"
     },
     {
       "id": "ca8ccf637aa9d5287a",
@@ -2738,8 +2874,8 @@
         "场景示意图"
       ],
       "notes": "内置图像生成原画。运行时资源 echo-daybreak.webp。",
-      "size": 2063547,
-      "modifiedAt": "2026-11-19T03:05:15.276Z"
+      "size": 1850418,
+      "modifiedAt": "2026-11-20T15:51:13.435Z"
     },
     {
       "id": "c163e69966dd62eedc",
@@ -2758,8 +2894,8 @@
         "场景示意图"
       ],
       "notes": "内置图像生成原画。运行时资源 echo-garden.webp。",
-      "size": 2223293,
-      "modifiedAt": "2026-11-19T03:11:09.333Z"
+      "size": 1812848,
+      "modifiedAt": "2026-11-20T15:51:13.655Z"
     },
     {
       "id": "6fee5f5a3a12d1513c",
@@ -4152,8 +4288,8 @@
       ],
       "tags": [],
       "notes": "",
-      "size": 241317,
-      "modifiedAt": "2026-11-19T05:18:14.691Z"
+      "size": 86000,
+      "modifiedAt": "2026-11-20T07:54:50.643Z"
     },
     {
       "id": "042d37551a53e6e926",
@@ -4412,8 +4548,8 @@
         "战斗特效"
       ],
       "notes": "",
-      "size": 11700,
-      "modifiedAt": "2026-11-19T17:11:54.662Z"
+      "size": 11762,
+      "modifiedAt": "2026-11-20T16:23:25.728Z"
     },
     {
       "id": "3df8f7538cc9089da6",
@@ -4432,8 +4568,8 @@
         "战斗特效"
       ],
       "notes": "",
-      "size": 11651,
-      "modifiedAt": "2026-11-19T17:07:56.959Z"
+      "size": 11677,
+      "modifiedAt": "2026-11-20T16:23:29.148Z"
     },
     {
       "id": "09dafbac081aa3a099",
@@ -4496,6 +4632,156 @@
       "modifiedAt": "2026-11-19T10:16:36.374Z"
     },
     {
+      "id": "33693eb19719463c53",
+      "name": "爆裂晶床",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/爆裂晶床.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 856948,
+      "modifiedAt": "2026-11-20T08:48:32.894Z"
+    },
+    {
+      "id": "a4c0041e42e1e79483",
+      "name": "冰棱陷阱核心",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/冰棱陷阱核心.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 709944,
+      "modifiedAt": "2026-11-20T08:48:32.903Z"
+    },
+    {
+      "id": "c1e2b1a3a740f89ae3",
+      "name": "地裂岩柱",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/地裂岩柱.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 590560,
+      "modifiedAt": "2026-11-20T08:48:32.873Z"
+    },
+    {
+      "id": "77c7db69c01ed0646b",
+      "name": "共鸣预言碑",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/共鸣预言碑.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 626980,
+      "modifiedAt": "2026-11-20T08:48:32.843Z"
+    },
+    {
+      "id": "10c81056d5286d16a7",
+      "name": "军械展示台",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/军械展示台.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 935812,
+      "modifiedAt": "2026-11-20T08:48:32.934Z"
+    },
+    {
+      "id": "202f666b677c149342",
+      "name": "十二件共用底色",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/十二件共用底色.webp",
+      "ext": "webp",
+      "type": "image",
+      "category": "reference",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 557550,
+      "modifiedAt": "2026-11-20T08:51:41.736Z"
+    },
+    {
+      "id": "bbb201ec90d669885a",
+      "name": "霜锁单晶",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/霜锁单晶.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 269940,
+      "modifiedAt": "2026-11-20T08:48:32.885Z"
+    },
+    {
+      "id": "77c3146967454bf0e0",
+      "name": "通电轨道单节",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/通电轨道单节.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 1173024,
+      "modifiedAt": "2026-11-20T08:48:32.954Z"
+    },
+    {
+      "id": "13e3ce32035c3fcb5e",
+      "name": "泄压喷口",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/泄压喷口.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 1500060,
+      "modifiedAt": "2026-11-20T08:48:32.913Z"
+    },
+    {
+      "id": "982825bca726e14ed3",
+      "name": "玄岩骨盾单片",
+      "path": "game-workbench/library/exports/回响远征/环境与技能物件/玄岩骨盾单片.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 744628,
+      "modifiedAt": "2026-11-20T08:48:32.856Z"
+    },
+    {
       "id": "e34beb7f2b21c687ae",
       "name": "蝶影双刃",
       "path": "game-workbench/library/exports/回响远征/棱镜武器/蝶影双刃.glb",
@@ -4507,8 +4793,8 @@
       "versionIds": [],
       "tags": [],
       "notes": "",
-      "size": 30932,
-      "modifiedAt": "2026-11-19T05:02:30.213Z"
+      "size": 46712,
+      "modifiedAt": "2026-11-20T07:55:59.589Z"
     },
     {
       "id": "a7113b98a26ebf9dfc",
@@ -4586,6 +4872,126 @@
       "modifiedAt": "2026-11-19T05:02:30.204Z"
     },
     {
+      "id": "a5f2bd32221b469ad5",
+      "name": "车站门厅",
+      "path": "game-workbench/library/exports/回响远征/晴湾环境模块/车站门厅.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 267448,
+      "modifiedAt": "2026-11-20T09:34:03.927Z"
+    },
+    {
+      "id": "f441bbe4e296ed4547",
+      "name": "建筑三件共用底色",
+      "path": "game-workbench/library/exports/回响远征/晴湾环境模块/建筑三件共用底色.webp",
+      "ext": "webp",
+      "type": "image",
+      "category": "reference",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 220626,
+      "modifiedAt": "2026-11-20T09:34:02.121Z"
+    },
+    {
+      "id": "50479c467a4b20f6a3",
+      "name": "街景三件共用底色",
+      "path": "game-workbench/library/exports/回响远征/晴湾环境模块/街景三件共用底色.webp",
+      "ext": "webp",
+      "type": "image",
+      "category": "reference",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 197474,
+      "modifiedAt": "2026-11-20T09:34:05.783Z"
+    },
+    {
+      "id": "32c44a3d0c5106ab60",
+      "name": "蓝漆海湾栏杆",
+      "path": "game-workbench/library/exports/回响远征/晴湾环境模块/蓝漆海湾栏杆.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 121044,
+      "modifiedAt": "2026-11-20T09:34:07.859Z"
+    },
+    {
+      "id": "828fdf2f2f998bf295",
+      "name": "码头绞盘",
+      "path": "game-workbench/library/exports/回响远征/晴湾环境模块/码头绞盘.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 153396,
+      "modifiedAt": "2026-11-20T09:34:04.278Z"
+    },
+    {
+      "id": "a5a3966d1cc352f056",
+      "name": "晴湾站台钟",
+      "path": "game-workbench/library/exports/回响远征/晴湾环境模块/晴湾站台钟.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 131440,
+      "modifiedAt": "2026-11-20T09:34:07.505Z"
+    },
+    {
+      "id": "dd5005cde0a0fb5564",
+      "name": "温室拱廊",
+      "path": "game-workbench/library/exports/回响远征/晴湾环境模块/温室拱廊.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 268896,
+      "modifiedAt": "2026-11-20T09:34:05.328Z"
+    },
+    {
+      "id": "eb04285a161cf89387",
+      "name": "绣球花槽",
+      "path": "game-workbench/library/exports/回响远征/晴湾环境模块/绣球花槽.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 224940,
+      "modifiedAt": "2026-11-20T09:34:09.234Z"
+    },
+    {
       "id": "996c2fda8e1491cade",
       "name": "潮鸣母舰",
       "path": "game-workbench/library/exports/回响远征/区域首领/潮鸣母舰.glb",
@@ -4653,6 +5059,81 @@
       "notes": "本地游戏构建读取此 GLB 的网格、骨架和动画。战斗动作包括镜环震荡、花冠连射。",
       "size": 465532,
       "modifiedAt": "2026-11-19T17:06:16.067Z"
+    },
+    {
+      "id": "32165cd77dd878f9db",
+      "name": "回响之镜",
+      "path": "game-workbench/library/exports/回响远征/圣所交互物/回响之镜.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 128552,
+      "modifiedAt": "2026-11-20T09:34:11.553Z"
+    },
+    {
+      "id": "cf67310cc069df9665",
+      "name": "晴湾纪事台",
+      "path": "game-workbench/library/exports/回响远征/圣所交互物/晴湾纪事台.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 138696,
+      "modifiedAt": "2026-11-20T09:34:13.077Z"
+    },
+    {
+      "id": "7c57a5f9bb1b30ba03",
+      "name": "圣所三件共用底色",
+      "path": "game-workbench/library/exports/回响远征/圣所交互物/圣所三件共用底色.webp",
+      "ext": "webp",
+      "type": "image",
+      "category": "reference",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 127542,
+      "modifiedAt": "2026-11-20T09:34:09.652Z"
+    },
+    {
+      "id": "568fc559342797fb3a",
+      "name": "试刃靶偶",
+      "path": "game-workbench/library/exports/回响远征/圣所交互物/试刃靶偶.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 151364,
+      "modifiedAt": "2026-11-20T09:34:12.476Z"
+    },
+    {
+      "id": "bcf7f8ec132ff6ac3c",
+      "name": "晴湾圣所全景",
+      "path": "game-workbench/library/exports/回响远征/圣所全景/晴湾圣所全景.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 6350736,
+      "modifiedAt": "2026-11-20T15:45:35.635Z"
     },
     {
       "id": "f614f94a4306d1ba79",
@@ -4745,6 +5226,81 @@
       "notes": "本地游戏构建读取此 GLB 的网格、骨架和动画。战斗动作包括钳爪横扫。",
       "size": 504584,
       "modifiedAt": "2026-11-19T17:06:14.463Z"
+    },
+    {
+      "id": "0b1dcfd10d70e27630",
+      "name": "烬刃",
+      "path": "game-workbench/library/exports/回响远征/异变者/烬刃.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 774216,
+      "modifiedAt": "2026-11-20T09:34:27.018Z"
+    },
+    {
+      "id": "36e3f6beb552e1c406",
+      "name": "岚影",
+      "path": "game-workbench/library/exports/回响远征/异变者/岚影.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 736124,
+      "modifiedAt": "2026-11-20T09:34:25.735Z"
+    },
+    {
+      "id": "8b151424eb7fc65c78",
+      "name": "裂爪",
+      "path": "game-workbench/library/exports/回响远征/异变者/裂爪.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 666180,
+      "modifiedAt": "2026-11-20T09:34:23.321Z"
+    },
+    {
+      "id": "75acb812f58f3cb5ce",
+      "name": "霜序",
+      "path": "game-workbench/library/exports/回响远征/异变者/霜序.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 713916,
+      "modifiedAt": "2026-11-20T09:34:16.485Z"
+    },
+    {
+      "id": "962419a517b0a3c6f8",
+      "name": "玄岩",
+      "path": "game-workbench/library/exports/回响远征/异变者/玄岩.glb",
+      "ext": "glb",
+      "type": "model",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 693832,
+      "modifiedAt": "2026-11-20T09:34:24.516Z"
     },
     {
       "id": "83890c174b1fcd5177",
@@ -4916,6 +5472,21 @@
       "modifiedAt": "2026-11-19T17:06:15.744Z"
     },
     {
+      "id": "c8580062649b569b7d",
+      "name": "晴湾圣所全景",
+      "path": "game-workbench/library/models/回响远征/圣所全景/晴湾圣所全景.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 1449699,
+      "modifiedAt": "2026-11-20T15:45:33.099Z"
+    },
+    {
       "id": "581f44dbaa8008324d",
       "name": "浮翼针鳐",
       "path": "game-workbench/library/models/回响远征/小怪/浮翼针鳐.blend",
@@ -5006,6 +5577,141 @@
       "notes": "可编辑的骨架、顶点权重与动作，内嵌对应立绘。战斗动作包括钳爪横扫。",
       "size": 1780774,
       "modifiedAt": "2026-11-19T17:06:14.266Z"
+    },
+    {
+      "id": "0d53021d9698b62a69",
+      "name": "烬刃",
+      "path": "game-workbench/library/models/回响远征/异变者-Tripo/烬刃.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 950705,
+      "modifiedAt": "2026-11-20T09:34:26.786Z"
+    },
+    {
+      "id": "1beece2fc53c9d13c9",
+      "name": "岚影",
+      "path": "game-workbench/library/models/回响远征/异变者-Tripo/岚影.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 915502,
+      "modifiedAt": "2026-11-20T09:34:25.522Z"
+    },
+    {
+      "id": "dfbe095c26b85fde37",
+      "name": "裂爪",
+      "path": "game-workbench/library/models/回响远征/异变者-Tripo/裂爪.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 905776,
+      "modifiedAt": "2026-11-20T09:34:23.032Z"
+    },
+    {
+      "id": "366812b1c7dca64e57",
+      "name": "霜序",
+      "path": "game-workbench/library/models/回响远征/异变者-Tripo/霜序.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 907938,
+      "modifiedAt": "2026-11-20T09:34:16.238Z"
+    },
+    {
+      "id": "6e47f8d07fa32e1097",
+      "name": "玄岩",
+      "path": "game-workbench/library/models/回响远征/异变者-Tripo/玄岩.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 907461,
+      "modifiedAt": "2026-11-20T09:34:24.271Z"
+    },
+    {
+      "id": "fcbdd52ffcd324ef65",
+      "name": "岚影",
+      "path": "game-workbench/library/models/回响远征/异变者/岚影.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 113139,
+      "modifiedAt": "2026-11-20T07:15:10.129Z"
+    },
+    {
+      "id": "a83e250457467b157d",
+      "name": "裂爪",
+      "path": "game-workbench/library/models/回响远征/异变者/裂爪.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 111079,
+      "modifiedAt": "2026-11-20T07:15:10.216Z"
+    },
+    {
+      "id": "16b8f34c83ba6b029c",
+      "name": "霜序",
+      "path": "game-workbench/library/models/回响远征/异变者/霜序.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 113165,
+      "modifiedAt": "2026-11-20T07:15:10.085Z"
+    },
+    {
+      "id": "4aa00a8337bd92dca7",
+      "name": "玄岩",
+      "path": "game-workbench/library/models/回响远征/异变者/玄岩.blend",
+      "ext": "blend",
+      "type": "blender",
+      "category": "model",
+      "stage": "modeling",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 114727,
+      "modifiedAt": "2026-11-20T07:15:10.173Z"
     },
     {
       "id": "809dd8e3cd5fd0c5f3",
@@ -6071,6 +6777,126 @@
       "modifiedAt": "2026-11-17T05:08:15.153Z"
     },
     {
+      "id": "1df0bba1ca89818d7a",
+      "name": "02_鸣潮船坞_珊瑚黄油金",
+      "path": "game-workbench/library/references/回响远征美术生成存档/2026-11-20_晴湾开场/补存原图/02_鸣潮船坞_珊瑚黄油金.png",
+      "ext": "png",
+      "type": "image",
+      "category": "reference",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "notes": "",
+      "size": 2476943,
+      "modifiedAt": "2026-11-20T09:05:26.750Z"
+    },
+    {
+      "id": "37f89096c0aa121fb5",
+      "name": "03_紫晶温室_珠白雾紫",
+      "path": "game-workbench/library/references/回响远征美术生成存档/2026-11-20_晴湾开场/补存原图/03_紫晶温室_珠白雾紫.png",
+      "ext": "png",
+      "type": "image",
+      "category": "reference",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "notes": "",
+      "size": 2591266,
+      "modifiedAt": "2026-11-20T09:05:26.763Z"
+    },
+    {
+      "id": "a509d9c12c156dff74",
+      "name": "04_单色试稿_三域同框",
+      "path": "game-workbench/library/references/回响远征美术生成存档/2026-11-20_晴湾开场/补存原图/04_单色试稿_三域同框.png",
+      "ext": "png",
+      "type": "image",
+      "category": "reference",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "notes": "",
+      "size": 2717314,
+      "modifiedAt": "2026-11-20T09:05:26.737Z"
+    },
+    {
+      "id": "2afe162ddfc3dce736",
+      "name": "晴湾开场存档索引",
+      "path": "game-workbench/library/references/回响远征美术生成存档/2026-11-20_晴湾开场/晴湾开场存档索引.md",
+      "ext": "md",
+      "type": "document",
+      "category": "document",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "notes": "",
+      "size": 1390,
+      "modifiedAt": "2026-11-20T09:08:31.334Z"
+    },
+    {
+      "id": "007b446307c3f79dea",
+      "name": "晴湾开场全套原图与提示词",
+      "path": "game-workbench/library/references/回响远征美术生成存档/2026-11-20_晴湾开场/晴湾开场全套原图与提示词.zip",
+      "ext": "zip",
+      "type": "archive",
+      "category": "archive",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "notes": "",
+      "size": 42210278,
+      "modifiedAt": "2026-11-20T09:05:26.822Z"
+    },
+    {
+      "id": "a7e7e9e9fd9c8ba2c5",
+      "name": "生成记录",
+      "path": "game-workbench/library/references/回响远征美术生成存档/2026-11-20_晴湾开场/生成记录.json",
+      "ext": "json",
+      "type": "document",
+      "category": "document",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
+      "notes": "",
+      "size": 55296,
+      "modifiedAt": "2026-11-20T09:05:26.803Z"
+    },
+    {
       "id": "bcc470c624dee5b6af",
       "name": "回响远征-出口引导",
       "path": "output/回响远征-出口引导.png",
@@ -6169,8 +6995,13 @@
       "category": "reference",
       "stage": "concept",
       "character": "",
-      "versionIds": [],
-      "tags": [],
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
       "notes": "",
       "size": 2359402,
       "modifiedAt": "2026-11-20T02:26:55.604Z"
@@ -6184,8 +7015,13 @@
       "category": "reference",
       "stage": "concept",
       "character": "",
-      "versionIds": [],
-      "tags": [],
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
       "notes": "",
       "size": 2778626,
       "modifiedAt": "2026-11-20T02:26:12.367Z"
@@ -6199,8 +7035,13 @@
       "category": "reference",
       "stage": "concept",
       "character": "",
-      "versionIds": [],
-      "tags": [],
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
       "notes": "",
       "size": 2471154,
       "modifiedAt": "2026-11-20T02:27:37.818Z"
@@ -6219,6 +7060,21 @@
       "notes": "",
       "size": 6237,
       "modifiedAt": "2026-11-20T02:27:53.565Z"
+    },
+    {
+      "id": "a999655edb9df2bcd2",
+      "name": "v0.4-远景材质提示词",
+      "path": "output/回响远征-开场转场概念图/v0.4-远景材质提示词.txt",
+      "ext": "txt",
+      "type": "document",
+      "category": "document",
+      "stage": "concept",
+      "character": "",
+      "versionIds": [],
+      "tags": [],
+      "notes": "",
+      "size": 4333,
+      "modifiedAt": "2026-11-20T07:29:12.954Z"
     },
     {
       "id": "a90f92754c5914633e",
@@ -6326,7 +7182,8 @@
         "回响远征",
         "场景原画",
         "晴湾断轨",
-        "晴湾连城"
+        "晴湾连城",
+        "晴湾开场存档"
       ],
       "notes": "绿蓝站房、珊瑚红列车腰线与断轨地标的制作参考。",
       "size": 2830580,
@@ -6348,7 +7205,8 @@
         "回响远征",
         "场景原画",
         "鸣潮船坞",
-        "晴湾连城"
+        "晴湾连城",
+        "晴湾开场存档"
       ],
       "notes": "珊瑚红仓顶、钴蓝货轮、黄油金吊机与干船坞参考。",
       "size": 2755356,
@@ -6370,7 +7228,8 @@
         "回响远征",
         "场景原画",
         "紫晶温室",
-        "晴湾连城"
+        "晴湾连城",
+        "晴湾开场存档"
       ],
       "notes": "珠白台阶、紫晶穹顶、花带与清瓷蓝玻璃参考。",
       "size": 2724488,
@@ -6385,8 +7244,13 @@
       "category": "reference",
       "stage": "concept",
       "character": "",
-      "versionIds": [],
-      "tags": [],
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
       "notes": "",
       "size": 3131968,
       "modifiedAt": "2026-11-20T02:40:37.057Z"
@@ -6407,7 +7271,8 @@
         "回响远征",
         "开场全景",
         "场景原画",
-        "晴湾连城"
+        "晴湾连城",
+        "晴湾开场存档"
       ],
       "notes": "当前开场美术参考。圣所视角与经旧城、船坞、检修路登上温室的连续陆路。",
       "size": 3532986,
@@ -6437,8 +7302,13 @@
       "category": "reference",
       "stage": "concept",
       "character": "",
-      "versionIds": [],
-      "tags": [],
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
       "notes": "",
       "size": 2439218,
       "modifiedAt": "2026-11-20T02:31:51.386Z"
@@ -6452,8 +7322,13 @@
       "category": "reference",
       "stage": "concept",
       "character": "",
-      "versionIds": [],
-      "tags": [],
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
       "notes": "",
       "size": 2254034,
       "modifiedAt": "2026-11-20T02:31:13.299Z"
@@ -6467,8 +7342,13 @@
       "category": "reference",
       "stage": "concept",
       "character": "",
-      "versionIds": [],
-      "tags": [],
+      "versionIds": [
+        "v4"
+      ],
+      "tags": [
+        "回响远征",
+        "晴湾开场存档"
+      ],
       "notes": "",
       "size": 2243626,
       "modifiedAt": "2026-11-20T02:32:17.279Z"
@@ -8324,6 +9204,106 @@
   ],
   "activity": [
     {
+      "id": "f54e7f21-1289-41d0-bc54-6504ad168132",
+      "message": "索引新增 13 项资产",
+      "at": "2026-11-20T18:07:39.822Z"
+    },
+    {
+      "id": "878a8358-e505-41e3-b7bf-def97e28845a",
+      "message": "更新资产：05_开局转场_晴湾连城",
+      "at": "2026-11-20T09:07:45.994Z"
+    },
+    {
+      "id": "26cdfac2-8597-4e9a-931f-5207e3ebb2fb",
+      "message": "更新资产：04_开局转场_三域同框",
+      "at": "2026-11-20T09:07:42.821Z"
+    },
+    {
+      "id": "e2c6498c-82e6-4f37-b71c-d779569f313c",
+      "message": "更新资产：03_紫晶温室_紫晶珠白",
+      "at": "2026-11-20T09:07:39.825Z"
+    },
+    {
+      "id": "a1b6cb7a-d1db-4cea-8499-07e8cde87435",
+      "message": "更新资产：02_鸣潮船坞_珊瑚钴蓝",
+      "at": "2026-11-20T09:07:36.297Z"
+    },
+    {
+      "id": "abb5baad-05e6-47e8-828c-9bc6da399176",
+      "message": "更新资产：01_晴湾断轨_松绿湖蓝",
+      "at": "2026-11-20T09:07:34.000Z"
+    },
+    {
+      "id": "88542f8b-84e3-4e3b-9e4d-d008ff1a4327",
+      "message": "更新资产：03_紫晶温室_珠白雾灰",
+      "at": "2026-11-20T09:07:31.462Z"
+    },
+    {
+      "id": "20397993-9f52-4a2f-9e2c-25ebf282eb55",
+      "message": "更新资产：02_鸣潮船坞_蜜桃珊瑚",
+      "at": "2026-11-20T09:07:28.920Z"
+    },
+    {
+      "id": "3f8c1c22-a9c6-4eee-a47d-036acf1f14b8",
+      "message": "更新资产：01_晴湾断轨_奶油薄荷",
+      "at": "2026-11-20T09:07:26.241Z"
+    },
+    {
+      "id": "231b882f-35c0-4fe5-a108-b9a96dac26d7",
+      "message": "更新资产：03_镜光归台",
+      "at": "2026-11-20T09:07:23.575Z"
+    },
+    {
+      "id": "65871015-6cd9-4d7e-9cda-e7fe7fa2e589",
+      "message": "更新资产：02_三域云上",
+      "at": "2026-11-20T09:07:20.154Z"
+    },
+    {
+      "id": "b63cb76a-027b-47fe-bfe7-a85b71bcbd65",
+      "message": "更新资产：01_圣所拂晓",
+      "at": "2026-11-20T09:07:16.913Z"
+    },
+    {
+      "id": "b6065685-d0b0-411a-8b62-f461d47681fc",
+      "message": "更新资产：生成记录",
+      "at": "2026-11-20T09:07:13.858Z"
+    },
+    {
+      "id": "ee20925a-64ca-4fd1-80b4-b5646fb91388",
+      "message": "更新资产：晴湾开场全套原图与提示词",
+      "at": "2026-11-20T09:07:11.562Z"
+    },
+    {
+      "id": "d5bc22e4-369a-4856-9327-358049552185",
+      "message": "更新资产：晴湾开场存档索引",
+      "at": "2026-11-20T09:07:09.394Z"
+    },
+    {
+      "id": "5209dbff-03ea-439c-b00e-f12677b60245",
+      "message": "更新资产：04_单色试稿_三域同框",
+      "at": "2026-11-20T09:07:07.167Z"
+    },
+    {
+      "id": "07893c2e-0a14-4f53-8887-e12d9c73c4bb",
+      "message": "更新资产：03_紫晶温室_珠白雾紫",
+      "at": "2026-11-20T09:07:05.060Z"
+    },
+    {
+      "id": "cc309aad-d4f2-44d9-be7a-f7c234d09fee",
+      "message": "更新资产：02_鸣潮船坞_珊瑚黄油金",
+      "at": "2026-11-20T09:07:02.378Z"
+    },
+    {
+      "id": "9844ee13-8979-4c54-8503-25b4f3d6292d",
+      "message": "索引新增 22 项资产",
+      "at": "2026-11-20T09:06:39.579Z"
+    },
+    {
+      "id": "84e46a3d-4de1-4ade-88f5-c32f4d3c02a2",
+      "message": "索引新增 11 项资产",
+      "at": "2026-11-20T07:00:41.219Z"
+    },
+    {
       "id": "d11cd1f2-9241-4181-b21d-2368dc26ddd0",
       "message": "更新资产：05_开局转场_晴湾连城",
       "at": "2026-11-20T02:54:13.349Z"
@@ -8722,107 +9702,7 @@
       "id": "4181713f-c9f9-47fe-802a-11cfbaab0ca8",
       "message": "更新资产：烬刃 R4 · Blender 源文件",
       "at": "2026-11-17T05:08:14.875Z"
-    },
-    {
-      "id": "9eab102a-ec20-42ec-9518-6a861468b32e",
-      "message": "更新资产：烬刃 R4 · 可旋转棱角风模型",
-      "at": "2026-11-17T05:08:11.783Z"
-    },
-    {
-      "id": "6ebc2d21-55e4-4c2c-8a8a-49d851f4cb5e",
-      "message": "索引新增 15 项资产",
-      "at": "2026-11-17T05:07:12.442Z"
-    },
-    {
-      "id": "654bfd2d-322a-4acc-a72d-e372f5ae4744",
-      "message": "更新任务：烬刃 · 对照立绘细化神态、发型与服装",
-      "at": "2026-11-17T05:06:22.366Z"
-    },
-    {
-      "id": "96d465b3-d6fc-44d3-81e7-4b4091b27d94",
-      "message": "更新任务：烬刃 · 对照立绘细化神态、发型与服装",
-      "at": "2026-11-17T04:53:02.208Z"
-    },
-    {
-      "id": "559bb55e-0382-4b96-a3c6-5c1d53fdba4c",
-      "message": "更新任务：烬刃 · 漫画风头部重做",
-      "at": "2026-11-17T04:42:16.987Z"
-    },
-    {
-      "id": "5ecccd79-2518-4329-8074-2f0c343b101c",
-      "message": "更新资产：烬刃 V3 · 完整模型包",
-      "at": "2026-11-17T04:42:12.662Z"
-    },
-    {
-      "id": "f033bbe7-f718-40fe-ae01-671b70bf8095",
-      "message": "更新资产：烬刃 V3 · 实际 GLB 材质检查",
-      "at": "2026-11-17T04:42:10.017Z"
-    },
-    {
-      "id": "a863ce72-410a-4646-a8f2-2a89d3da01a6",
-      "message": "更新资产：烬刃 V3 · 头部三视角",
-      "at": "2026-11-17T04:42:07.036Z"
-    },
-    {
-      "id": "cd076a78-d451-461f-a104-b66f99f275d0",
-      "message": "更新资产：烬刃 V3 · 关节测试",
-      "at": "2026-11-17T04:42:03.411Z"
-    },
-    {
-      "id": "ea0631f9-e036-4c9a-bb9a-0a5ceaac2e42",
-      "message": "更新资产：烬刃 V3 · 背面",
-      "at": "2026-11-17T04:41:59.719Z"
-    },
-    {
-      "id": "201a73e3-67ba-4ff3-baab-4c4f399bac2b",
-      "message": "更新资产：烬刃 V3 · 侧脸",
-      "at": "2026-11-17T04:41:55.254Z"
-    },
-    {
-      "id": "5b953e5c-f601-44f0-95db-4a8e65ec4753",
-      "message": "更新资产：烬刃 V3 · 正脸",
-      "at": "2026-11-17T04:41:52.576Z"
-    },
-    {
-      "id": "a6b55ef3-5e70-49d1-b7f3-226f77cc287a",
-      "message": "更新资产：烬刃 V3 · 面部近景",
-      "at": "2026-11-17T04:41:48.367Z"
-    },
-    {
-      "id": "d8e59c64-adc1-4a5e-9ac8-d94210efd6de",
-      "message": "更新资产：烬刃 V3 · 全身",
-      "at": "2026-11-17T04:41:45.900Z"
-    },
-    {
-      "id": "afbaecb1-e36b-4cc9-a78b-c1c9cdd5485c",
-      "message": "更新资产：烬刃 V3 · 模型结构检查",
-      "at": "2026-11-17T04:41:43.120Z"
-    },
-    {
-      "id": "584b35d1-a326-4de5-9c3a-6c1e71ba4f38",
-      "message": "更新资产：烬刃 V3 · GLB 回读检查",
-      "at": "2026-11-17T04:41:39.948Z"
-    },
-    {
-      "id": "74febf0f-a76f-4837-b7e0-c7d89abf0515",
-      "message": "更新资产：烬刃 V3 · 交付说明",
-      "at": "2026-11-17T04:41:37.285Z"
-    },
-    {
-      "id": "abe9ce44-26cc-475c-a2bd-6975005832b2",
-      "message": "更新资产：烬刃 V3 · Blender 动画风源文件",
-      "at": "2026-11-17T04:41:34.304Z"
-    },
-    {
-      "id": "e5b360a4-25a1-4e2d-93d4-15104f6c4ed5",
-      "message": "更新资产：烬刃 V3 · 可旋转漫画风模型",
-      "at": "2026-11-17T04:41:30.480Z"
-    },
-    {
-      "id": "8d021f3c-b7c7-4d22-9e21-88bdfbf35c05",
-      "message": "索引新增 1 项资产",
-      "at": "2026-11-17T04:41:07.838Z"
     }
   ],
-  "updatedAt": "2026-11-20T02:54:13.349Z"
+  "updatedAt": "2026-11-20T18:07:39.822Z"
 }

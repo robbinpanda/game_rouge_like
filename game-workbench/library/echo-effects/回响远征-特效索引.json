@@ -2,6 +2,246 @@
   "version": "回响远征",
   "talents": [
     {
+      "id": "firebell",
+      "name": "红标",
+      "school": "烬火",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "施放 E 或 X 后，下次直接命中额外造成 15 点伤害。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "施放 E 或 X 后，下次直接命中额外造成 15 点伤害。",
+      "requires": "无"
+    },
+    {
+      "id": "ashguard",
+      "name": "隔热层",
+      "school": "烬火",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "受到燃烧敌人的攻击时减伤 20%。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "受到燃烧敌人的攻击时减伤 20%。",
+      "requires": "无"
+    },
+    {
+      "id": "rimeguard",
+      "name": "霜衣",
+      "school": "潮霜",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "受到减速敌人的攻击时减伤 18%。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "受到减速敌人的攻击时减伤 18%。",
+      "requires": "无"
+    },
+    {
+      "id": "floe",
+      "name": "浮冰",
+      "school": "潮霜",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "闪避时回复 4 点耐力。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "闪避时回复 4 点耐力。",
+      "requires": "无"
+    },
+    {
+      "id": "sparkRush",
+      "name": "快充",
+      "school": "脉电",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "用重击击中目标时，X 冷却缩短 0.3 秒。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "用重击击中目标时，X 冷却缩短 0.3 秒。",
+      "requires": "无"
+    },
+    {
+      "id": "returnArc",
+      "name": "回流",
+      "school": "脉电",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "施放 X 时，E 冷却缩短 1 秒。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "施放 X 时，E 冷却缩短 1 秒。",
+      "requires": "无"
+    },
+    {
+      "id": "finisher",
+      "name": "猎牙",
+      "school": "锻锋",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "重击低于半血的敌人时回复 2 点生命。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "重击低于半血的敌人时回复 2 点生命。",
+      "requires": "无"
+    },
+    {
+      "id": "stalk",
+      "name": "伏击",
+      "school": "锻锋",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "直接击中满血目标时额外造成 16 点伤害。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "直接击中满血目标时额外造成 16 点伤害。",
+      "requires": "无"
+    },
+    {
+      "id": "hearth",
+      "name": "续薪",
+      "school": "烬火",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "重击燃烧目标时回复 3 点耐力。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "命中燃烧敌人后，耐力条回升。",
+      "requires": "无"
+    },
+    {
+      "id": "brine",
+      "name": "潮退",
+      "school": "潮霜",
+      "owner": "流派",
+      "weapon": "",
+      "max": 2,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "击中减速目标时附加 6 / 10 点伤害。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "对减速目标的伤害计入本次命中。",
+      "requires": "无"
+    },
+    {
+      "id": "coil",
+      "name": "回线",
+      "school": "脉电",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "施放 E 或 X 时回复 6 点耐力。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "施放技能时耐力条回升。",
+      "requires": "无"
+    },
+    {
+      "id": "brace",
+      "name": "压舱",
+      "school": "锻锋",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "耐力高于 60 时，受到的伤害降低 12%。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "高耐力时在受伤结算前减伤。",
+      "requires": "无"
+    },
+    {
+      "id": "ballast",
+      "name": "定锚",
+      "school": "锻锋",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "重击失衡目标额外造成 14 点伤害。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "额外伤害合并到重击命中。",
+      "requires": "无"
+    },
+    {
+      "id": "molt",
+      "name": "换甲",
+      "school": "锻锋",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "清场时生命低于一半，回复 12 点生命。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "清场时生命条显示恢复。",
+      "requires": "无"
+    },
+    {
+      "id": "pursuit",
+      "name": "逐浪",
+      "school": "锻锋",
+      "owner": "流派",
+      "weapon": "",
+      "max": 1,
+      "rarity": "普通",
+      "grade": "basic",
+      "rule": "攻击低于半血的目标时伤害提高 12%。",
+      "effects": [
+        "shared/hud"
+      ],
+      "handling": "半血以下目标的加成计入本次命中。",
+      "requires": "无"
+    },
+    {
       "id": "brand",
       "name": "引燃刃",
       "school": "烬火",
@@ -2581,6 +2821,21 @@
       "source": "游戏 HUD · updateHUD · combatReadout",
       "keys": [],
       "talents": [
+        "hearth",
+        "brine",
+        "coil",
+        "brace",
+        "ballast",
+        "molt",
+        "pursuit",
+        "firebell",
+        "ashguard",
+        "rimeguard",
+        "floe",
+        "sparkRush",
+        "returnArc",
+        "finisher",
+        "stalk",
         "spring",
         "tempo",
         "plate",

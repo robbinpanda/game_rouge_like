@@ -115,7 +115,8 @@ function slashRibbon(a){
 function impactSpray(pos,colour,heavy=false){
  const positions=[],velocities=[],seeds=[],tri=[[-1,0],[1,0],[0,1]];
  const count=heavy?30:16;
- for(let i=0;i<count;i++){
+ const visibleCount=Math.min(8,Math.ceil(count*.55));
+ for(let i=0;i<visibleCount;i++){
   const angle=visualRoll()*6.28,s=(heavy?6:4)*(.35+visualRoll()),speed=[Math.cos(angle)*s,(visualRoll()-.24)*s*1.35,Math.sin(angle)*s];
   const seed=visualRoll();for(const [x,y] of tri){positions.push(x,y,0);velocities.push(...speed);seeds.push(seed);}
  }

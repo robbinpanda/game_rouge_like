@@ -29,7 +29,7 @@ function sculptWeapon(id){
   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(points,3));geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));geo.computeVertexNormals();return mesh(geo,new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide}),x,y,z,group);
  }
  function shaft(y,len,r){
-  const core=id==='spear'?new THREE.Color(0x6c9e90):new THREE.Color(id==='dual'?0x6c587d:0x5b6179);
+  const core=id==='spear'?new THREE.Color(0x6c9e90):new THREE.Color(id==='dual'?0x49364f:0x5b6179);
   const rows=[[-.50,.68],[-.34,1.05],[-.09,.93],[.17,1.06],[.34,.88],[.5,.7]];
   const handle=facet(group,rows.map(([h,width],i)=>[y+h*len,r*(i%2?.16:-.16),r*1.5*width,r*width]),core);
   handle.name='棱面握柄';
@@ -43,36 +43,59 @@ function sculptWeapon(id){
   facet(group,blade,new THREE.Color(0x64708a));facet(group,blade.map(([y,x,w,d])=>[y,x+w*.78,w*.32,d*.51]));
   crystal(0,.35,0,.067,.105,.055);
  }else if(id==='dual'){
-  shaft(.08,.32,.053);facet(group,[[-.08,0,.11,.045],[-.24,-.08,.221,.073],[-.38,.02,.113,.052],[-.57,.17,.165,.063],[-.74,.30,.093,.033],[-.79,.47,.004,.003]]);
-  facet(group,[[-.10,-.025,.034,.035],[-.24,-.14,.089,.044],[-.34,-.27,.006,.006]],new THREE.Color(0x9270c5));
-  crystal(0,.24,0,.058,.071,.046);
-  facet(group,[[.13,-.045,.025,.04],[-.03,-.16,.06,.05],[-.22,-.29,.005,.006]],new THREE.Color(0xdeb67a));
- }else if(id==='spear'){
-  shaft(-.04,2.12,.049);facet(group,[[-.93,0,.07,.055],[-1.24,0,.19,.09],[-1.45,.015,.12,.057],[-2.16,0,.004,.004]],new THREE.Color(0xe3e3cd));
-  for(const s of [-1,1])facet(group,[[-.99,s*.02,.035,.04],[-1.18,s*.13,.065,.055],[-1.41,s*.21,.003,.004]]);
-  crystal(0,1.05,0,.07,.15,.07);
- }else if(id==='hammer'){
-  shaft(-.39,1.67,.071);shell(0,-1.17,0,.81,.46,.52,metal);
-  for(const side of [-1,1]){const cap=facet(group,[[0,0,.33,.32],[-.14,0,.43,.37],[-.28,0,.33,.27]]);cap.rotation.z=side*Math.PI/2;cap.position.set(side*.34,-1.17,0);}
-  for(const z of [-.27,.27])shell(0,-1.17,z,.46,.31,.094,bone).rotation.z=.12;
-  for(const z of [-.32,.32])crystal(0,-1.17,z,.23,.24,.07);
- }else{
-  const bow=id==='crossbow';shell(0,0,.21,.21,.22,.71,metal);shell(0,-.16,0,.13,.28,.15,wrap);
-  shell(0,.035,.72,.115,.12,.75,brass);crystal(0,.112,.41,.12,.11,.29);
-  if(bow){
-   shell(0,0,.46,.34,.27,.59,bone);shell(0,-.04,-.29,.19,.25,.53,wrap).rotation.x=-.13;
-   crystal(0,.085,.92,.085,.07,.20);shell(0,-.02,-.18,.17,.15,.31,bone);
-   for(const side of [-1,1]){const wing=facet(group,[[0,0,.09,.065],[-.29,.12,.142,.08],[-.59,.23,.105,.045],[-.78,.13,.005,.005]]);wing.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(new THREE.Vector3(0,0,-1),new THREE.Vector3(-side,0,0),new THREE.Vector3(0,side,0)));wing.position.set(0,.045,.55);
-    const feather=facet(group,[[0,0,.082,.055],[-.19,.07,.095,.044],[-.40,.13,.003,.003]],new THREE.Color(0x76b6a5));feather.quaternion.copy(wing.quaternion);feather.position.set(side*.22,.018,.39);
-    const start=new THREE.Vector3(side*.78,.045,.42),end=new THREE.Vector3(0,.045,.04),dir=end.clone().sub(start);const string=cylinder(0,0,0,.012,.012,dir.length(),bone,group,5);string.position.copy(start).lerp(end,.5);string.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());}
-  }else{
-   shell(0,-.035,-.32,.245,.31,.52,wrap).rotation.x=-.16;
-   shell(0,.04,.60,.225,.255,.83,metal);shell(0,.16,.49,.15,.13,.51,light);shell(0,-.22,0,.153,.32,.20,wrap).rotation.x=-.26;for(const z of [.63,.79,.95])shell(0,.06,z,.22,.21,.075,metal);
-   for(const side of [-1,1]){
-    const inlay=facet(group,[[0,0,.014,.014],[-.13,.036,.052,.022],[-.47,.018,.026,.018],[-.72,-.04,.003,.002]],new THREE.Color(0xb398e8));
-    inlay.rotation.set(-Math.PI/2,0,Math.PI/2,'ZYX');inlay.position.set(side*.108,.044,.07);
+  shaft(.064,.26,.034);
+  // A continuous curved blade, with the same silver cutting edge on both faces.
+  const sections=[[-.066,0,.040,.024],[-.19,.004,.048,.027],[-.39,.012,.054,.029],
+   [-.62,.029,.056,.028],[-.81,.061,.050,.024],[-.98,.111,.036,.019],[-1.09,.165,.019,.011],[-1.17,.218,0,0]];
+  const positions=[],colors=[];
+  const tones=[0x5b448b,0xc9a9f2,0xf3eaff].map(hex=>new THREE.Color(hex));
+  for(const side of [-1,1]){
+   const rings=sections.map(([y,x,w,d])=>[[x-w,y,0],[x-w*.56,y,d*side],[x+w*.53,y,d*.70*side],[x+w,y,0]]);
+   for(let i=1;i<rings.length;i++)for(let j=0;j<tones.length;j++){
+    const a=rings[i-1],b=rings[i],c=tones[j];
+    const vertices=[a[j],a[j+1],b[j]];
+    if(i<rings.length-1)vertices.push(a[j+1],b[j+1],b[j]);
+    if(side>0)vertices.reverse();
+    for(const vertex of vertices){positions.push(...vertex);colors.push(c.r,c.g,c.b);}
    }
-   const muzzle=shell(0,.04,1.08,.30,.16,.28,brass);muzzle.rotation.x=Math.PI/2;crystal(0,.04,1.15,.081,.08,.035);
+  }
+  const blade=new THREE.BufferGeometry();
+  blade.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  blade.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));blade.computeVertexNormals();
+  mesh(blade,new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide}),0,0,0,group).name='银缘紫晶弧刃';
+  const wing=new THREE.Color(0xb397df);
+  facet(group,[[-.065,-.017,.043,.031],[-.118,-.059,.041,.027],[-.18,-.106,.026,.018],[-.219,-.142,.002,.002]],wing);
+  facet(group,[[-.066,.017,.029,.025],[-.107,.052,.028,.022],[-.144,.081,.002,.002]],wing);
+  shell(0,-.063,0,.12,.084,.085,brass);
+  for(const z of [-.043,.043])crystal(0,-.064,z,.024,.034,.010);
+  crystal(0,.226,0,.041,.057,.035);
+ }else if(id==='spear'){
+  // Balanced spear proportions: shorter rear pommel so the butt never clips back through the hero's chest!
+  shaft(-.42,1.56,.042);facet(group,[[-1.12,0,.065,.05],[-1.42,0,.17,.082],[-1.62,.012,.11,.052],[-2.14,0,.004,.004]],new THREE.Color(0xe3e3cd));
+  for(const s of [-1,1])facet(group,[[-1.16,s*.02,.032,.036],[-1.34,s*.115,.058,.048],[-1.54,s*.19,.003,.004]]);
+  crystal(0,.39,0,.058,.11,.058);
+ }else if(id==='hammer'){
+  shaft(-.28,1.38,.062);shell(0,-1.02,0,.68,.38,.44,metal);
+  for(const side of [-1,1]){const cap=facet(group,[[0,0,.27,.26],[-.12,0,.35,.30],[-.24,0,.27,.22]]);cap.rotation.z=side*Math.PI/2;cap.position.set(side*.29,-1.02,0);}
+  for(const z of [-.22,.22])shell(0,-1.02,z,.39,.26,.082,bone).rotation.z=.12;
+  for(const z of [-.27,.27])crystal(0,-1.02,z,.19,.20,.06);
+ }else{
+  const bow=id==='crossbow';shell(0,0,.21,.19,.20,.64,metal);shell(0,-.15,0,.12,.25,.14,wrap);
+  shell(0,.035,.68,.105,.11,.68,brass);crystal(0,.105,.38,.11,.10,.26);
+  if(bow){
+   shell(0,0,.44,.31,.24,.54,bone);shell(0,-.04,-.18,.17,.22,.34,wrap).rotation.x=-.11;
+   crystal(0,.08,.86,.078,.065,.18);shell(0,-.02,-.12,.15,.13,.24,bone);
+   for(const side of [-1,1]){const wing=facet(group,[[0,0,.08,.06],[-.26,.11,.128,.07],[-.52,.20,.095,.04],[-.69,.11,.005,.005]]);wing.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(new THREE.Vector3(0,0,-1),new THREE.Vector3(-side,0,0),new THREE.Vector3(0,side,0)));wing.position.set(0,.04,.52);
+    const feather=facet(group,[[0,0,.074,.05],[-.17,.065,.085,.04],[-.36,.115,.003,.003]],new THREE.Color(0x76b6a5));feather.quaternion.copy(wing.quaternion);feather.position.set(side*.20,.016,.37);
+    const start=new THREE.Vector3(side*.69,.04,.40),end=new THREE.Vector3(0,.04,.04),dir=end.clone().sub(start);const string=cylinder(0,0,0,.011,.011,dir.length(),bone,group,5);string.position.copy(start).lerp(end,.5);string.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());}
+  }else{
+   shell(0,-.03,-.18,.21,.26,.34,wrap).rotation.x=-.14;
+   shell(0,.04,.58,.205,.23,.78,metal);shell(0,.145,.47,.135,.115,.47,light);shell(0,-.20,0,.14,.28,.18,wrap).rotation.x=-.24;for(const z of [.60,.75,.90])shell(0,.055,z,.20,.19,.07,metal);
+   for(const side of [-1,1]){
+    const inlay=facet(group,[[0,0,.014,.014],[-.12,.032,.048,.02],[-.44,.016,.024,.016],[-.68,-.035,.003,.002]],new THREE.Color(0xb398e8));
+    inlay.rotation.set(-Math.PI/2,0,Math.PI/2,'ZYX');inlay.position.set(side*.098,.04,.06);
+   }
+   const muzzle=shell(0,.04,1.02,.27,.145,.25,brass);muzzle.rotation.x=Math.PI/2;crystal(0,.04,1.09,.074,.074,.032);
   }
  }
  group.name=WEAPONS[id].name;return group;
@@ -86,22 +109,23 @@ function equipWeapon(avatar,id){
   });
   avatar.grips=avatar.arms.map((arm,i)=>{const socket=new THREE.Group();socket.position.set(avatar.human?0:(i?1:-1)*.13,avatar.human?-.92:-.99,avatar.human?.03:.13);arm.add(socket);avatar.elbows[i].attach(socket);return socket;});
  }
- const attach=i=>{const m=weaponModels.get(id).clone();avatar.grips[i].add(m);if(avatar.body)m.scale.setScalar(.77);return m;};
- avatar.weaponId=id;avatar.weaponGroup=attach(1);if(id==='dual'){avatar.secondBlade=attach(0);avatar.secondBlade.rotation.y=Math.PI;}
- avatar.weaponGroup.rotation.x=WEAPONS[id].type==='ranged'?1.22:id==='spear'?-1.12:-.38;
+ const weaponBodyScale={katana:.66,spear:.62,dual:.58,hammer:.56,crossbow:.62,rifle:.60};
+ const attach=i=>{const m=weaponModels.get(id).clone();avatar.grips[i].add(m);if(avatar.body)m.scale.setScalar(weaponBodyScale[id]||.64);return m;};
+ avatar.weaponId=id;avatar.weaponGroup=attach(1);if(id==='dual'){avatar.secondBlade=attach(0);avatar.secondBlade.rotation.y=Math.PI;avatar.secondBlade.rotation.z=.18;}
+ avatar.weaponGroup.rotation.set(WEAPONS[id].type==='ranged'?1.22:id==='spear'?-1.18:-.42,0,id==='katana'||id==='dual'?-.16:0);
 }
 
 
 // Right-hand poses are sampled at rest, wind-up, contact and recovery.
 const weaponPoses={
- katana:[[-.57,-.34],[-1.92,-.96],[-.87,1.03]],
- spear:[[-.78,-.12],[-.59,-.34],[-1.72,.19]],
- dual:[[-.68,-.52],[-1.51,-.87],[-.84,.84]],
+ katana:[[-.62,-.44],[-1.92,-.96],[-.87,1.03]],
+ spear:[[-.78,-.18],[-.59,-.34],[-1.72,.19]],
+ dual:[[-.72,-.58],[-1.51,-.87],[-.84,.84]],
  hammer:[[-.86,-.46],[-2.88,-.26],[-.91,.28]],
  crossbow:[[-1.39,.15],[-1.44,.21],[-1.37,.14]],
  rifle:[[-1.17,.25],[-1.39,.17],[-1.01,.31]]
 };
-const supportSocket={spear:[0,-.34,0],hammer:[0,-.30,0],crossbow:[0,-.04,.36],rifle:[0,-.095,.42]};
+const supportSocket={spear:[0,-.38,0],hammer:[0,-.30,0],crossbow:[0,-.04,.34],rifle:[0,-.09,.38]};
 const handGoal=new THREE.Vector3(),elbowGoal=new THREE.Vector3(),shoulderPos=new THREE.Vector3(),elbowPos=new THREE.Vector3(),palmPos=new THREE.Vector3();
 const reachAxis=new THREE.Vector3(),pole=new THREE.Vector3(),boneAxis=new THREE.Vector3(),targetAxis=new THREE.Vector3(),jointRot=new THREE.Quaternion(),turnHand=new THREE.Quaternion();
 function pointJoint(joint,end,target){
@@ -123,15 +147,45 @@ function solvePalm(a,i,target){
 }
 function holdTwoHanded(a,id,wind,drive,recoil,elevation){
  const side=a.body?-1:1;
- let y=a.body?1.79:1.64,z=.25,angle=elevation;
- if(id==='hammer'){y+=wind*.31+drive*.025;z+=drive*.045;angle=-2.10-wind*.98+drive*1.21;}
- if(id==='spear'){z+=drive*.095-wind*.14;angle=-1.53+wind*.23-drive*.06;}
- if(id==='rifle'){y+=.10;z-=recoil*.17;angle-=recoil*.13;}
- if(id==='crossbow'){y-=.11;z-=recoil*.06;angle-=recoil*.045;}
- handGoal.set(-side*.07,y,z);a.rig.localToWorld(handGoal);solvePalm(a,1,handGoal);
- a.rig.getWorldQuaternion(jointRot);turnHand.setFromEuler(new THREE.Euler(angle,0,id==='hammer'?side*(.33+.12*wind-.18*drive):0));jointRot.multiply(turnHand);
+ // +side is ALWAYS the right arm's own flank (-X for Tripo rigs, +X for legacy rigs), preventing crossed arms & torso clipping!
+ let x=side*.18,y=a.body?1.48:1.54,z=.36,angle=elevation,yawOff=0,rollOff=0;
+ if(id==='hammer'){x=side*.28;y=a.body?1.24:1.34;y+=wind*.32+drive*.06;z=.34+drive*.14;angle=-2.44-wind*.60+drive*1.48;yawOff=-side*.14;rollOff=side*(.24-.14*drive);}
+ if(id==='spear'){x=side*.30;y=a.body?1.26:1.34;z=.24+drive*.22-wind*.14;angle=-2.04+wind*.18+drive*.48;yawOff=-side*.20;rollOff=side*.14;}
+ if(id==='rifle'){x=side*.18;y=(a.body?1.48:1.56);z=.36-recoil*.15;angle-=recoil*.13;}
+ if(id==='crossbow'){x=side*.18;y=(a.body?1.42:1.50);z=.36-recoil*.06;angle-=recoil*.045;}
+ handGoal.set(x,y,z);a.rig.localToWorld(handGoal);solvePalm(a,1,handGoal);
+ a.rig.getWorldQuaternion(jointRot);turnHand.setFromEuler(new THREE.Euler(angle,yawOff,rollOff));jointRot.multiply(turnHand);
  a.grips[1].getWorldQuaternion(turnHand).invert();a.weaponGroup.quaternion.copy(turnHand.multiply(jointRot));
  handGoal.fromArray(supportSocket[id]);a.weaponGroup.localToWorld(handGoal);solvePalm(a,0,handGoal);
+}
+function holdOneHandedRig(a,id,wind,drive,mirror,guard){
+ const side=-1,step=Math.sin(a.phase)*.032;
+ if(id==='katana'){
+  const rx=guard?-.08:side*(.35-drive*.24+wind*.12)*mirror;
+  const ry=guard?1.44:1.06+wind*.40-drive*.12+step;
+  const rz=guard?.46:.28+drive*.28-wind*.14;
+  handGoal.set(rx,ry,rz);a.rig.localToWorld(handGoal);solvePalm(a,1,handGoal);
+  a.rig.getWorldQuaternion(jointRot);
+  const wRx=guard?-1.45:-1.90-wind*.80+drive*1.22;
+  const wRy=guard?.55:-side*(.24-drive*.52)*mirror;
+  const wRz=guard?-.65:side*(.22+wind*.16)*mirror;
+  turnHand.setFromEuler(new THREE.Euler(wRx,wRy,wRz));jointRot.multiply(turnHand);
+  a.grips[1].getWorldQuaternion(turnHand).invert();a.weaponGroup.quaternion.copy(turnHand.multiply(jointRot));
+  handGoal.set(-side*.32,1.02-step*.6,.18+wind*.10);a.rig.localToWorld(handGoal);solvePalm(a,0,handGoal);
+ }else if(id==='dual'){
+  const rx=side*(.37-drive*.22+wind*.10)*mirror,ry=1.06+wind*.26-drive*.08+step,rz=.30+drive*.24-wind*.10;
+  handGoal.set(rx,ry,rz);a.rig.localToWorld(handGoal);solvePalm(a,1,handGoal);
+  a.rig.getWorldQuaternion(jointRot);
+  turnHand.setFromEuler(new THREE.Euler(-1.74-wind*.55+drive*.95,-side*.30*mirror,side*.26*mirror));jointRot.multiply(turnHand);
+  a.grips[1].getWorldQuaternion(turnHand).invert();a.weaponGroup.quaternion.copy(turnHand.multiply(jointRot));
+  const lx=-side*(.37-drive*.18+wind*.10)*mirror,ly=1.08+drive*.22-step,lz=.32+wind*.18-drive*.08;
+  handGoal.set(lx,ly,lz);a.rig.localToWorld(handGoal);solvePalm(a,0,handGoal);
+  if(a.secondBlade){
+   a.rig.getWorldQuaternion(jointRot);
+   turnHand.setFromEuler(new THREE.Euler(-1.74+wind*.40-drive*.65,side*.30*mirror,-side*.26*mirror));jointRot.multiply(turnHand);
+   a.grips[0].getWorldQuaternion(turnHand).invert();a.secondBlade.quaternion.copy(turnHand.multiply(jointRot));
+  }
+ }
 }
 function poseWeapon(a,strike,preview=false){
  const id=a.weaponId;if(!id)return;
@@ -163,6 +217,7 @@ function poseWeapon(a,strike,preview=false){
   if(guard){right.rotation.set(-1.55,0,-.8);a.weaponGroup.rotation.z=.68;}
  }
  if(supportSocket[id])holdTwoHanded(a,id,wind,drive,preview?0:clamp(a.attack/.16,0,1),preview?0:pitch*.52);
+ else if(a.body)holdOneHandedRig(a,id,wind,drive,mirror,guard);
 }
 
 

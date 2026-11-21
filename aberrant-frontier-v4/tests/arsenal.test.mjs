@@ -35,7 +35,7 @@ test('equipped weapon paths require both general and role talents, draft tabs re
    return !acquireGift(id+'-3')&&acquireGift(id+'-1')&&!acquireGift(id+'-2')&&acquireGift('edge')&&acquireGift(id+'-2')&&!acquireGift(id+'-3')&&acquireGift(expeditionRoles[hero].signature[0])&&acquireGift(id+'-3');
   });
  })`));
- run("run.gifts={};openDraft();chooseExpedition('study-weapon');const offers=run.offers;chooseExpedition('study-common');chooseExpedition('study-weapon')");
+ run("run.gifts={};run.coins=40;openStation();chooseExpedition('buy');chooseExpedition('study-weapon');const offers=run.offers;chooseExpedition('study-common');chooseExpedition('study-weapon')");
  assert.ok(run('offers===run.offers&&offers.every(t=>loadout.includes(t.weapon))&&run.redraw===1'));
 });
 test('a projectile keeps its weapon at launch and only a weapon hit consumes its skill resonance',()=>{

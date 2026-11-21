@@ -1,7 +1,7 @@
 const acts=[
- {name:'晴湾断轨',zone:'旧城高架',en:'DAYBREAK LINE',sky:0x84d0e6,skyTop:0x2f86bf,skyMid:0x84d0e6,skyBot:0xf4ecd6,fog:0xa6d8e3,phaseSky:[0x143832,0x2f7d6e,0xc9f2b8],floor:0xebe0ce,trim:0x1e544a,accent:0x4ca896,stone:0xe6dac5,dark:0x1a3833,boss:'断轨镇守者',crest:'轨',rooms:['断轨前庭','检票回廊','折返站台','调度中庭'],bossRoom:'终点换乘台',trap:'通电轨道'},
- {name:'鸣潮船坞',zone:'潮汐港池',en:'TIDAL DOCK',sky:0xd98a6c,skyTop:0x3b5f8f,skyMid:0xd98a6c,skyBot:0xffd7ad,fog:0xd99e82,phaseSky:[0x4a1c1a,0xc74b32,0xffb35c],floor:0xd4b6a4,trim:0xc95440,accent:0xf3b93b,stone:0xdba58d,dark:0x243b55,boss:'潮鸣母舰',crest:'潮',rooms:['吊装甲板','浮箱栈桥','潮汐泊位','缆索货场'],bossRoom:'三号干船坞',trap:'泄压喷口'},
- {name:'紫晶温室',zone:'回响穹顶',en:'PRISM GARDEN',sky:0xc2d5f0,skyTop:0x7690c7,skyMid:0xc2d5f0,skyBot:0xf8f5fc,fog:0xd5dff0,phaseSky:[0x2a184f,0x7a48b8,0xf0c2ff],floor:0xeeeaf5,trim:0xa6b8cc,accent:0x9e52f0,stone:0xf3f0f8,dark:0x4b4a66,boss:'镜冠花王',crest:'晶',rooms:['育晶花圃','双翼回廊','折光苗床','繁花中庭'],bossRoom:'镜冠穹庭',trap:'爆裂晶床'}
+ {name:'晴湾断轨',zone:'旧城高架',en:'DAYBREAK LINE',sky:0x89ccf0,skyTop:0x3b93d4,skyMid:0x89ccf0,skyBot:0xf6efe0,fog:0xb4dff0,phaseSky:[0x143832,0x2f7d6e,0xc9f2b8],floor:0xeee3d1,trim:0x3b8679,accent:0xd97d63,stone:0xebe0ce,dark:0x274c47,boss:'断轨镇守者',crest:'轨',rooms:['断轨前庭','检票回廊','折返站台','调度中庭'],bossRoom:'终点换乘台',trap:'通电轨道'},
+ {name:'鸣潮船坞',zone:'潮汐港池',en:'TIDAL DOCK',sky:0x8ccdf2,skyTop:0x3b95d8,skyMid:0x8ccdf2,skyBot:0xedf4f8,fog:0xb0d9ed,phaseSky:[0x4a1c1a,0xc74b32,0xffb35c],floor:0xdfd5ca,trim:0xd46a52,accent:0xf0ba3c,stone:0xe6ddd2,dark:0x284b6b,boss:'潮鸣母舰',crest:'潮',rooms:['吊装甲板','浮箱栈桥','潮汐泊位','缆索货场'],bossRoom:'三号干船坞',trap:'泄压喷口'},
+ {name:'紫晶温室',zone:'回响穹顶',en:'PRISM GARDEN',sky:0xaad4f5,skyTop:0x5ca4e3,skyMid:0xaad4f5,skyBot:0xf4f1fa,fog:0xd6e6f5,phaseSky:[0x2a184f,0x7a48b8,0xf0c2ff],floor:0xf0ecf5,trim:0x72b5a4,accent:0xb496e6,stone:0xf3eee8,dark:0x546873,boss:'镜冠花王',crest:'晶',rooms:['育晶花圃','双翼回廊','折光苗床','繁花中庭'],bossRoom:'镜冠穹庭',trap:'爆裂晶床'}
 ];
 const roomGroup=new THREE.Group(),sanctuaryGroup=new THREE.Group(),chamberMaterials=new Map();
 const crystalGeo=new THREE.OctahedronGeometry(1),canopyGeo=new THREE.IcosahedronGeometry(1,1);
@@ -89,6 +89,45 @@ function roomBox(x,y,z,w,h,d,color){return box(x,y,z,w,h,d,chamberMat(color),roo
 function cover(x,z,w,h,d,color){
  const m=roomBox(x,h/2,z,w,h,d,color);solid(x,z,w,d,h);cameraMeshes.push(m);surfaces.push({x,z,w:w*.5,d:d*.5,h});
 }
+function lowCover(x,z,w,d,a){
+ // Waist-high tactical barricade (blocks dashes/charges, jumpable, NEVER occludes elevated camera!)
+ const h=.82;
+ roomBox(x,h*.5,z,w,h,d,a.stone);
+ roomBox(x,h+.03,z,w+.08,.08,d+.08,a.accent);
+ roomBox(x,h*.28,z,w+.06,.12,d+.06,a.trim);
+ solid(x,z,w,d,h);
+ surfaces.push({x,z,w:w*.5,d:d*.5,h});
+}
+function archColumn(x,z,h,a){
+ // Slender colonnade pillar creating rhythmic tactical sightlines without blocking camera
+ roomBox(x,h*.5,z,.82,h,.82,a.stone);
+ roomBox(x,.18,z,1.12,.36,1.12,a.trim);
+ roomBox(x,h-.16,z,1.08,.32,1.08,a.trim);
+ roomBox(x,h+.08,z,.96,.12,.96,a.accent);
+ solid(x,z,.95,.95,h);
+}
+function raisedTerrace(x,z,w,d,h,rampSide,a){
+ // Walkable elevated combat terrace with smooth sloped access ramp(s)!
+ roomBox(x,h*.5-.02,z,w,h,d,a.stone);
+ roomBox(x,h+.01,z,w+.08,.07,d+.08,a.trim);
+ roomBox(x,h+.05,z,w-.35,.02,d-.35,a.floor);
+ surfaces.push({x,z,w:w*.5,d:d*.5,h});
+ const rLen=2.6,rW=Math.min(w,d)*.72;
+ const sides=Array.isArray(rampSide)?rampSide:[rampSide];
+ for(const dir of sides){
+  if(dir==='S'||dir==='N'){
+   const sgn=dir==='S'?1:-1,rz=z+sgn*(d*.5+rLen*.5);
+   const ramp=roomBox(x,h*.5-.04,rz,rW,.12,Math.hypot(rLen,h),a.trim);
+   ramp.rotation.x=sgn*Math.atan2(h,rLen);
+   surfaces.push({x,z:rz,w:rW*.5,d:rLen*.5,h,ramp:true,slopeZ:-sgn});
+  }else{
+   const sgn=dir==='E'?1:-1,rx=x+sgn*(w*.5+rLen*.5);
+   const ramp=roomBox(rx,h*.5-.04,z,Math.hypot(rLen,h),.12,rW,a.trim);
+   ramp.rotation.z=-sgn*Math.atan2(h,rLen);
+   surfaces.push({x:rx,z,w:rLen*.5,d:rW*.5,h,ramp:true,slopeX:-sgn});
+  }
+ }
+}
 function raisedPassage(x,z,width,a){
  const height=.60,length=3;
  const ramp=roomBox(x,height*.5-.05,z,width,.12,Math.hypot(length,height),a.trim);
@@ -105,7 +144,7 @@ function deckSurface(act){
  if(deckSurfaces.has(act))return deckSurfaces.get(act);
  const art=document.createElement('canvas'),size=1024;
  art.width=art.height=size;const ctx=art.getContext('2d'),random=seededRoll('deck-'+act);
- const colors=[['#cfc1aa','#e5dac6','#8d8272'],['#967367','#b58d7c','#6e4e47'],['#dbd9e6','#f2eff9','#b2b6c9']][act];
+ const colors=[['#ddd2be','#efe6d5','#b3a796'],['#d2c8be','#e5ddd4','#a89e94'],['#e4e0ec','#f5f2fa','#c2c6d4']][act];
  const count=act===1?8:12,tile=size/count;
  ctx.fillStyle=colors[2];ctx.fillRect(0,0,size,size);
  for(let row=0;row<count;row++)for(let col=-1;col<=count;col++){
@@ -137,19 +176,13 @@ function addTrap(kind,x,z,width,length,phase=0,act=0){
  const trap={kind,from,to,width,phase,cycle:-1,mark:null,continuousFloor:true};
  roomTraps.push(trap);
  if(kind==='line'){
-  roomBox(x,.012,z,width*2,.025,length,0x313944);
-  for(const side of [-1,1])roomBox(x+side*(width-.09),.030,z,.11,.029,length,0xb68155);
-  for(let t=-length/2+.4;t<length/2;t+=.9)roomBox(x,.031,z+t,width*2-.2,.028,.18,0x80756c);
+  const segments=Math.max(1,Math.round(length/(width*3.4))),step=length/segments;
+  for(let i=0;i<segments;i++)placeCoastalProp('rail',roomGroup,x,-.17,from.z+(i+.5)*step,[width*1.92,.228,step]);
  }else{
-  const base=cylinder(x,.005,z,width*.78,width*.78,.06,chamberMat(act===2?0x4d385c:0x38374a),roomGroup,12);
-  base.castShadow=false;roundel(x,z,width*.78,0xc5a47b);
-  if(act===1){
-   for(let i=-2;i<=2;i++)roomBox(x+i*.39,.047,z,.14,.05,width,0x72818d);
-  }else for(let i=0;i<7;i++){
-   const angle=i*Math.PI*2/7,r=width*.56;
-   const bud=mesh(crystalGeo,chamberMat(i%2?0x9475b9:0x715a9a),x+Math.sin(angle)*r,.18,z+Math.cos(angle)*r,roomGroup);
-   bud.scale.set(.21,.29+i%3*.09,.21);bud.rotation.z=Math.cos(angle)*.3;
-  }
+  roundel(x,z,width*.78,0xc5a47b);
+  const diameter=width*(act===1?1.28:1.12);
+  placeCoastalProp(act===1?'vent':'crystals',roomGroup,x,act===1?-.28:-.12,z,
+   [diameter,act===1?.52:.79,diameter]);
  }
 }
 function clearRoomTraps(){
@@ -237,39 +270,43 @@ function dressYard(act,layout,safe,boss){
   }
  }
  if(act===0){
-  // Act 1: Daybreak Line — Cream Travertine + Deep Pine-Mint Viaduct & Emerald Ginkgo Foliage!
-  roomBox(0,2.5,-20.6,13,5,2.8,0x49a69d);
-  for(let x=-6;x<=6;x+=2){roomBox(x,2.5,-19.14,.15,5,.16,a.dark);}
-  roomBox(0,3.0,-19.08,13,.13,.15,a.dark);
-  const arch=mesh(archRing,chamberMat(0x286b5e),0,3.0,-18.5,roomGroup);arch.scale.set(8.3,4,1);
-  for(const side of [-1,1]){roomBox(side*7.65,1.5,-18.5,1.25,3,1,0xebe0ce);
-   for(let i=0;i<6;i++)roomBox(side*(14+i*1.55),11.1,-17.62,.18,.75,.17,0x286b5e);
-   for(const z of [-15,-3,10])treeAt(side*(17.4+Math.abs(z)%3),z,1.5+(z===-15?.55:0),[0x4f9946,0x99d152]);
-   for(let i=0;i<6;i++){const x=side*(7+i*4.4),height=6+(i*7%12);
-    roomBox(x,height/2+3,-39-i%3*3,3.3,height,4,0xe0d4c0);roomBox(x,height+3,-39-i%3*3,3.6,.45,4.4,0x2f7769);}
+  // Act 1: Daybreak Line — Clean sunlit travertine, open coastal horizon, Tripo Station Hall & Station Clocks!
+  placeCoastalProp('station',roomGroup,0,0,-21.4,[14.4,11.2,10.6]);
+  for(const side of [-1,1]){
+   for(let i=0;i<5;i++)roomBox(side*(15+i*1.8),10.9,-17.62,.16,.72,.16,0x3b8679);
+   for(const z of [-14,-2,10])treeAt(side*(17.8+Math.abs(z)%2),z,1.45+(z===-14?.45:0),[0x66a84f,0xa4d464]);
   }
-  yardSign('晴 湾　/　DAYBREAK',0,4.15,-18.96,5.2,.84,'#f7f1de','#1e544a');
+  yardSign('晴 湾　/　DAYBREAK',0,11.8,-19.8,5.4,.84,'#f7f1de','#2c6e62');
+  for(const side of [-1,1]){
+   placeCoastalProp('clock',roomGroup,side*10,0,-15.8,[1.32,4.62,1.32]);
+   placeCoastalProp('planter',roomGroup,side*12.8,0,-13.8,[2.05,1.92,1.72]);
+  }
   for(let i=-2;i<=2;i++)roomBox(i*.95,.021,8.0,.54,.02,2.3,0xf7f0df);
  }else if(act===1){
-  // Act 2: Tidal Dock — Coral-Brick Shipyard, Molten-Gold Gantry Cranes & Deep Cobalt Cargo Hulls!
-  for(const s of [-1,1]){cargoAt(s*14,-15.8,s>0?0xcc5e4a:0x285c99);cargoAt(s*18.7,-9.6,s>0?0x285c99:0xe07c60);
-   for(const z of [-16,-7,1,9]){roomBox(s*16.8,1.73,z,.15,1.4,.15,a.dark);roomBox(s*16.8,2.23,z+3.9,.12,.1,7.9,0xf3b93b);}
-   for(let j=0;j<5;j++){const m=roomBox(s*(6+j*1.1),.024,-9,.52,.02,1.52,0xf3b93b);m.rotation.y=.52;}
+  // Act 2: Tidal Dock — Crisp daylight Mediterranean harbor, Tripo Railings & Flanking Heavy Dock Winches!
+  for(const s of [-1,1]){cargoAt(s*15.2,-17.6,s>0?0xd46a52:0x346a9e);
+   for(let i=0;i<8;i++){
+    const railing=placeCoastalProp('railing',roomGroup,s*16.6,1.15,(i-3.5)*3.8,[3.75,1.42,1.32]);
+    railing.rotation.y=s*Math.PI/2;
+   }
+   const winch=placeCoastalProp('winch',roomGroup,s*12.5,0,-13.4,[2.95,2.45,3.30]);
+   winch.rotation.y=-s*.36;
+   for(let j=0;j<5;j++){const m=roomBox(s*(6+j*1.1),.024,-9,.52,.02,1.52,0xf0ba3c);m.rotation.y=.52;}
   }
-  // Moored Cobalt & Brick Freighter prow framing the rear harbor!
-  roomBox(15,1.2,-33,18,5.5,7.2,0x285c99);roomBox(15,-1.2,-33,17.2,1.6,7.0,0xcc5e4a);
-  roomBox(19,5.4,-33,6.2,3.4,5.6,0xebe0ce);roomBox(20,7.8,-33,1.6,2.2,1.6,0xcc5e4a);
-  yardSign('03　/　TIDAL DOCK',-11,3,-18,6.4,1.1,'#243b55','#f3b93b');
-  for(let i=0;i<9;i++)roomBox(-34+i*7,-1.55,-33-i%3*3,3,.08,.15,0xffdfad);
+  // Clean moored Cobalt & Cream Freighter prow framing the rear sunlit harbor!
+  roomBox(15,1.2,-33,18,5.5,7.2,0x285c99);roomBox(15,-1.2,-33,17.2,1.6,7.0,0xd46a52);
+  roomBox(19,5.4,-33,6.2,3.4,5.6,0xf2eadc);roomBox(20,7.8,-33,1.5,2.2,1.5,0xd46a52);
+  yardSign('03　/　TIDAL DOCK',-11,3,-18,6.4,1.1,'#243b55','#f0ba3c');
+  for(let i=0;i<9;i++)roomBox(-34+i*7,-1.55,-33-i%3*3,3.6,.08,.18,0xe6f8fc);
  }else{
-  // Act 3: Prism Glasshouse — Pearl-White Marble Cathedral, Ice-Blue Glass & Radiant Amethyst Spires!
-  for(const side of [-1,1]){for(const z of [-11,0,10]){
-   treeAt(side*18.7,z,1.6,[0xdce8f5,0xf7f5fc]);
-   const panel=mesh(yardSignPlane,chamberMat(0x9ad8f0),side*17.75,2.3,z,roomGroup);panel.scale.set(6.5,4.6,1);panel.rotation.y=-side*Math.PI/2;
-  }for(let j=0;j<6;j++){const m=roomBox(side*(4+j*.95),.023,8.8-j*.67,.32,.024,.96,0x9e52f0);m.rotation.y=side*.65;}}
-  const arch=mesh(archRing,chamberMat(0xf2eff7),0,1,-17.3,roomGroup);arch.scale.set(9.5,8,1);
-  const innerArch=mesh(archRing,chamberMat(0x9ad8f0),0,1,-17.0,roomGroup);innerArch.scale.set(8.2,6.9,1);
-  yardSign('镜 冠　/　GLASSHOUSE',0,6.4,-17,6.4,1,'#423561','#f5f2fa');
+  // Act 3: Prism Glasshouse — Airy sea-glass mint & ivory coastal conservatory, Tripo Arbor & Hydrangea Planters!
+  for(const side of [-1,1]){for(const z of [-10,1,11]){
+   treeAt(side*19.2,z,1.45,[0xdcebf2,0xf6f4fb]);
+  }for(let j=0;j<6;j++){const m=roomBox(side*(4+j*.95),.023,8.8-j*.67,.32,.024,.96,0x72b5a4);m.rotation.y=side*.65;}
+   placeCoastalProp('planter',roomGroup,side*6.0,0,-13.4,[2.10,1.95,1.75]);
+  }
+  placeCoastalProp('arbor',roomGroup,0,0,-21.8,[10.4,11.2,15.6]);
+  yardSign('镜 冠　/　GLASSHOUSE',0,11.8,-15.2,6.4,1,'#3e4c5c','#f6f3fa');
  }
 }
 function instanceYard(){
@@ -344,6 +381,7 @@ function buildBlenderStaticModel(asset,targetGroup){
    if(prim.attributes.NORMAL!==undefined)geo.setAttribute('normal',attribute(prim.attributes.NORMAL));
    if(prim.attributes.COLOR_0!==undefined)geo.setAttribute('color',attribute(prim.attributes.COLOR_0));
    if(prim.indices!==undefined)geo.setIndex(attribute(prim.indices));
+   if(!isGlow&&!geo.hasAttribute('normal'))geo.computeVertexNormals();
    const material=isGlow
     ?new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.DoubleSide})
     :ramp
@@ -360,12 +398,30 @@ function buildSanctuaryWorld(){
  sanctuaryBuilt=true;
  if(typeof sanctuaryFile!=='undefined'&&sanctuaryFile?.gltf){
   buildBlenderStaticModel(sanctuaryFile,sanctuaryGroup);
+  paintSanctuaryVista(sanctuaryGroup);
  }
- // Animated floating Mirror of Echoes crystal crest (aligns with Blender shrine at -7.4, 22.0)
- sanctuaryMirror=mesh(crystalGeo,glow(0xd49eff),-7.4,5.4,22.0,sanctuaryGroup);
+ // The distant ridgeline wraps behind the solid coastal town. Feather the
+ // boundary into the existing sky when the player orbits away from the bay.
+ if(typeof Image!=='undefined'){
+  const map=new THREE.TextureLoader().load(assetURL('echo-sanctuary-horizon.webp'));
+  map.colorSpace=THREE.SRGBColorSpace;
+  const geo=new THREE.PlaneGeometry(1,1,64,16);
+  const pos=geo.getAttribute('position'),uv=geo.getAttribute('uv'),rgba=[];
+  for(let i=0;i<pos.count;i++){
+   const u=uv.getX(i),v=uv.getY(i),angle=(u-.5)*2.85;
+   pos.setXYZ(i,Math.sin(angle)*350,-93+v*325,16-Math.cos(angle)*350);
+   const fade=THREE.MathUtils.smoothstep(Math.min(u,1-u),0,.085)*THREE.MathUtils.smoothstep(Math.min(v,1-v),0,.095);
+   rgba.push(1,1,1,fade);
+  }
+  geo.setAttribute('color',new THREE.Float32BufferAttribute(rgba,4));
+  const bg=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({map,vertexColors:true,transparent:true,depthWrite:false,fog:false,toneMapped:false,side:THREE.DoubleSide}));
+  bg.name='晴湾外岭';bg.renderOrder=-8;sanctuaryGroup.add(bg);
+ }
+ // Animated floating Mirror of Echoes crystal crest (aligns cleanly above Tripo Mirror at -7.2, 22.0)
+ sanctuaryMirror=mesh(crystalGeo,glow(0xd49eff),-7.2,4.78,22.0,sanctuaryGroup);
  sanctuaryMirror.scale.set(.38,.66,.38);sanctuaryMirror.castShadow=false;
  // Ethereal Amethyst Sky Beam piercing the heavens from Act III Prism Glasshouse Crown (z = -148)
- sanctuaryBeam=mesh(new THREE.CylinderGeometry(1.1,4.8,145,16,1,true),new THREE.MeshBasicMaterial({color:0xc396ff,transparent:true,opacity:.17,depthWrite:false,side:THREE.DoubleSide}),0,88,-148,sanctuaryGroup);
+ sanctuaryBeam=mesh(new THREE.CylinderGeometry(.12,.38,29,12,1,true),new THREE.MeshBasicMaterial({color:0xddacff,transparent:true,opacity:.17,depthWrite:false,side:THREE.DoubleSide}),24,69.3,-126,sanctuaryGroup);
  sanctuaryBeam.castShadow=false;
  sanctuaryMotes=spawnAmbientMotes(0,sanctuaryGroup,26,120,.5,18);
  sanctuaryMotes.position.set(0,0,22);
@@ -377,7 +433,7 @@ function showSanctuaryMode(on){
  roomGroup.visible=!on;
  if(on){
   setSkyPalette(0x3082c4,0x85cce8,0xffe8cc,0x9bcce3);
-  scene.fog=new THREE.Fog(0x9bcce3,95,295);
+  scene.fog=new THREE.Fog(0xb1cfe3,130,365);
   sun.color.setHex(0xffe9cf);sun.intensity=2.65;
  }
 }
@@ -386,7 +442,7 @@ function setChamber(act,layout,safe=false,boss=false){
  if(sanctuaryGroup)sanctuaryGroup.visible=false;roomGroup.visible=true;
  for(const m of roomGroup.children)if(m.isInstancedMesh)m.dispose();roomGroup.clear();colliders.length=cameraMeshes.length=surfaces.length=anchors.length=0;
  setSkyPalette(a.skyTop,a.skyMid,a.skyBot,a.fog);
- sun.color.setHex(act===0?0xfff1dc:act===1?0xffd9b0:0xf6f0ff);sun.intensity=act===2?2.75:2.58;
+ sun.color.setHex(act===0?0xfff3e0:act===1?0xfff0da:0xf6f3ff);sun.intensity=act===2?2.72:2.62;
  box(0,-.55,0,34,1,31,chamberMat(a.floor),roomGroup);roomBox(0,-1.25,0,34.8,.5,31.7,a.trim);
  const paving=mesh(footprintPlane,deckSurface(act),0,-.018,0,roomGroup);
  paving.rotation.x=-Math.PI/2;paving.scale.set(17,15.5,1);paving.castShadow=false;
@@ -395,39 +451,39 @@ function setChamber(act,layout,safe=false,boss=false){
  for(let z=-12;z<=12;z+=4)roomBox(0,-.035,z,32,.018,.026,a.stone);
  for(const x of [-13,13])roomBox(x,-.031,0,.12,.025,28,a.accent);
  if(act===0){
-  for(let i=0;i<9;i++){
-   const x=i*9-36,h=5+((i*7)%9);roomBox(x,h/2,-28,7,h,6,a.stone);roomBox(x,h,-28,7.5,.32,6.4,a.trim);
-   for(let y=2;y<h;y+=2.8)roomBox(x,y,-24.94,5.4,.95,.12,a.dark);
+  // Open turquoise coastal bay & clean limestone headland behind the Daybreak Station Hall (breathable blue sky!)
+  roomBox(0,-4.4,-35,240,.4,180,0x34a2b8);
+  for(const [cx,cz,cw,ch,cd] of [[-42,-58,28,11,16],[46,-62,32,12,18],[-64,-78,36,16,20],[68,-82,40,18,22]]){
+   roomBox(cx,ch/2-4.2,cz,cw,ch,cd,0xe8d9bf);roomBox(cx,ch-4.0,cz,cw+1.4,1.2,cd+1.4,0x8cc267);
   }
   for(const side of [-1,1]){
-   roomBox(side*16,9.6,-19,26,.8,3,a.stone);roomBox(side*16,9.5,-17.46,26,.28,.12,a.trim);
+   roomBox(side*19.5,9.6,-19,21,.8,3,a.stone);roomBox(side*19.5,9.5,-17.46,21,.28,.12,a.trim);
    roomBox(side*18,4.5,-19,1.1,9,1.25,a.stone);
    for(const dx of [-1,1])beamBetween(side*18,7.4,-19,side*18+1.7*dx,9.35,-19,.6,a.trim);
    const x=side*20;roomBox(x,10.9,-19,9,1.75,2.4,0xf5efe2);roomBox(x,11.05,-17.77,8,.65,.08,a.dark);
-   roomBox(x,10.35,-17.77,8.9,.23,.09,a.trim);
+   roomBox(x,10.35,-17.77,8.9,.23,.09,a.accent);
   }
  }else if(act===1){
-  roomBox(0,-1.8,0,160,.4,150,0x2c6f8c);
+  roomBox(0,-1.8,0,220,.4,200,0x329eb5);
   for(const x of [-22.5,22.5]){
-   for(const z of [-19,4]){roomBox(x,6.5,z,.95,13,.95,0xf3b93b);roomBox(x,12.8,z,11,.78,1.1,0xf3b93b);
-    for(const d of [-1,1])beamBetween(x,9.0,z,x+d*4.1,12.5,z,.36,0xc98924);
-    roomBox(x-3,9.0,z,.09,6.5,.09,a.dark);roomBox(x-3,5.8,z,3.0,1.4,1.8,0xcc5e4a);}
+   for(const z of [-19,4]){roomBox(x,6.5,z,.95,13,.95,0xf0ba3c);roomBox(x,12.8,z,11,.78,1.1,0xf0ba3c);
+    for(const d of [-1,1])beamBetween(x,9.0,z,x+d*4.1,12.5,z,.36,0xc99224);
+    roomBox(x-3,9.0,z,.09,6.5,.09,a.dark);roomBox(x-3,5.8,z,3.0,1.4,1.8,0xd46a52);}
   }
-  for(let i=0;i<7;i++){const x=-24+i*8;roomBox(x,1.4,-24,6.9,2.8,4,i%2?0xcc5e4a:0x285c99);
-   for(let j=0;j<6;j++)roomBox(x-2.6+j,1.4,-21.96,.085,2.52,.08,0xf2e4d5);}
+  for(let i=0;i<5;i++){const x=-16+i*8;roomBox(x,1.4,-25,6.4,2.6,3.8,i%2?0xd46a52:0x346a9e);
+   for(let j=0;j<5;j++)roomBox(x-2.2+j,1.4,-23.06,.08,2.32,.08,0xf2eae0);}
  }else{
-  for(const x of [-17.5,17.5])for(const z of [-13,-3,8]){roomBox(x,3.2,z,.52,6.4,.52,0xf3f0f8);
-   beamBetween(x,6.4,z,x*.48,11,z,.46,0xf3f0f8);beamBetween(x*.48,11,z,0,12,z,.34,0xa6b8cc);}
-  for(let i=0;i<24;i++){
-   const angle=i*2.4,x=Math.cos(angle)*(21+i%5),z=Math.sin(angle)*(20+i%4);
-   const gem=mesh(crystalGeo,i%3?glow(0x9e52f0):glow(0xd89eff),x,2.4+i%3,z,roomGroup);
-   gem.scale.set(1.25,3.2+i%4,1.25);gem.rotation.z=Math.sin(i)*.35;
+  roomBox(0,-4.2,-25,240,.4,200,0x49a8c4);
+  for(const x of [-17.5,17.5])for(const z of [-13,-3,8]){roomBox(x,3.2,z,.50,6.4,.50,0xf4f0ea);
+   beamBetween(x,6.4,z,x*.48,11,z,.42,0x72b5a4);beamBetween(x*.48,11,z,0,12,z,.30,0x9ac7be);}
+  for(const [cx,cz,h] of [[-21,-15,4.2],[21,-15,4.2],[-23,-2,3.4],[23,-2,3.4],[-20,10,3.2],[20,10,3.2]]){
+   const gem=mesh(crystalGeo,glow(0xb996f0),cx,h*.55,cz,roomGroup);
+   gem.scale.set(1.1,h,1.1);gem.rotation.z=cx<0?.22:-.22;
   }
-  // Soft luminous Pearl-Lavender Prism Glasshouse God Rays
-  const rayMat=new THREE.MeshBasicMaterial({color:0xf4e8ff,transparent:true,opacity:.09,depthWrite:false,side:THREE.DoubleSide});
-  for(const [rx,rz] of [[-7,-6],[6,-4],[0,3]]){
+  const rayMat=new THREE.MeshBasicMaterial({color:0xf4ecff,transparent:true,opacity:.07,depthWrite:false,side:THREE.DoubleSide});
+  for(const [rx,rz] of [[-6,-5],[6,-4]]){
    const ray=mesh(new THREE.CylinderGeometry(1.2,3.4,16,10,1,true),rayMat,rx,7.5,rz,roomGroup);
-   ray.rotation.z=-.18;ray.castShadow=false;
+   ray.rotation.z=-.16;ray.castShadow=false;
   }
  }
  const footprints=[[[-8,-3,4,3],[6,2,2.6,5.4],[-1,-6,2.1,2.1]], [[-5,1,2,8],[7,-4,6,2],[10,5,3,3]], [[-8,4,4,2],[0,-3,7,2],[8,4,4,2]], [[-8,-4,5,3],[6,4,4,4],[2,-7,2,3]]];
@@ -435,15 +491,57 @@ function setChamber(act,layout,safe=false,boss=false){
  const garden=[[[0,-4,5,3],[-6,2,3,3],[6,2,3,3]], [[-7,-3,4,4],[0,3,2,2],[7,-3,4,4]], [[-5,-5,2,5],[5,-5,2,5],[0,1,5,2]], [[-7,3,5,2],[-2,-2,2,4],[5,-6,4,3],[9,3,3,3]]];
  const obstacles=[footprints,dock,garden][act][layout];
  if(!safe)for(const [x,z,w,d] of (boss?[[-10,-2,2.6,2.6],[10,-2,2.6,2.6]]:obstacles)){
-  const h=act===1?2.3:act===0?1.75:2.05;cover(x,z,w,h,d,act===1?a.trim:a.stone);roomBox(x,h+.02,z,w+.06,.09,d+.06,a.accent);
+  const h=[3.25,3.45,3.35][act];cover(x,z,w,h,d,a.stone);roomBox(x,h+.02,z,w+.06,.09,d+.06,act===1?a.trim:act===2?a.trim:a.accent);
   for(const s of [-1,1]){
-   roomBox(x+s*(w/2-.19),h*.54,z+d/2+.019,.17,h*.91,.06,a.dark);
-   roomBox(x,h*.22,z+s*d/2,w+.12,.19,.09,a.dark);
+   roomBox(x+s*(w/2-.19),h*.54,z+d/2+.019,.15,h*.88,.06,a.dark);
+   roomBox(x,h*.22,z+s*d/2,w+.12,.17,.08,act===1?a.dark:a.trim);
   }
-  if(act===2){const m=mesh(crystalGeo,glow(a.accent),x,h+.6,z,roomGroup);m.scale.set(.5,.8,.52);}
+  for(const side of [-1,1]){
+   const face=z+side*(d*.5+.045);
+   roomBox(x,h*.74,face,w*.95,.12,.075,a.trim);
+   for(let i=0;i<3;i++)roomBox(x-w*.36+i*.24,h*.62,face,.12,.29,.08,a.dark);
+   roomBox(x+w*.27,h*.67,face,w*.22,.43,.08,a.trim);
+   roomBox(x+w*.27,h*.67,face+side*.05,w*.14,.075,.03,a.stone);
+  }
+  if(act===2){const m=mesh(crystalGeo,glow(a.accent),x,h+.52,z,roomGroup);m.scale.set(.38,.62,.40);}
  }
  if(!safe){
-  if(!boss)raisedPassage(layout%2?-12:12,8.5,3.15,a);
+  // Multi-layered tactical arena architecture (elevated terraces, low barriers & rhythmic colonnades!)
+  if(boss){
+   for(const sx of [-12.5,12.5]){
+    raisedTerrace(sx,5.5,4.2,5.6,.85,['N','S'],a);
+    archColumn(sx,-7.5,4.2,a);
+   }
+   lowCover(0,6.5,4.6,1.1,a);
+  }else if(act===0){
+   // Daybreak Line: elevated boarding platform + ticket barriers + station colonnade
+   if(layout%2===0){
+    raisedTerrace(11.6,-1.5,4.8,7.2,.88,['N','S'],a);
+    lowCover(-11.2,4.8,3.6,1.0,a);
+    lowCover(-4.5,-8.8,3.4,1.0,a);
+   }else{
+    raisedTerrace(-11.6,-1.5,4.8,7.2,.88,['N','S'],a);
+    lowCover(11.2,5.0,3.6,1.0,a);
+    lowCover(4.2,-8.8,3.4,1.0,a);
+   }
+   for(const [px,pz] of [[-12.2,-9.5],[12.2,-9.5],[-12.2,9.2],[12.2,9.2]])archColumn(px,pz,4.0,a);
+  }else if(act===1){
+   // Tidal Dock: elevated gantry deck + industrial steel cargo bumpers + crane stanchions
+   raisedTerrace(layout%2?-11.8:11.8,2.5,5.0,6.8,.92,['N','S'],a);
+   lowCover(layout%2?10.5:-10.5,-8.2,4.2,1.15,a);
+   lowCover(-5.4,7.4,3.6,1.05,a);lowCover(5.4,7.4,3.6,1.05,a);
+   for(const [px,pz] of [[-12.6,-6.5],[12.6,-6.5]])archColumn(px,pz,4.4,a);
+  }else{
+   // Prism Glasshouse: central/flanking raised marble dais + low glass garden dividers + slender conservatory columns
+   if(layout%2===0){
+    raisedTerrace(-11.6,-2.5,4.6,6.4,.85,['N','S'],a);
+    raisedTerrace(11.6,-2.5,4.6,6.4,.85,['N','S'],a);
+   }else{
+    raisedTerrace(0,-7.6,6.4,3.8,.82,['E','W'],a);
+   }
+   lowCover(-5.2,7.8,3.6,.95,a);lowCover(5.2,7.8,3.6,.95,a);
+   for(const [px,pz] of [[-12.4,-9.2],[12.4,-9.2],[-12.4,8.6],[12.4,8.6]])archColumn(px,pz,4.6,a);
+  }
   if(act===0)addTrap('line',layout%2?3:-3,0,1.1,boss?17:14);
   else for(const [x,z,phase] of [[-4,-5,0],[5,3,2.15],[0,-1,3.82]].slice(0,boss?3:2)){
    const spot=findSpawnPoint(x,z);addTrap('disc',spot.x,spot.z,act===2?2.05:1.72,0,phase,act);

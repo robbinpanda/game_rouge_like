@@ -121,7 +121,7 @@
 /* Hades-Style Walkable 3D Sanctuary Courtyard Hub */
 #menu.rg-hub-roam{opacity:0;pointer-events:none;transition:opacity .28s ease}
 #rg-hub-hud{position:fixed;inset:0;z-index:26;pointer-events:none;font-family:"Microsoft YaHei",sans-serif}
-#rg-hub-hud.hidden,#rg-hub-labels.hidden,#rg-hub-prompt.hidden{display:none}
+#rg-hub-hud.hidden,#rg-hub-labels.hidden,#rg-hub-bubbles.hidden,#rg-hub-prompt.hidden{display:none}
 .rg-hub-top{position:absolute;top:16px;left:20px;right:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .rg-hub-brand{pointer-events:auto;padding:10px 16px;background:linear-gradient(112deg,#122931e6,#1d3d45cc);border:1px solid #dcbd8088;border-left:4px solid #f0c46c;box-shadow:0 8px 24px #09182077;color:#fff4dc}
 .rg-hub-brand small{display:block;font-size:10px;letter-spacing:.22em;color:#e5c583}
@@ -137,6 +137,12 @@
 .rg-hub-controls{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:7px 16px;background:#10252cd8;border:1px solid #91b3ad66;border-radius:99px;color:#dcebe5;font-size:12px;white-space:nowrap;box-shadow:0 6px 20px #08161d66}
 .rg-hub-controls kbd{display:inline-block;padding:1px 6px;margin-right:4px;background:#244750;border:1px solid #dcbd80aa;border-radius:4px;color:#ffe7ad;font:700 11px Consolas,monospace}
 #rg-hub-hud.vista .rg-hub-controls{opacity:0}
+/* 3D Overhead Speech Bubbles directly above Sanctuary characters */
+#rg-hub-bubbles{position:fixed;inset:0;z-index:27;pointer-events:none;overflow:hidden}
+.rg-speech-bubble{position:absolute;transform:translate(-50%,-100%);max-width:300px;padding:9px 14px;background:linear-gradient(112deg,#122a33f5,#1c3e48f0);border:1.5px solid var(--ink,#ffe29a);border-radius:11px;box-shadow:0 8px 24px #07161ea8;color:#fff7e4;font:13px/1.45 "Microsoft YaHei",sans-serif;text-align:left;transition:opacity .15s ease}
+.rg-speech-bubble::after{content:"";position:absolute;left:50%;bottom:-7px;width:11px;height:11px;background:#19353f;border-right:1.5px solid var(--ink,#ffe29a);border-bottom:1.5px solid var(--ink,#ffe29a);transform:translateX(-50%) rotate(45deg)}
+.rg-speech-bubble b{display:block;font:800 12px "STKaiti","KaiTi",serif;letter-spacing:.08em;color:var(--ink,#ffe29a);margin-bottom:2px}
+.rg-speech-bubble span{display:block;color:#f7f4e8}
 /* 3D Projected World Station Labels */
 #rg-hub-labels{position:fixed;inset:0;z-index:22;pointer-events:none;overflow:hidden}
 .rg-world-tag{position:absolute;transform:translate(-50%,-100%);padding:3px 9px;background:#10262ed4;border:1px solid var(--ink,#dcbd80);border-radius:6px;color:#fff4dc;font:700 12px "Microsoft YaHei",sans-serif;white-space:nowrap;text-shadow:0 1px 3px #08161d;opacity:.86;transition:transform .14s,opacity .14s,box-shadow .14s}

@@ -16,6 +16,21 @@ const schools={
 };
 // [id, family, title, rule, maximum rank, prerequisites]
 const talents=[
+ ['firebell', 'ember', '红标', '施放 E 或 X 后，下次直接命中额外造成 15 点伤害。', 1],
+ ['ashguard', 'ember', '隔热层', '受到燃烧敌人的攻击时减伤 20%。', 1],
+ ['rimeguard', 'frost', '霜衣', '受到减速敌人的攻击时减伤 18%。', 1],
+ ['floe', 'frost', '浮冰', '闪避时回复 4 点耐力。', 1],
+ ['sparkRush', 'arc', '快充', '用重击击中目标时，X 冷却缩短 0.3 秒。', 1],
+ ['returnArc', 'arc', '回流', '施放 X 时，E 冷却缩短 1 秒。', 1],
+ ['finisher', 'forge', '猎牙', '重击低于半血的敌人时回复 2 点生命。', 1],
+ ['stalk', 'forge', '伏击', '直接击中满血目标时额外造成 16 点伤害。', 1],
+ ['hearth','ember','续薪','重击燃烧目标时回复 3 点耐力。',1],
+ ['brine','frost','潮退','击中减速目标时附加 6 / 10 点伤害。',2],
+ ['coil','arc','回线','施放 E 或 X 时回复 6 点耐力。',1],
+ ['brace','forge','压舱','耐力高于 60 时，受到的伤害降低 12%。',1],
+ ['ballast','forge','定锚','重击失衡目标额外造成 14 点伤害。',1],
+ ['molt','forge','换甲','清场时生命低于一半，回复 12 点生命。',1],
+ ['pursuit','forge','逐浪','攻击低于半血的目标时伤害提高 12%。',1],
  ['brand','ember','引燃刃','直接命中点燃目标 3 秒；每秒造成 6 / 10 / 14 伤害。',3],
  ['cinder','ember','炎步','闪避在起点炸出半径 3.5 米的火环，点燃附近敌人。',1],
  ['flare','ember','赤焰回路','施放 E 或 X 时，朝身边 5 米释放 20 / 32 伤害的火浪。',2],
@@ -65,6 +80,7 @@ const talents=[
  ['eclipse','arc','蚀月终幕','满 5 格影印施放 E 或重击时，在目标处引爆半径 5.5 米的 72 伤害影爆，并返还 50% 相位闪冷却。',1,['shadowStep','phantomMark']]
 ].map(([id,school,name,desc,max,needs=[]])=>({id,school,name,desc,max,needs}));
 const giftById=Object.fromEntries(talents.map(t=>[t.id,t]));
+for(const [id,art] of Object.entries({firebell:'flare',ashguard:'brand',rimeguard:'chill',floe:'iceStep',sparkRush:'surge',returnArc:'capacitor',finisher:'edge',stalk:'echo',hearth:'brand',brine:'iceStep',coil:'capacitor',brace:'plate',ballast:'iceEdge',molt:'spring',pursuit:'edge'}))giftById[id].art=art;
 Object.assign(giftById.fracture,{art:'spear-2'});
 Object.assign(giftById.whiteout,{art:'rime'});
 Object.assign(giftById.stillpoint,{art:'shatter'});
@@ -84,7 +100,7 @@ const expeditionRoles={
  bastion:{resource:'岩势',max:4,brief:'骨盾承击积 1 格岩势，完美反制积 2 格。X 骨垒将全部岩势化为身边的冲击波。',skills:'E 骨盾承击　·　X 骨垒震地　·　Q 击飞并蓄势',signature:['bedrock','fault','mountain'],
   pool:'plate edge tempo engine echo flare brand surge spark capacitor feedback furnace kilnGuard arcPin firewire liveEdge'}
 };
-for(const role of Object.values(expeditionRoles))role.book=new Set([...role.pool.split(' '),...role.signature]);
+for(const role of Object.values(expeditionRoles))role.book=new Set([...role.pool.split(' '),...role.signature,...'hearth brine coil brace ballast molt pursuit firebell ashguard rimeguard floe sparkRush returnArc finisher stalk'.split(' ')]);
 const unlockedStudies={
  ember:[['spark','firewire','capacitor','relay'],['icewire','liveEdge','iceEdge','echo'],['feedback','spring','glideEdge','engine']],
  frost:[['relay','feedback','capacitor','firewire'],['flare','stormVent','thermalStep','cinder'],['hotEdge','quench','furnace','wildfire']],

@@ -25,6 +25,12 @@ function updateEnemies(dt){
  }
 }
 function updateProjectiles(dt){for(let i=projectiles.length-1;i>=0;i--){const p=projectiles[i];p.life-=dt;
+ if(p.drift){
+  p.age+=dt;
+  if(p.drift==='buoyRay')p.v.setLength(p.age>.45&&p.age<1.4?.22:p.speed);
+  if(p.drift==='irisRay')p.v.applyAxisAngle(effectUp,p.spin*.43*dt);
+  p.m.rotation.y+=dt*2.4;
+ }
  if(p.homing&&p.owner==='player'){
   let best=null,bd=14;
   for(const e of enemies){if(e.dead)continue;const d=e.avatar.group.position.distanceTo(p.m.position);if(d<bd){bd=d;best=e;}}
@@ -49,11 +55,11 @@ function updateProjectiles(dt){for(let i=projectiles.length-1;i>=0;i--){const p=
   p.pierced.add(crossing.enemy);projectileImpact(p,crossing.enemy,crossing.point);
   if(p.pierced.size===(p.pierceLimit||3)){hit=true;hitPoint=crossing.point;break;}
  }
- p.m.position.copy(hitPoint);if(target==='player')damagePlayer(p.damage,p.owner,false);else if(target)projectileImpact(p,target,hitPoint);
+ p.m.position.copy(hitPoint);if(p.halo)p.halo.position.copy(hitPoint);if(target==='player')damagePlayer(p.damage,p.owner,false);else if(target)projectileImpact(p,target,hitPoint);
  if(p.form)drawTrail(from,p.m.position,p.form.colour,p.form.right?.14:.085,p.form.width);
  else if(p.crystalColor)drawTrail(from,p.m.position,p.crystalColor,.13,.072);
  else drawTrail(from,p.m.position,p.owner==='player'?(prismColors[p.weapon]??0xffdaae):0xee9878,.07,p.heavy?.045:.018);
- if(hit||p.life<=0||p.m.position.y<.05){particlesAt(p.m.position,p.crystalColor??(p.owner==='player'?0xeed6a8:0xe8a386),hit?8:2,3);p.pool.release(p.m);projectiles.splice(i,1);}}
+ if(hit||p.life<=0||p.m.position.y<.05){particlesAt(p.m.position,p.crystalColor??(p.owner==='player'?0xeed6a8:0xe8a386),hit?8:2,3);p.halo?.removeFromParent();p.pool.release(p.m);projectiles.splice(i,1);}}
 }
 function projectileImpact(p,target,point){
  if(p.form)formImpact(p.form,point,p.v.clone().normalize());
@@ -95,7 +101,7 @@ function updatePlayer(dt){
    const lp=lockTarget.avatar.group.position,p=player.group.position;
    const targetYaw=Math.atan2(lp.x-p.x,-(lp.z-p.z));
    const diff=Math.atan2(Math.sin(targetYaw-yaw),Math.cos(targetYaw-yaw));
-   yaw+=diff*Math.min(1,dt*8);
+   if(Math.hypot(lp.x-p.x,lp.z-p.z)>.9)yaw+=clamp(diff*(1-Math.exp(-dt*6)),-dt*2.8,dt*2.8);
   }else if(lockTarget?.dead)lockTarget=null;
   if(midDown&&!freeLook&&performance.now()-midPressAt>140){
    freeLook=true;freeLookYaw=yaw;freeLookPitch=pitch;
@@ -127,10 +133,10 @@ function updateCamera(dt){
    if(typeof updateSanctuaryHubCamera==='function'&&updateSanctuaryHubCamera(dt))return;
    let goalPos,goalLook;
    if(sanctuaryView==='mirror'){goalPos=new THREE.Vector3(-2.6,3.2,28.8);goalLook=new THREE.Vector3(-7.4,2.5,22.0);}
-   else if(sanctuaryView==='panorama'){goalPos=new THREE.Vector3(Math.sin(menuOrbit*.55)*12,26.0,22.0);goalLook=new THREE.Vector3(0,-6.0,-60);}
+   else if(sanctuaryView==='panorama'){goalPos=vistaEye.clone();goalPos.x+=Math.sin(menuOrbit*.55)*3.5;goalLook=vistaFocus;}
    else{goalPos=new THREE.Vector3(3.2+Math.sin(menuOrbit)*1.5,4.0,31.4);goalLook=new THREE.Vector3(-.8,1.6,8.0);}
    camera.position.lerp(goalPos,1-Math.exp(-dt*3.5));
-   camera.lookAt(goalLook);camera.fov=lerp(camera.fov,sanctuaryView==='panorama'?62:54,dt*4);camera.updateProjectionMatrix();return;
+   camera.lookAt(goalLook);camera.fov=lerp(camera.fov,sanctuaryView==='panorama'?sanctuaryVistaFov():54,1-Math.exp(-dt*4));camera.updateProjectionMatrix();return;
   }
   camera.position.set(6+Math.sin(menuOrbit),3.2,30.5);camera.lookAt(.1,1.7,22);return;
  }
@@ -138,7 +144,7 @@ function updateCamera(dt){
   const bp=bossIntroTarget.avatar.group.position;
   const focus=new THREE.Vector3(bp.x+Math.sin(bossIntroTime*1.8)*3.5,bp.y+3.9,bp.z+7.6);
   camera.position.lerp(focus,1-Math.exp(-dt*7));
-  camera.lookAt(bp.x,bp.y+2.1,bp.z);camera.fov=lerp(camera.fov,48,dt*6);camera.updateProjectionMatrix();return;
+  camera.lookAt(bp.x,bp.y+2.1,bp.z);camera.fov=lerp(camera.fov,48,1-Math.exp(-dt*6));camera.updateProjectionMatrix();return;
  }
  const p=player.group.position;cameraTarget.set(p.x,p.y+1.65,p.z);
  if(freeLook&&state==='playing'){
@@ -149,12 +155,61 @@ function updateCamera(dt){
   if(hit)cameraDesired.copy(cameraTarget).addScaledVector(delta.normalize(),Math.max(.75,hit.distance-.35));
   camera.position.lerp(cameraDesired,1-Math.exp(-dt*18));
   camera.lookAt(p.x,p.y+1.45,p.z);
-  camera.fov=lerp(camera.fov,52,dt*8);camera.updateProjectionMatrix();
+  camera.fov=lerp(camera.fov,52,1-Math.exp(-dt*8));camera.updateProjectionMatrix();
   return;
  }
  const bossRoom=rogueMode&&roomNow()?.type==='boss';
- const dist=!rogueMode&&mouseRight&&weaponNow().type==='ranged'?4.5:rogueMode?(bossRoom?9.2:8.1):6.35;
- cameraDesired.set(p.x-Math.sin(yaw)*dist+Math.cos(yaw)*(rogueMode?1.05:1.63),p.y+(rogueMode?3.55:2.3)+Math.sin(pitch)*5.5,p.z+Math.cos(yaw)*dist+Math.sin(yaw)*(rogueMode?1.05:1.63));cameraDesired.y=Math.max(.55,cameraDesired.y);const delta=cameraDesired.clone().sub(cameraTarget);raycaster.set(cameraTarget,delta.clone().normalize());raycaster.far=delta.length();const hit=raycaster.intersectObjects(cameraMeshes,false)[0];if(hit)cameraDesired.copy(cameraTarget).addScaledVector(delta.normalize(),Math.max(.55,hit.distance-.35));if(rogueMode&&hit)camera.position.copy(cameraDesired);else camera.position.lerp(cameraDesired,1-Math.exp(-dt*18));if(shake>0){camera.position.x+=(visualRoll()-.5)*shake;camera.position.y+=(visualRoll()-.5)*shake*(rogueMode?.58:1);}const target=cameraTarget.clone().add(new THREE.Vector3(Math.sin(yaw)*5+Math.cos(yaw)*.35,-pitch*3,-Math.cos(yaw)*5+Math.sin(yaw)*.35));camera.lookAt(target);camera.fov=lerp(camera.fov,!rogueMode&&mouseRight&&weaponNow().type==='ranged'?49:slowMo>0?52:dodgeTime>0?66:raid.sprinting?65:59,dt*9);camera.updateProjectionMatrix();if(rogueMode&&state==='playing'&&!raid.strike)faceReticle();
+ const dist=!rogueMode&&mouseRight&&weaponNow().type==='ranged'?4.5:rogueMode?(bossRoom?10.6:9.3):6.35;
+ const baseH=rogueMode?(bossRoom?6.55:5.55)+Math.sin(pitch)*4.2:2.3+Math.sin(pitch)*5.5;
+ cameraDesired.set(
+  p.x-Math.sin(yaw)*dist+Math.cos(yaw)*(rogueMode?.85:1.63),
+  Math.max(rogueMode?p.y+2.65:.55,p.y+baseH),
+  p.z+Math.cos(yaw)*dist+Math.sin(yaw)*(rogueMode?.85:1.63)
+ );
+ const delta=cameraDesired.clone().sub(cameraTarget);
+ raycaster.set(cameraTarget,delta.clone().normalize());raycaster.far=delta.length();
+ let hit=raycaster.intersectObjects(cameraMeshes,false)[0];
+ // Find the lowest unobstructed boom instead of switching among fixed heights.
+ if(hit&&rogueMode){
+  const sample=cameraDesired.clone(),probe=new THREE.Vector3();
+  const clearAt=lift=>{
+   sample.copy(cameraDesired);sample.y+=lift;
+   probe.copy(sample).sub(cameraTarget);
+   raycaster.far=probe.length();raycaster.set(cameraTarget,probe.normalize());
+   return !raycaster.intersectObjects(cameraMeshes,false).length;
+  };
+  let low=0,high=4.6;
+  if(clearAt(high)){
+   for(let i=0;i<5;i++){
+    const mid=(low+high)*.5;
+    if(clearAt(mid))high=mid;else low=mid;
+   }
+   cameraDesired.y+=high;hit=null;
+  }
+ }
+ if(hit){
+  const pullDir=cameraDesired.clone().sub(cameraTarget).normalize();
+  cameraDesired.copy(cameraTarget).addScaledVector(pullDir,Math.max(rogueMode?2.1:.55,hit.distance-.45));
+  if(rogueMode)cameraDesired.y=Math.max(p.y+2.35,cameraDesired.y);
+ }
+ if(rogueMode){
+  const step=cameraDesired.clone().sub(camera.position).multiplyScalar(1-Math.exp(-dt*9));
+  step.clampLength(0,dt*13);camera.position.add(step);
+ }else camera.position.lerp(cameraDesired,1-Math.exp(-dt*18));
+ if(shake>0){
+  const strength=rogueMode?Math.min(.045,shake):shake;
+  camera.position.x+=(visualRoll()-.5)*strength;camera.position.y+=(visualRoll()-.5)*strength*.58;
+ }
+ const target=cameraTarget.clone().add(new THREE.Vector3(Math.sin(yaw)*5+Math.cos(yaw)*.35,-pitch*3,-Math.cos(yaw)*5+Math.sin(yaw)*.35));
+ if(rogueMode){
+  const before=camera.quaternion.clone();
+  camera.lookAt(target);
+  const goal=camera.quaternion.clone();
+  camera.quaternion.copy(before).rotateTowards(goal,dt*4.2);
+ }else camera.lookAt(target);
+ camera.fov=lerp(camera.fov,!rogueMode&&mouseRight&&weaponNow().type==='ranged'?49:slowMo>0?52:dodgeTime>0?66:raid.sprinting?65:59,1-Math.exp(-dt*9));
+ camera.updateProjectionMatrix();
+ if(rogueMode&&state==='playing'&&!raid.strike)faceReticle();
 }
 function updateHUD(){updateBaseHUD();updateRaidHUD();updateLookState();const w=weaponNow(),h=heroNow();$('skill-melee').querySelector('span').textContent=w.short+'普攻';$('skill-melee').querySelector('strong').textContent=w.symbol;cooldownUI('skill-melee',meleeCd,w.cooldown[combo]||.5);cooldownUI('skill-spike',0,1);cooldownUI('skill-hero',skillCd,h.eCd);cooldownUI('skill-burst',ultimateCd,h.qCd);$('skill-hero').querySelector('strong').textContent=h.symbol;$('skill-burst').querySelector('strong').textContent='✺';
  if(rogueMode){

@@ -49,7 +49,7 @@ test('boon draft and weapon hammer panels render Echo Persona voice banners',()=
  run("run.roomSchool='arc';openDraft()");
  const draftHtml=run("$('rg-panel').innerHTML");
  assert.match(draftHtml,/rg-voice-banner/);
- assert.match(draftHtml,/跳闸/);
+ assert.match(draftHtml,/岚影/);assert.doesNotMatch(draftHtml,/跳闸/);
 
  run("openHammerDraft()");
  const hammerHtml=run("$('rg-panel').innerHTML");

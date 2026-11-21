@@ -95,6 +95,7 @@ function tickCreatureAnimation(e,dt,moving){
   else if(e.heat>0||e.burn>0){a.instMat.emissive.setHex(0xff6b2e);a.instMat.emissiveIntensity=.28+.12*Math.sin(time*14);}
   else if(e.charge&&e.windup>0){a.instMat.emissive.setHex(0x4bc8ff);a.instMat.emissiveIntensity=.32+.2*Math.sin(time*24);}
   else if(e.phaseShift&&e.boss){a.instMat.emissive.setHex(0xff6f4a);a.instMat.emissiveIntensity=.14+.08*Math.sin(time*8);}
+  else if(e.variantGlow){a.instMat.emissive.setHex(e.variantGlow);a.instMat.emissiveIntensity=.10+.05*Math.sin(time*5+e.avatar.group.position.x);}
   else{a.instMat.emissive.setHex(0x000000);a.instMat.emissiveIntensity=0;}
  }
  // Subtle anime squash & stretch hit recoil

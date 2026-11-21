@@ -11,8 +11,8 @@ function play(seed,pact,depth,g,ranged=false){
   let roomKey='',frame=0,elapsed=0,observedAffixes=new Set(),damageTaken=0,lastHealth=hp;
   while(state!=='result'&&frame++<24000){
    state='playing';document.pointerLockElement=canvas;
-   if(run.status==='exit'){
-    player.group.position.copy(exitPoint);useGate();
+   if(run.status==='exit'||run.status==='reward'){
+    player.group.position.copy(run.rewardNode?.position||exitPoint);useGate();
     if(run.panel==='camp')chooseExpedition('visit-shop');
     if(run.panel==='event'){
      if('${pact}'&&!run.contracts.includes('${pact}'))chooseExpedition('pact-${pact}');
@@ -20,7 +20,8 @@ function play(seed,pact,depth,g,ranged=false){
     }
     if(run.panel==='shop'&&hp<maxHp*.80&&run.coins>=18)chooseExpedition('heal');
     if(run.panel==='shop'&&run.coins>=40)chooseExpedition('buy');
-    if(run.panel==='draft'){
+    if(run.panel==='hammer')chooseExpedition(hammerBook()[0].id);
+    while(run.panel==='draft'){
      const priority=[loadout[0]+'-left',loadout[0]+'-right','edge','brand','plate','tempo','hammer-1'];
      const pick=priority.map(id=>run.offers.find(t=>t.id===id)).find(Boolean)||run.offers[0];
      chooseExpedition(pick.id);

@@ -74,6 +74,9 @@ function damageEnemy(e,amount,source='player',push=null,options={}){if(e.dead||r
  }
 }
 function damagePlayer(amount,attacker=null,charged=false){if(state!=='playing')return;
+ if(rogueMode&&rank('ashguard')&&(attacker?.heat>0||attacker?.burn>0))amount*=.8;
+ if(rogueMode&&rank('rimeguard')&&attacker?.slow>0)amount*=.82;
+ if(rogueMode&&rank('brace')&&stamina>60)amount*=.88;
  if(invulnerable>0){
   if(dodgeTime>.12&&attacker?.avatar&&!(raid.opening?.until>time)){
    raid.opening={enemy:attacker,until:time+1.25,label:'极限闪避'};impactSpray(player.group.position.clone().add(new THREE.Vector3(0,1.25,0)),0x66d5ed);

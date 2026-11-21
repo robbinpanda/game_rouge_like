@@ -38,15 +38,18 @@ const sanctuaryHub={
  dummyAttackTimer:0,
  dummyParryWindow:0,
  labelsEl:null,
+ bubblesEl:null,
  hudEl:null,
- promptEl:null
+ promptEl:null,
+ bubbles:new Map(),
+ npcTalkStep:{}
 };
 
 const SANCTUARY_NPC_SPOTS=[
- {x:-4.6,z:25.2,yaw:.52},
- {x:4.6,z:25.2,yaw:-.52},
- {x:-3.4,z:19.4,yaw:.45},
- {x:3.4,z:19.4,yaw:-.45}
+ {x:-4.6,z:25.4,yaw:.52},
+ {x:4.6,z:25.4,yaw:-.52},
+ {x:-2.9,z:19.6,yaw:.42},
+ {x:2.9,z:19.6,yaw:-.42}
 ];
 const SANCTUARY_DEFAULT_WEAPONS={ember:'katana',frost:'rifle',shade:'dual',bastion:'hammer',reaper:'spear'};
 const DUMMY_BARKS=[
@@ -72,18 +75,101 @@ function isSanctuaryRoam(){
  return true;
 }
 
+function clearSanctuaryOverlayDOM(hideHud=false){
+ if(hideHud&&sanctuaryHub.hudEl)sanctuaryHub.hudEl.classList.add('hidden');
+ if(sanctuaryHub.labelsEl){sanctuaryHub.labelsEl.classList.add('hidden');sanctuaryHub.labelsEl.innerHTML='';}
+ if(sanctuaryHub.bubblesEl){sanctuaryHub.bubblesEl.classList.add('hidden');sanctuaryHub.bubblesEl.innerHTML='';}
+ if(sanctuaryHub.promptEl)sanctuaryHub.promptEl.classList.add('hidden');
+}
+function snapSanctuaryCamera(){
+ if(!player?.group||typeof camera==='undefined')return;
+ const p=player.group.position,y=sanctuaryHub.yaw||0;
+ camera.position.set(p.x+Math.sin(y)*9.2,p.y+6.1,p.z+Math.cos(y)*9.2);
+ camera.lookAt(p.x-Math.sin(y)*3.2,p.y+1.65,p.z-Math.cos(y)*3.2);
+ camera.fov=55;
+ camera.updateProjectionMatrix();
+ camera.updateMatrixWorld();
+}
+function setSanctuaryVista(on){
+ sanctuaryView=on?'panorama':'hero';
+ const hud=sanctuaryHub.hudEl;
+ if(hud){
+  hud.classList.toggle('vista',on);
+  hud.querySelector('[data-hub-act="vista"]').textContent=on?'↩ 返回大厅 [V]':'🌄 俯瞰 [V]';
+ }
+ if(on){
+  clearSanctuaryOverlayDOM(false);
+ }else if(sanctuaryHub.roam){
+  sanctuaryHub.labelsEl?.classList.remove('hidden');
+  sanctuaryHub.bubblesEl?.classList.remove('hidden');
+ }
+}
 function setSanctuaryRoamMode(on){
  sanctuaryHub.roam=!!on;
  sanctuaryHub.drawerOpen=!on;
  $('menu')?.classList.toggle('rg-hub-roam',!!on);
  if(sanctuaryHub.hudEl)sanctuaryHub.hudEl.classList.toggle('hidden',!on);
- if(sanctuaryHub.labelsEl)sanctuaryHub.labelsEl.classList.toggle('hidden',!on);
- if(sanctuaryHub.promptEl&&!on)sanctuaryHub.promptEl.classList.add('hidden');
  if(on){
-  sanctuaryView='hero';
+  setSanctuaryVista(false);
   $('menu')?.classList.remove('rg-vista-mode');
+  sanctuaryHub.labelsEl?.classList.remove('hidden');
+  sanctuaryHub.bubblesEl?.classList.remove('hidden');
+  snapSanctuaryCamera();
   updateSanctuaryHubHUD();
+ }else{
+  clearSanctuaryOverlayDOM(true);
  }
+}
+function showWorldBubble(key,getPos,speaker,text,color='#ffe4a0',duration=4.6){
+ if(!text)return;
+ sanctuaryHub.bubbles.set(key,{key,getPos,speaker,text,color,remain:duration,duration});
+}
+function speakSanctuaryNpc(npcId){
+ const npc=sanctuaryHub.npcs.find(n=>n.id===npcId);
+ if(!npc||typeof pickCompanionDialogue!=='function')return false;
+ const prof=COMPANION_PROFILES[npcId];
+ let session=sanctuaryHub.npcTalkStep[npcId];
+ if(!session||session.idx>=session.lines.length){
+  const picked=pickCompanionDialogue(npcId);
+  session={lines:picked.lines,idx:0,isNew:picked.isNew};
+  sanctuaryHub.npcTalkStep[npcId]=session;
+ }
+ const [who,line]=session.lines[session.idx++];
+ const heroName=HEROES[chosenClass]?.name;
+ const isPlayer=who===heroName;
+ const more=session.idx<session.lines.length?' ▸':'';
+ if(isPlayer){
+  const pCol='#'+(HEROES[chosenClass]?.color||0x8ef5cf).toString(16).padStart(6,'0');
+  showWorldBubble('player',()=>new THREE.Vector3(player.group.position.x,player.group.position.y+2.75,player.group.position.z),who,line+more,pCol,4.6);
+ }else{
+  showWorldBubble('npc-'+npcId,()=>new THREE.Vector3(npc.pos.x,2.95,npc.pos.z),who,line+more,prof?.color||'#ffe29a',5.0);
+ }
+ cue('click');
+ if(session.idx>=session.lines.length){
+  delete sanctuaryHub.npcTalkStep[npcId];
+  const {justUnlockedKeepsake}=talkToCompanion(npcId);
+  updateSanctuaryNpcBeacons();
+  updateSanctuaryHubHUD();
+  if(justUnlockedKeepsake&&prof){
+   toast('✦ 解锁信物「'+prof.keepsake.name+'」· 可在军械台佩戴');
+  }
+ }
+ return true;
+}
+function giftSanctuaryNpc(npcId){
+ const npc=sanctuaryHub.npcs.find(n=>n.id===npcId);
+ if(!npc||typeof giftCompanionShard!=='function')return false;
+ const prof=COMPANION_PROFILES[npcId];
+ if(giftCompanionShard(npcId)){
+  showWorldBubble('npc-'+npcId,()=>new THREE.Vector3(npc.pos.x,2.95,npc.pos.z),prof.name+' ♥',prof.giftLine,prof.color,5.2);
+  updateSanctuaryHubHUD();
+  toast('羁绊升温 · '+prof.name+' ♥'+(narrative.bonds[npcId]||1)+'/3');
+  return true;
+ }
+ const bond=narrative.bonds[npcId]||0;
+ const msg=bond>=3?'羁绊已满，安心出发吧！':'残片不足（需要 10 残片）';
+ showWorldBubble('npc-'+npcId,()=>new THREE.Vector3(npc.pos.x,2.95,npc.pos.z),prof.name,msg,prof.color,3.0);
+ return false;
 }
 
 function buildSanctuaryHubProps(){
@@ -106,16 +192,20 @@ function buildSanctuaryHubProps(){
  sanctuaryHub.riftCurtain.castShadow=false;
  floorRing(0,14.5,2.25,0x8ef5cf);
 
- // 2. Mirror of Echoes floor aura (-7.1, 21.8)
- floorRing(-6.6,21.8,1.75,0xc996ff);
+ // 2. Mirror of Echoes (-7.2, 22.0) — Tripo sculpted mirror on low carved stone plinth
+ floorRing(-6.4,22.0,1.75,0xc996ff);
+ const mirrorMesh=placeCoastalProp('mirror',g,-7.2,.14,22.0,[1.85,4.10,1.75]);
+ mirrorMesh.rotation.y=.78;
 
- // 3. Arsenal Weapon Rack display above right pedestal (+7.1, 21.8)
- floorRing(6.6,21.8,1.75,0xf5c869);
+ // 3. Arsenal Weapon Rack display (+7.2, 22.0) — Tripo Armory Stand beneath floating blades
+ floorRing(6.4,22.0,1.75,0xf5c869);
+ const armoryMesh=placeCoastalProp('armory',g,7.2,.14,22.0,[2.95,1.60,1.50]);
+ armoryMesh.rotation.y=-.78;
  const rackPalette=[0xff8f5e,0x8de6ff,0xc996ff,0xf2c66d,0x8ef5c8,0xffa8c8];
  for(let i=0;i<6;i++){
   const ang=i*Math.PI/3;
   const blade=new THREE.Group();
-  blade.position.set(7.4+Math.cos(ang)*1.05,2.35,22.0+Math.sin(ang)*.72);
+  blade.position.set(7.2+Math.cos(ang)*1.05,2.45,22.0+Math.sin(ang)*.72);
   box(0,0,0,.09,.92,.04,glow(rackPalette[i]),blade);
   box(0,-.34,0,.26,.07,.08,chamberMat(0x243945),blade);
   blade.rotation.z=.22;
@@ -125,47 +215,32 @@ function buildSanctuaryHubProps(){
 
  // 4. Fated List Prophecy Stele (-5.0, 17.5)
  floorRing(-5.0,17.5,1.55,0xf2c45a);
- cylinder(-5.0,.28,17.5,1.0,1.2,.56,chamberMat(0xd6c5ac),g,8);
- box(-5.0,1.55,17.5,.88,2.15,.52,chamberMat(0x213a45),g);
- box(-5.0,1.55,17.78,.54,1.6,.06,glow(0xf5cf74),g);
+ placeCoastalProp('stele',g,-5.0,0,17.5,[1.92,2.72,1.63]);
  sanctuaryHub.prophecyGem=mesh(crystalGeo,glow(0xffd66e),-5.0,3.18,17.5,g);
  sanctuaryHub.prophecyGem.scale.set(.34,.58,.34);sanctuaryHub.prophecyGem.castShadow=false;
 
- // 5. Chronicle & Field Guide Lectern (0, 28.4) — South center balancing North Archway!
+ // 5. Chronicle & Field Guide Lectern (0, 28.4) — Tripo sculpted lectern facing courtyard
  floorRing(0,28.4,1.45,0x8be2f0);
- cylinder(0,.62,28.4,.34,.56,1.24,chamberMat(0x27404a),g,8);
- const desk=box(0,1.3,28.4,1.15,.14,.8,chamberMat(0xdcbd80),g);desk.rotation.x=-.32;
- const page=box(0,1.42,28.4,.86,.08,.56,glow(0x9ef0ff),g);page.rotation.x=-.32;
+ const lecternMesh=placeCoastalProp('chronicle',g,0,0,28.4,[1.65,1.62,1.62]);
+ lecternMesh.rotation.y=Math.PI;
 
- // 6. Hades Skelly-Style Training Dummy ("试刃靶偶 · 老铁桩") at (+5.0, 17.5)
+ // 6. Hades Skelly-Style Training Dummy ("试刃靶偶 · 老铁桩") at (+5.0, 17.5) — Tripo model with wobble & hit-flash!
  floorRing(5.0,17.5,1.95,0xff9666);
  const dummyRoot=new THREE.Group();
  dummyRoot.position.set(5.0,0,17.5);
  g.add(dummyRoot);
- cylinder(0,.22,0,.95,1.12,.44,chamberMat(0x2e4550),dummyRoot,10);
- cylinder(0,.48,0,.78,.86,.12,chamberMat(0xdcbd80),dummyRoot,10);
  const pivot=new THREE.Group();
- pivot.position.set(0,.52,0);
+ pivot.position.set(0,.08,0);
  dummyRoot.add(pivot);
- const dummyMat=chamberMat(0x9a6d52).clone();
- const dummyArmorMat=chamberMat(0xd99b56).clone();
- const dummyHeadMat=chamberMat(0xf0e4d2).clone();
- cylinder(0,.55,0,.14,.16,1.1,chamberMat(0x4b3b38),pivot,8);
- const torso=mesh(new THREE.CylinderGeometry(.42,.34,.92,10),dummyMat,0,1.18,0,pivot);
- const targetPlate=mesh(new THREE.CylinderGeometry(.30,.30,.08,16),glow(0xff784f),0,1.22,.39,pivot);
- targetPlate.rotation.x=Math.PI/2;
- const shoulderBar=box(0,1.52,0,1.55,.2,.22,dummyArmorMat,pivot);
- for(const s of [-1,1])box(s*.74,1.32,0,.22,.52,.22,dummyMat,pivot);
- const head=mesh(new THREE.DodecahedronGeometry(.32,0),dummyHeadMat,0,1.96,0,pivot);
- head.scale.set(.92,1.08,.92);
- box(0,1.98,.26,.44,.12,.12,glow(0xffcf6e),pivot);
- const crest=mesh(crystalGeo,glow(0xff8c5a),0,2.42,0,pivot);
- crest.scale.set(.18,.34,.18);crest.castShadow=false;
+ const dummyMesh=placeCoastalProp('dummy',pivot,0,-.08,0,[1.68,2.48,1.44],true);
+ dummyMesh.rotation.y=-.42;
+ const crest=mesh(crystalGeo,glow(0xff8c5a),0,2.78,0,pivot);
+ crest.scale.set(.16,.30,.16);crest.castShadow=false;
  const parryRing=mesh(yardRing,glow(0x78cfff),0,.08,0,dummyRoot);
  parryRing.rotation.x=-Math.PI/2;parryRing.scale.set(2.4,2.4,1);parryRing.visible=false;
  sanctuaryHub.dummy={
-  root:dummyRoot,pivot,torso,head,crest,parryRing,
-  mats:[dummyMat,dummyArmorMat,dummyHeadMat],
+  root:dummyRoot,pivot,torso:dummyMesh,head:dummyMesh,crest,parryRing,
+  mats:[dummyMesh.material],
   pos:new THREE.Vector3(5.0,0,17.5),
   wobble:0,wobbleDir:new THREE.Vector2(0,1),flash:0
  };
@@ -176,7 +251,7 @@ function buildSanctuaryHubProps(){
 function refreshSanctuaryCompanions(){
  if(!sanctuaryHub.propGroup)return;
  for(const npc of sanctuaryHub.npcs){
-  if(npc.avatar)releasePlayer(npc.avatar);
+  if(npc.avatar){npc.avatar.group.removeFromParent();releasePlayer(npc.avatar);}
   if(npc.ring)npc.ring.removeFromParent();
   if(npc.beacon)npc.beacon.removeFromParent();
  }
@@ -222,10 +297,12 @@ function getSanctuaryStations(){
  ];
  for(const npc of sanctuaryHub.npcs){
   const unread=typeof hasUnreadDialogue==='function'?hasUnreadDialogue(npc.id):false;
+  const session=sanctuaryHub.npcTalkStep[npc.id];
+  const bond=typeof narrative!=='undefined'?(narrative.bonds[npc.id]||0):0;
   list.push({
    id:'npc-'+npc.id,kind:'npc',npcId:npc.id,
    label:(unread?'! ':'')+npc.name,
-   sub:unread?'有新对话 · 赠礼解锁信物':'与同伴交谈 · 切换信物',
+   sub:session?'按 F 继续对话 · G 赠礼 (10残片)':unread?'按 F 倾听新对话 · 解锁信物':'按 F 交谈 · G 赠礼 (♥'+bond+'/3)',
    key:'F',pos:npc.pos,r:3.0,color:npc.color,height:3.1,unread
   });
  }
@@ -273,8 +350,7 @@ function triggerSanctuaryInteract(){
   return true;
  }
  if(st.kind==='npc'){
-  if(typeof showCompanionDialog==='function')showCompanionDialog(st.npcId);
-  return true;
+  return speakSanctuaryNpc(st.npcId);
  }
  if(st.kind==='dummy'){
   // Trigger a telegraphed blue-flash swing so the player can practice Perfect Parry [C]!
@@ -282,9 +358,7 @@ function triggerSanctuaryInteract(){
   sanctuaryHub.dummyParryWindow=0;
   if(sanctuaryHub.dummy?.parryRing)sanctuaryHub.dummy.parryRing.visible=true;
   cue('charge',sanctuaryHub.dummy.pos);
-  if(typeof showBark==='function'){
-   showBark('老铁桩','试刃靶偶 · 蓝光演练','蓝光蓄力来咯！看好时机按 [C] 完美反制！',{color:'#7ce4ff',mark:'桩',duration:2.6,force:true});
-  }
+  showWorldBubble('dummy',()=>new THREE.Vector3(sanctuaryHub.dummy.pos.x,2.85,sanctuaryHub.dummy.pos.z),'老铁桩','蓝光蓄力来咯！看好时机按 [C] 完美反制！','#7ce4ff',2.8);
   return true;
  }
  return false;
@@ -312,10 +386,10 @@ function hitSanctuaryDummy(damage,tag='normal',colorHex=0xffcf78){
  sanctuaryHub.dummyCombo++;
  sanctuaryHub.dummyComboTimer=3.4;
  sanctuaryHub.dpsLog.push({t:time,dmg:damage});
- if(sanctuaryHub.dummyBarkCd<=0&&typeof showBark==='function'){
+ if(sanctuaryHub.dummyBarkCd<=0){
   sanctuaryHub.dummyBarkCd=4.8;
   const line=DUMMY_BARKS[sanctuaryHub.dummyCombo%DUMMY_BARKS.length];
-  showBark('老铁桩','圣所试刃靶偶',line,{color:'#ffaa72',mark:'桩',duration:3.0,force:true});
+  showWorldBubble('dummy',()=>new THREE.Vector3(d.pos.x,2.85,d.pos.z),'老铁桩',line,'#ffaa72',3.4);
  }
  updateSanctuaryHubHUD();
 }
@@ -578,19 +652,52 @@ function updateSanctuaryHub(dt){
    sanctuaryHub.promptEl.classList.add('hidden');
   }
  }
- // Project crisp floating 3D labels for nearby Sanctuary stations
- if(sanctuaryHub.labelsEl&&roaming&&typeof window!=='undefined'&&window.innerWidth>0){
-  let html='';
-  const proj=new THREE.Vector3();
-  for(const st of stations){
-   proj.set(st.pos.x,st.height,st.pos.z).project(camera);
-   if(proj.z>1||proj.z<-1)continue;
-   const sx=(proj.x*.5+.5)*innerWidth,sy=(-proj.y*.5+.5)*innerHeight;
-   if(sx<-40||sx>innerWidth+40||sy<20||sy>innerHeight-20)continue;
-   const active=best&&best.id===st.id;
-   html+='<div class="rg-world-tag '+(active?'active':'')+(st.unread?' unread':'')+'" style="left:'+sx.toFixed(0)+'px;top:'+sy.toFixed(0)+'px;--ink:'+st.color+'">'+st.label+'</div>';
+ // Update & project 3D overhead speech bubbles above characters
+ if(sanctuaryHub.bubbles.size){
+  for(const [k,b] of sanctuaryHub.bubbles){
+   b.remain-=dt;
+   if(b.remain<=0)sanctuaryHub.bubbles.delete(k);
   }
-  sanctuaryHub.labelsEl.innerHTML=html;
+ }
+ const showWorldOverlays=roaming&&state==='menu'&&sanctuaryView!=='panorama'&&camera.position.y<9.5;
+ if(!showWorldOverlays){
+  if(sanctuaryHub.labelsEl&&sanctuaryHub.labelsEl.innerHTML)sanctuaryHub.labelsEl.innerHTML='';
+  if(sanctuaryHub.bubblesEl&&sanctuaryHub.bubblesEl.innerHTML)sanctuaryHub.bubblesEl.innerHTML='';
+  sanctuaryHub.labelsEl?.classList.add('hidden');
+  sanctuaryHub.bubblesEl?.classList.add('hidden');
+ }else if(typeof window!=='undefined'&&window.innerWidth>0){
+  camera.updateMatrixWorld();
+  if(sanctuaryHub.bubblesEl){
+   sanctuaryHub.bubblesEl.classList.remove('hidden');
+   let bHtml='';
+   const bProj=new THREE.Vector3();
+   for(const b of sanctuaryHub.bubbles.values()){
+    const wp=b.getPos();
+    bProj.copy(wp).project(camera);
+    if(bProj.z>1||bProj.z<-1)continue;
+    const sx=clamp((bProj.x*.5+.5)*innerWidth,135,innerWidth-135);
+    const sy=clamp((-bProj.y*.5+.5)*innerHeight,78,innerHeight-110);
+    const fade=b.remain<.45?Math.max(0,b.remain/.45):1;
+    bHtml+='<div class="rg-speech-bubble" style="left:'+sx.toFixed(0)+'px;top:'+sy.toFixed(0)+'px;--ink:'+b.color+';opacity:'+fade.toFixed(2)+'"><b>'+b.speaker+'</b><span>'+b.text+'</span></div>';
+   }
+   sanctuaryHub.bubblesEl.innerHTML=bHtml;
+  }
+  // Project crisp floating 3D labels for nearby Sanctuary stations
+  if(sanctuaryHub.labelsEl){
+   sanctuaryHub.labelsEl.classList.remove('hidden');
+   let html='';
+   const proj=new THREE.Vector3();
+   for(const st of stations){
+    if(sanctuaryHub.bubbles.has(st.id))continue;
+    proj.set(st.pos.x,st.height,st.pos.z).project(camera);
+    if(proj.z>1||proj.z<-1)continue;
+    const sx=(proj.x*.5+.5)*innerWidth,sy=(-proj.y*.5+.5)*innerHeight;
+    if(sx<-40||sx>innerWidth+40||sy<20||sy>innerHeight-20)continue;
+    const active=best&&best.id===st.id;
+    html+='<div class="rg-world-tag '+(active?'active':'')+(st.unread?' unread':'')+'" style="left:'+sx.toFixed(0)+'px;top:'+sy.toFixed(0)+'px;--ink:'+st.color+'">'+st.label+'</div>';
+   }
+   sanctuaryHub.labelsEl.innerHTML=html;
+  }
  }
 }
 
@@ -628,7 +735,7 @@ function initSanctuaryHub(){
  const hud=document.createElement('div');
  hud.id='rg-hub-hud';
  hud.className='hidden';
- hud.innerHTML='<div class="rg-hub-top"><div class="rg-hub-brand"><small>SANCTUARY COURTYARD · '+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'v0.3.1')+'</small><strong>远征圣所</strong><div class="rg-hub-status"></div></div><div class="rg-hub-quick"><button data-hub-act="armory">⚔ 换装 / 难度</button><button data-hub-act="mirror">🪞 回响之镜</button><button data-hub-act="prophecy">📜 预言</button><button data-hub-act="vista">🌄 俯瞰 [V]</button><button data-hub-act="menu">☰ 菜单 [M]</button><button data-hub-act="intro">🎬 重播开场</button></div></div><div class="rg-hub-controls"><span><kbd>WASD</kbd> 自由走动</span><span><kbd>SHIFT</kbd> 冲刺</span><span><kbd>左/右键</kbd> <kbd>E/X/Q</kbd> 打桩试招</span><span><kbd>长按中键</kbd> 360°看正面</span><span><kbd>F</kbd> 交互 / 从正前方拱门出发</span></div>';
+ hud.innerHTML='<div class="rg-hub-top"><div class="rg-hub-brand"><small>SANCTUARY COURTYARD · '+(typeof GAME_VERSION!=='undefined'?GAME_VERSION:'v0.5.2')+'</small><strong>远征圣所</strong><div class="rg-hub-status"></div></div><div class="rg-hub-quick"><button data-hub-act="armory">⚔ 换装 / 难度</button><button data-hub-act="mirror">🪞 回响之镜</button><button data-hub-act="prophecy">📜 预言</button><button data-hub-act="vista">🌄 俯瞰 [V]</button><button data-hub-act="intro">🎬 俯瞰开场</button></div></div><div class="rg-hub-controls"><span><kbd>WASD</kbd> 走动</span><span><kbd>SHIFT</kbd> 冲刺</span><span><kbd>左/右键</kbd> <kbd>E/X/Q</kbd> 打桩试招</span><span><kbd>F</kbd> 交谈 / 出发</span><span><kbd>G</kbd> 赠礼</span></div>';
  $('menu').after(hud);
  sanctuaryHub.hudEl=hud;
 
@@ -638,10 +745,16 @@ function initSanctuaryHub(){
  hud.after(labels);
  sanctuaryHub.labelsEl=labels;
 
+ const bubbles=document.createElement('div');
+ bubbles.id='rg-hub-bubbles';
+ bubbles.className='hidden';
+ labels.after(bubbles);
+ sanctuaryHub.bubblesEl=bubbles;
+
  const prompt=document.createElement('div');
  prompt.id='rg-hub-prompt';
  prompt.className='hidden';
- labels.after(prompt);
+ bubbles.after(prompt);
  sanctuaryHub.promptEl=prompt;
 
  // Add a button inside classic #menu to return straight into walkable 3D Courtyard
@@ -662,11 +775,7 @@ function initSanctuaryHub(){
   else if(act==='mirror')showMirrorDialog();
   else if(act==='prophecy')showProphecyDialog();
   else if(act==='vista'){
-   sanctuaryView=sanctuaryView==='panorama'?'hero':'panorama';
-   hud.classList.toggle('vista',sanctuaryView==='panorama');
-   btn.textContent=sanctuaryView==='panorama'?'↩ 返回大厅 [V]':'🌄 俯瞰 [V]';
-  }else if(act==='menu'){
-   setSanctuaryRoamMode(false);
+   setSanctuaryVista(sanctuaryView!=='panorama');
   }else if(act==='intro'){
    startOpeningCinematic();
   }
@@ -752,32 +861,34 @@ function initSanctuaryHub(){
   const modalOpen=$('rg-guide')&&!$('rg-guide').classList.contains('hidden');
   if(e.code==='Escape'&&!modalOpen){
    if(sanctuaryView==='panorama'){
-    sanctuaryView='hero';sanctuaryHub.hudEl?.classList.remove('vista');return;
+    setSanctuaryVista(false);return;
    }
    if(!sanctuaryHub.roam&&typeof window!=='undefined'&&window.innerWidth>0){
     setSanctuaryRoamMode(true);return;
    }
   }
   if(e.code==='KeyV'&&!modalOpen&&sanctuaryHub.roam){
-   sanctuaryView=sanctuaryView==='panorama'?'hero':'panorama';
-   sanctuaryHub.hudEl?.classList.toggle('vista',sanctuaryView==='panorama');
-   return;
-  }
-  if((e.code==='KeyM'||e.code==='Tab')&&!modalOpen){
-   e.preventDefault();
-   setSanctuaryRoamMode(!sanctuaryHub.roam);
+   setSanctuaryVista(sanctuaryView!=='panorama');
    return;
   }
   if(!isSanctuaryRoam())return;
   input[e.code]=true;
   if(e.repeat)return;
   if(e.code==='KeyF'||e.code==='Space'){e.preventDefault();triggerSanctuaryInteract();}
+  else if(e.code==='KeyG'&&sanctuaryHub.nearest?.kind==='npc'){e.preventDefault();giftSanctuaryNpc(sanctuaryHub.nearest.npcId);}
   else if(e.code==='ShiftLeft'||e.code==='ShiftRight')sanctuaryDash();
   else if(e.code==='KeyE')sanctuaryAttack('skill');
   else if(e.code==='KeyX')sanctuaryAttack('utility');
   else if(e.code==='KeyQ')sanctuaryAttack('burst');
   else if(e.code==='KeyC')sanctuaryAttack('parry');
  });
+ // Boot immediately into walkable 3D Courtyard on Frame 0 with snapped camera (no opening flash or floating sky labels!)
+ if(typeof window!=='undefined'&&window.innerWidth>0&&state==='menu'){
+  player.group.position.set(0,0,22.8);player.group.rotation.y=Math.PI;
+  sanctuaryHub.yaw=0;
+  refreshSanctuaryCompanions();
+  setSanctuaryRoamMode(true);
+ }
 }
 
 // Clean hooks into existing Sanctuary lifecycle without breaking headless tests
@@ -785,6 +896,15 @@ const _hubInitExpedition=initializeExpedition;
 initializeExpedition=function(){
  _hubInitExpedition();
  initSanctuaryHub();
+};
+const _hubStartCinematic=startOpeningCinematic;
+startOpeningCinematic=function(){
+ if(rogueMode){
+  sanctuaryHub.roam=false;
+  sanctuaryHub.bubbles.clear();
+  clearSanctuaryOverlayDOM(true);
+ }
+ return _hubStartCinematic();
 };
 const _hubFinishCinematic=finishOpeningCinematic;
 finishOpeningCinematic=function(){
@@ -812,9 +932,8 @@ const _hubStartGame=startGame;
 startGame=function(){
  if(rogueMode){
   sanctuaryHub.roam=false;
-  sanctuaryHub.hudEl?.classList.add('hidden');
-  sanctuaryHub.labelsEl?.classList.add('hidden');
-  sanctuaryHub.promptEl?.classList.add('hidden');
+  sanctuaryHub.bubbles.clear();
+  clearSanctuaryOverlayDOM(true);
  }
  return _hubStartGame();
 };

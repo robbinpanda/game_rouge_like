@@ -651,24 +651,23 @@ function renderVoiceBannerHTML(speaker,role,mark,color,text){
 }
 function panelVoiceHTML(panel){
  if(panel==='draft'){
-  const primarySchool=run.roomSchool||run.offers?.[0]?.school||run.focus||'ember';
-  const mode=roomNow()?.type==='trial'?'trial':'draft';
-  const {persona,text}=pickEchoVoice(primarySchool,mode);
-  return renderVoiceBannerHTML(persona.name,persona.title,persona.mark,persona.color,text);
+  if(run.shopDraft)return '';
+  const p=draftLeadPatron();
+  const lines={ember:'给它留一星火。下一刀，火就连起来了。',frost:'等潮水结住，再动手。',shade:'看见它们之间的空隙了吗？电会自己找路。',bastion:'站稳。让它先撞上来。',reaper:'留意掉队的那一只。现在，追。'};
+  return renderVoiceBannerHTML(HEROES[p.id].name,p.tag,p.mark,p.color,lines[p.id]);
  }
  if(panel==='hammer'){
   const {persona,text}=pickEchoVoice('forge','hammer');
-  return renderVoiceBannerHTML(persona.name,persona.title,persona.mark,persona.color,text);
+  return renderVoiceBannerHTML('武器质变 · '+persona.name,'锻炉改造',persona.mark,'#ffcf75',text);
  }
  if(panel==='shop'){
-  const {persona}=pickEchoVoice('forge','draft');
-  return renderVoiceBannerHTML('旧港行商 · 补给站',persona.name+' 留下的检修台','商','#e9bf82','前面就是区域首领了。晶片留在口袋里可带不进下辈子，趁现在把家伙什改利索！');
+  return renderVoiceBannerHTML('整备站','补给 · 换装 · 改械','商','#e9bf82','前面就是区域首领，补满状态再走。');
  }
  if(panel==='event'){
-  return renderVoiceBannerHTML('回响祭坛 · 失电残影','晴湾旧电网分流点','✧','#cfa8f2','紫晶脉冲在祭坛表面轻轻震颤。你可以用血、晶片或风险，换取更锋利的回响。');
+  return renderVoiceBannerHTML('回响祭坛','契约与交易','✧','#cfa8f2','选一项回响馈赠后继续前进。');
  }
  if(panel==='camp'){
-  return renderVoiceBannerHTML('沿线行商营地','风暴前的临时检修棚','⛺','#98d5bd','棚灯还亮着。休整片刻，或听一段祭坛里封存的脉冲交易。');
+  return renderVoiceBannerHTML('行商营地','沿线休整','⛺','#98d5bd','选择整备或祭坛。');
  }
  return '';
 }
@@ -757,7 +756,7 @@ function showChronicleDialog(){
   return '<article class="rg-chronicle-item"><small>'+ch.code+' · 已剥离</small><h3>'+ch.title+'</h3><p>'+ch.summary+'</p><blockquote>'+ch.quote+'</blockquote><p style="margin-top:8px;color:#cde4dc">'+ch.after+'</p></article>';
  }).join('');
  const guide=$('rg-guide');
- guide.innerHTML='<section class="rg-sanctuary-modal"><header><div><small>BLACKOUT CHRONICLE · 五重回响真结局</small><h2>失电夜回响纪事 ('+narrative.chronicle+' / 5)</h2></div><div class="rg-shard-pill">✦ 已通关 <b>'+narrative.wins+'</b> 次</div><button data-close>返回圣所</button></header><p class="rg-modal-sub">每次穿越晴湾三幕抵达紫晶温室，都能剥离一层过载结晶，拼凑出“山上的灯”彻夜不熄的真正秘密。</p><div class="rg-chronicle-list">'+rows+'</div></section>';
+ guide.innerHTML='<section class="rg-sanctuary-modal"><header><div><small>BLACKOUT CHRONICLE · 五重回响真结局</small><h2>失电夜回响纪事 ('+narrative.chronicle+' / 5)</h2></div><div class="rg-shard-pill">✦ 已通关 <b>'+narrative.wins+'</b> 次</div><button data-close>返回圣所</button></header><div style="margin:0 0 12px;border-radius:12px;overflow:hidden;border:1px solid rgba(155,212,216,.24)"><img src="'+assetURL('echo-sanctuary-overview.webp')+'" alt="晴湾海岸三域" style="width:100%;height:152px;object-fit:cover;display:block"></div><p class="rg-modal-sub">每次穿越晴湾三幕抵达紫晶温室，都能剥离一层过载结晶，拼凑出“山上的灯”彻夜不熄的真正秘密。</p><div class="rg-chronicle-list">'+rows+'</div></section>';
  guide.classList.remove('hidden');
 }
 

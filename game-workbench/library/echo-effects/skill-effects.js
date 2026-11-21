@@ -186,7 +186,7 @@ function newSkillMaterial(){
     p.x+=flame*.09*p.y*sin(phase*12.+p.y*2.6+p.z);
     p.y-=rock*max(0.,phase-.78)*2.;
     vec3 n=normalize(mat3(modelMatrix)*normal);
-    float light=.63+.37*abs(dot(n,normalize(vec3(-.5,.82,.35))));
+    float light=mix(.75,.98,smoothstep(.35,.47,abs(dot(n,normalize(vec3(-.5,.82,.35))))));
     pigment=color*light;band=tier;along=position.z/7.;
     vec4 view=modelViewMatrix*vec4(p,1.);
     rim=pow(1.-abs(dot(normalize(normalMatrix*normal),normalize(-view.xyz))),2.5);
@@ -205,7 +205,7 @@ function newSkillMaterial(){
     }
     float pulse=.5+.5*sin(local.y*4.-local.z*1.8-phase*15.);
     vec3 heat=flame<0.?vec3(.16,.52,1.):mix(vec3(.35,1.,.82),vec3(1.,.64,.24),flame);
-    vec3 colour=pigment+(1.-rock)*heat*(.10+.49*rim+.17*pulse);
+    vec3 colour=pigment+(1.-rock)*heat*(.035+.19*rim+.04*pulse);
     a*=smoothstep(1.1,3.8,eyeDepth);
     if(a<.035)discard;
     gl_FragColor=vec4(colour,a*mix(.88,.97,rock));

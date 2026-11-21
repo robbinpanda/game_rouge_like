@@ -50,6 +50,9 @@ export const placements={
 };
 // Entries without a proc sculpture deliberately describe the feedback that the player actually sees.
 export const treatments={
+ firebell:'施放 E 或 X 后，下次直接命中额外造成 15 点伤害。',ashguard:'受到燃烧敌人的攻击时减伤 20%。',rimeguard:'受到减速敌人的攻击时减伤 18%。',floe:'闪避时回复 4 点耐力。',sparkRush:'用重击击中目标时，X 冷却缩短 0.3 秒。',returnArc:'施放 X 时，E 冷却缩短 1 秒。',finisher:'重击低于半血的敌人时回复 2 点生命。',stalk:'直接击中满血目标时额外造成 16 点伤害。',
+ hearth:'命中燃烧敌人后，耐力条回升。',brine:'对减速目标的伤害计入本次命中。',coil:'施放技能时耐力条回升。',
+ brace:'高耐力时在受伤结算前减伤。',ballast:'额外伤害合并到重击命中。',molt:'清场时生命条显示恢复。',pursuit:'半血以下目标的加成计入本次命中。',
  brand:'后续灼烧以周期伤害和通用命中反馈呈现。',cinder:'闪避起点扩出橙色火环，圈内敌人受到点燃。',wildfire:'从死亡目标脚下扩出火环，显示传播半径。',furnace:'伤害直接计入命中数字。',
  chill:'积满三层时在目标胸口溅出冰蓝碎片。',iceStep:'脚边扩出冰蓝范围圈，圈内敌人减速。',spring:'取得和进房时更新生命条。',
  fracture:'强化冰矛穿过首个敌人时保留拖尾，再命中一名敌人。',whiteout:'陷阱留地时间变长，冰棱首次结晶时跳出伤害数字。',stillpoint:'冰浪击中冻结目标时打出额外碎晶。',
@@ -80,6 +83,7 @@ export const shared={
  hud:['属性与状态读数','updateHUD · combatReadout','生命、耐力、冷却或命中数字随结算更新。纯数值天赋沿用这些读数。']
 };
 export const sharedByGift={
+ hearth:['hud'],brine:['hud'],coil:['hud'],brace:['hud'],ballast:['hud'],molt:['hud'],pursuit:['hud'],firebell:['hud'],ashguard:['hud'],rimeguard:['hud'],floe:['hud'],sparkRush:['hud'],returnArc:['hud'],finisher:['hud'],stalk:['hud'],
  brand:['hit'],cinder:['pulse'],wildfire:['pulse'],furnace:['hit'],chill:['frost'],iceStep:['pulse'],spring:['hud'],shatter:['pulse'],spark:['chain'],capacitor:['hit'],relay:['chain'],edge:['hit'],tempo:['hud'],plate:['hud'],echo:['hit'],
  flare:['pulse'],rime:['frost'],surge:['discharge'],feedback:['chain'],steam:['pulse'],firewire:['chain'],icewire:['chain'],hotEdge:['pulse'],liveEdge:['chain'],thermalStep:['frost'],arcPin:['pulse'],kilnGuard:['counter','pulse'],quench:['pulse','frost'],stormVent:['trail'],bloodMeal:['link'],packHunt:['link'],
  'katana-1':['hit'],'katana-2':['hit'],'katana-3':['pulse','hit'],'spear-1':['hit'],'spear-2':['frost'],'spear-3':['frost','hit'],'dual-1':['hit'],'dual-2':['hud'],'dual-3':['hit'],'hammer-1':['pulse'],'hammer-2':['pulse','hud'],'hammer-3':['pulse','hit'],'crossbow-1':['hit'],'crossbow-2':['trail'],'crossbow-3':['hit','hud'],'rifle-1':['hit'],'rifle-2':['hud'],'rifle-3':['hit'],

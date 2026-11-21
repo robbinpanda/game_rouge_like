@@ -2,6 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {gameHarness} from './harness.mjs';
 
+function claimRoomReward(run){
+ if(!run('run.rewardNode!==null'))return;
+ run("state='playing';player.group.position.copy(run.rewardNode.position);expeditionKey({code:'KeyF'})");
+ if(run("run.panel==='hammer'"))run("chooseExpedition(hammerBook()[0].id)");
+ while(run("run.panel==='draft'"))run("chooseExpedition(run.offers[0].id)");
+ run("state='playing'");
+}
+
+
 test('altar bounty follows kill order, pays once on clear and expires in the next room',()=>{
  for(const first of [true,false]){
   const {run}=gameHarness(true);
@@ -12,13 +21,14 @@ test('altar bounty follows kill order, pays once on clear and expires in the nex
   assert.equal(run('run.coins'),0);
   run("for(let k=0;k<12&&run.status==='combat';k++){for(const e of [...enemies])damageEnemy(e,9999);stepEncounter(.02);}");
   assert.equal(run("run.coins-(roomNow().type==='elite'?32:18)"),first?48:20);
+  claimRoomReward(run);
   run("player.group.position.copy(exitPoint);useGate();if(run.panel==='hammer')chooseExpedition(hammerBook()[0].id);while(run.panel==='draft')chooseExpedition(run.offers[0].id)");
   assert.equal(run('run.bountyTarget===null'),true);
  }
 });
 test('redraw replaces the offered talents, uses the chapter free roll first, then charges exact funds',()=>{
  const {run}=gameHarness(true);
- run("run.coins=16;openDraft();const before=run.offers;chooseExpedition('redraw')");
+ run("run.coins=16;run.shopDraft=true;openDraft();const before=run.offers;chooseExpedition('redraw')");
  assert.ok(run('!run.redraw && run.coins===16 && run.offers.every(t=>!before.includes(t))'));
  run("const second=run.offers;chooseExpedition('redraw')");
  assert.ok(run('run.coins===0 && run.offers.every(t=>!second.includes(t))'));
@@ -46,13 +56,16 @@ test('one exit stays locked until the last enemy, then requires proximity and a 
  assert.equal(run('currentTarget().exit'),false);
  assert.equal(run("currentTarget().name===enemies[1].name"),true);
  run("damageEnemy(enemies[1],9999);stepEncounter(.01);player.group.position.set(0,0,9);useGate()");
- assert.equal(run('currentTarget().exit'),true);
+ assert.equal(run('run.status'),'reward');
  assert.equal(run('state'),'playing');
  run("player.group.position.copy(exitPoint);expeditionKey({code:'KeyF'})");
+ assert.equal(run('run.panel'),'');
+ run("player.group.position.copy(run.rewardNode.position);expeditionKey({code:'KeyF'})");
  assert.equal(run('run.panel'),'draft');
- assert.equal(run('run.offers.length'),3);
+ assert.ok(run('run.offers.length>=1 && run.offers.length<=3 && run.offers.every(t=>giftPatron(t).id===run.draftPatron)'));
  run("chooseExpedition(run.offers[0].id)");
- assert.equal(run('run.index'),1);assert.equal(run('Object.keys(run.gifts).length'),1);
+ assert.equal(run('run.index'),0);assert.equal(run('Object.keys(run.gifts).length'),1);
+ run("state='playing';player.group.position.copy(exitPoint);useGate()");assert.equal(run('run.index'),1);
 });
 test('screen edge points behind the player and T faces the remaining objective',()=>{
  const {run}=gameHarness(true);
@@ -75,6 +88,7 @@ test('all three chapters, boss phases, stations, death and clean restart',()=>{
    }
    run("for(let k=0;k<12&&run.status==='combat';k++){for(const e of [...enemies])damageEnemy(e,9999);stepEncounter(.02);}");
   }
+  claimRoomReward(run);
   run("player.group.position.copy(exitPoint);useGate()");
   if(i===22)break;
   if(run('run.panel')==='camp')run("chooseExpedition('visit-shop')");
@@ -114,6 +128,7 @@ test('branching doors, dash-strike, death defiance, hammer aspect, shade and ope
  const {run}=gameHarness(true);
  // 1. Branching doors open on clear
  run("for(let k=0;k<12&&run.status==='combat';k++){for(const e of [...enemies])damageEnemy(e,9999);stepEncounter(.02);}");
+ assert.equal(run('branchGates.length'),0);claimRoomReward(run);
  assert.equal(run('branchGates.length'),3);
  // 2. Dash-strike fires during dash window
  run("startGame();state='playing';time=10;dodge();dodgeTime=0;melee();");

@@ -1,4 +1,4 @@
-const GAME_VERSION='v0.4';
+const GAME_VERSION='v0.6';
 const chapterSizes=[7,8,8],expeditionLength=chapterSizes.reduce((sum,n)=>sum+n,0);
 const run={marks:[],gifts:{},random:seededRoll('menu')};
 const roomTypes={fight:'交战',elite:'精英',trial:'双系试炼',event:'回响祭坛',camp:'行商营地',shop:'整备站',boss:'区域首领'};
@@ -101,12 +101,13 @@ function startExpedition(){
  const bonusHp=mirrorLevel('vitality')*15;
  maxHp=heroNow().hp+bonusHp;hp=maxHp;
  dashCharges=maxDashCharges();dashRecharge=0;dashStrikeWindow=0;inputBuffer=null;slowMo=0;lockTarget=null;bossIntroTime=0;
- Object.assign(run,{act:0,index:0,roomsCleared:0,shadeClears:0,gifts:{},coins:[0,25,55][mirrorLevel('startCoins')]||0,shardsEarned:0,focus:null,charge:0,primed:false,echoes:[],offers:[],panel:'',redraw:1+mirrorLevel('extraRedraw'),bountyPending:false,revives:mirrorLevel('revive'),roomReward:'boon',roomSchool:null,draftsLeft:0,pendingBranch:null,waves:[],trialSchool:null});
+ Object.assign(run,{act:0,index:0,roomsCleared:0,shadeClears:0,gifts:{},coins:[0,25,55][mirrorLevel('startCoins')]||0,shardsEarned:0,focus:null,charge:0,primed:false,echoes:[],offers:[],panel:'',redraw:1+mirrorLevel('extraRedraw'),bountyPending:false,revives:mirrorLevel('revive'),firebellReady:false,roomReward:'boon',roomSchool:null,draftsLeft:0,pendingBranch:null,waves:[],trialSchool:null});
  Object.assign(run,{trackedGift:null,treeTab:'routes',bolts:0,twinTarget:null,armedStudy:null,treeFromDraft:false,power:0,roleNote:'',roleNoteUntil:0,glideAt:0,quenchAt:0});
  Object.assign(raid,{bag:[],meds:2,utilityCd:0,scan:0,noise:0,parries:0,staggers:0});run.deck=buildChapter();
  $('rg-panel').classList.add('hidden');enterChamber();
 }
 function enterChamber(){
+ lastCameraFrame=null;run.rewardNode=null;run.draftPatron=null;
  run.random=seededRoll(run.seed+'/room/'+run.act+'/'+run.index);
  const roomSeed=run.seed+'/room/'+run.act+'/'+run.index;
  visualRoll=seededRoll(roomSeed+'/visual');noiseRoll=seededRoll(roomSeed+'/audio');
@@ -129,7 +130,7 @@ function enterChamber(){
   target.name='悬赏 · '+target.name;
   run.bountyTarget=target;
  }
- scene.updateMatrixWorld(true);updateCamera(1/60);
+ scene.updateMatrixWorld(true);camera.lookAt(.35,1.65-pitch*3,player.group.position.z-5);updateCamera(1/60);
  $('area-banner').innerHTML='<small>'+acts[run.act].en+'　/　'+(run.index+1)+' · '+run.deck.length+'</small><b>'+room.name+'</b><span>'+roomTypes[room.type]+(room.label?' · '+room.label:'')+'</span>';
  $('area-banner').classList.remove('show');void $('area-banner').offsetWidth;$('area-banner').classList.add('show');
  if(room.type==='boss'&&$('rg-boss-intro')){
@@ -148,17 +149,19 @@ function buildBranchOptions(){
  if(next.type==='shop')return [{kind:'shop',label:'🛒 首领前整备站',sub:'商店 · 武器改装 · 补给',color:'#f0cb86',hex:0xf0cb86}];
  // Offer 2 or 3 Hades-style branching doors for the upcoming chamber!
  const roll=seededRoll(run.seed+'/doors/'+run.act+'/'+run.index);
- const schoolKeys=shuffled(Object.keys(schools),roll);
+ const patrons=shuffled(Object.values(GIFT_PATRONS).filter(p=>availableGifts().some(t=>!t.weapon&&giftPatron(t).id===p.id)),roll);
+ const patronDoor=p=>p?{kind:'school',patron:p.id,type:next.type==='elite'?'elite':'fight',label:p.name,sub:p.tag,color:p.color,hex:p.hex}:
+  {kind:'coins',type:'fight',label:'晶片宝库',sub:'清场获得 55 晶片',color:'#f5d484',hex:0xf0c869};
  const candidates=[
-  {kind:'school',school:schoolKeys[0],type:next.type,label:schools[schoolKeys[0]].mark+' · '+schools[schoolKeys[0]].name+'回响',sub:'通关必出'+schools[schoolKeys[0]].name+'流派',color:schools[schoolKeys[0]].color,hex:schools[schoolKeys[0]].hex},
-  {kind:'school',school:schoolKeys[1],type:next.type,label:schools[schoolKeys[1]].mark+' · '+schools[schoolKeys[1]].name+'回响',sub:'通关必出'+schools[schoolKeys[1]].name+'流派',color:schools[schoolKeys[1]].color,hex:schools[schoolKeys[1]].hex},
-  hammerBook().length?{kind:'hammer',type:'fight',label:'⚒ 武器质变锻炉',sub:'重塑武器招式形态',color:'#ffcf75',hex:0xffb84d}:{kind:'vitality',type:'fight',label:'♥ 生命圣泉',sub:'最大生命 +25 并回复',color:'#9df0c3',hex:0x7ae8b2},
-  {kind:'trial',type:'trial',label:'⚖ 双系试炼房',sub:'高危挑战 · 双倍高稀有回响',color:'#d8a8ff',hex:0xc388ff},
-  {kind:'coins',type:'fight',label:'◈ 晶片宝库',sub:'通关额外 +55 晶片与残片',color:'#f5d484',hex:0xf0c869},
-  {kind:'event',type:'event',label:'✧ 回响祭坛',sub:'随机奇遇 · 契约与熔炉',color:'#d6b3f0',hex:0xc59be8}
+  patronDoor(patrons[0]),patronDoor(patrons[1]),
+  hammerBook().length?{kind:'hammer',type:'fight',label:'⚒ 武器质变锻炉',sub:'重塑武器核心招式',color:'#ffcf75',hex:0xffb84d}:{kind:'vitality',type:'fight',label:'♥ 生命圣泉',sub:'最大生命 +25 并回血',color:'#9df0c3',hex:0x7ae8b2},
+  {kind:'trial',type:'trial',label:'⚖ 双人试炼房',sub:'高危挑战 · 双倍助力',color:'#d8a8ff',hex:0xc388ff},
+  {kind:'coins',type:'fight',label:'◈ 晶片宝库',sub:'+55 晶片与残片',color:'#f5d484',hex:0xf0c869},
+  {kind:'event',type:'event',label:'✧ 回响祭坛',sub:'契约与补给',color:'#d6b3f0',hex:0xc59be8}
  ];
  const picks=[candidates[0]];
- if(next.type==='event')picks.push(candidates[5]);
+ if(next.type==='camp')picks.push({kind:'camp',type:'camp',label:'行商营地',sub:'休整与交易',color:'#98d5bd',hex:0x98d5bd});
+ else if(next.type==='event')picks.push(candidates[5]);
  else if(next.type==='elite')picks.push({kind:'elite',type:'elite',label:'☠ 精英双赏房',sub:'强敌压阵 · 连抽两次回响',color:'#ffb27d',hex:0xff9659});
  else picks.push(candidates[2]);
  picks.push(roll()<.5?candidates[1]:candidates[3]);
@@ -237,12 +240,36 @@ function completeChamber(){
  }
  if(type==='trial')unlockProphecy('trial_win');
  clearMarks();clearRoomTraps();clearProjectiles();
- lightGate();cue('clear');
- const rewardHint=run.roomReward==='hammer'?'锻炉开启 · 选择下一扇门领取武器质变':run.roomReward==='vitality'?'生命上限 +25 · 选择下一扇门':run.roomReward==='coins'?'宝库 +55 晶片 · 选择下一扇门':'清场完成 · 残片 +'+clearShards+' · 选择下一扇门';
+ if(rank('molt')&&hp<maxHp*.5)hp=Math.min(maxHp,hp+12);
+ const eligible=availableGifts().some(t=>!t.weapon);
+ const reward=run.roomReward;
+ if(!(type==='boss'&&run.act===2)&&!['coins','vitality'].includes(reward)&&(eligible||reward==='hammer'&&hammerBook().length)){
+  run.draftPatron=choosePatron();
+  run.draftsLeft=['elite','trial'].includes(reward)?1:0;
+  placeRoomReward();
+ }else lightGate();cue('clear');
+ const rewardHint=run.rewardNode?'清场完成 · 前往场地中央领取'+rewardName():run.roomReward==='vitality'?'生命上限 +25 · 选择下一扇门':run.roomReward==='coins'?'宝库 +55 晶片 · 选择下一扇门':'清场完成 · 残片 +'+clearShards+' · 选择下一扇门';
  toast((run.bountyReward?'悬赏 +'+run.bountyReward+' 晶片　·　':'')+rewardHint);expeditionHUD();expeditionPrompt();
+}
+function rewardName(){return run.roomReward==='hammer'&&hammerBook().length?'武器质变':draftLeadPatron().name;}
+const rewardRings=[.7,.94].map(radius=>new THREE.TorusGeometry(radius,.034,6,48));
+function placeRoomReward(){
+ const reachable=walkField(0,9);
+ const spot=closestCell(reachable,{x:0,z:0}),group=new THREE.Group();
+ group.position.set(spot.x,floorAt(spot.x,spot.z,1),spot.z);roomGroup.add(group);
+ const ink=chamberMat(run.roomReward==='hammer'?0xd0ac62:draftLeadPatron().hex);
+ const gem=mesh(crystalGeo,ink,0,1.55,0,group);gem.scale.set(.42,.74,.42);
+ for(const geometry of rewardRings){
+  const ring=mesh(geometry,ink,0,.11,0,group);ring.rotation.x=-Math.PI/2;
+ }
+ run.rewardNode=group;run.status='reward';
+}
+function finishPickup(){
+ run.rewardNode.removeFromParent();run.rewardNode=null;run.status='exit';lightGate();continuePlay();expeditionHUD();expeditionPrompt();
 }
 function ordinarySupply(){return false;}
 function currentTarget(){
+ if(run.rewardNode)return {pos:run.rewardNode.position,name:rewardName(),exit:false,height:2.4};
  if(run.status==='exit'){
   const g=nearestGate();
   return g?{pos:g.pos,name:g.choice.label,exit:true,height:5.4}:{pos:exitPoint,name:'出口',exit:true,height:4.8};
@@ -254,13 +281,17 @@ function currentTarget(){
  return target?{pos:target.avatar.group.position,name:target.name,exit:false,height:target.boss?5:2.65}:null;
 }
 function expeditionPrompt(){
+ if(run.rewardNode){
+  const near=player.group.position.distanceTo(run.rewardNode.position)<2.6;
+  $('prompt').classList.toggle('hidden',!near);$('prompt-title').textContent=rewardName();$('prompt-detail').textContent='F　领取清场奖励';return;
+ }
  const near=run.status==='exit'&&distanceToGate()<3.55;
  $('prompt').classList.toggle('hidden',!near);
  if(near){
   const type=roomNow().type,g=nearestGate();
   const nextLabel=g?g.choice.label:'下一室';
   $('prompt-title').textContent=type==='camp'?'拜访行商营地':type==='shop'?'进入整备站':type==='event'?'触碰祭坛':run.act===2&&type==='boss'?'穿越终章之门':'前往 · '+nextLabel;
-  $('prompt-detail').textContent='F　'+(run.roomReward==='hammer'?'领取武器质变并进入':type==='boss'&&run.act<2?'领取回响并进入下一幕':(g?.choice?.sub||'领取回响并进入'));
+  $('prompt-detail').textContent='F　'+(type==='boss'&&run.act<2?'进入下一幕':(g?.choice?.sub||'进入下一室'));
  }
 }
 function markerPosition(target){
@@ -282,6 +313,9 @@ function drawChamberMap(){
   if(trap.kind==='line')map.fillRect(at(trap.from.x-trap.width),at(trap.from.z),trap.width*2*s,(trap.to.z-trap.from.z)*s);
   else{map.beginPath();map.arc(at(trap.from.x),at(trap.from.z),trap.width*s,0,2*Math.PI);map.fill();}
  }
+ if(run.rewardNode){
+  const pos=run.rewardNode.position;map.fillStyle='#ffe2a4';map.beginPath();map.arc(at(pos.x),at(pos.z),4,0,2*Math.PI);map.fill();
+ }
  map.fillStyle=run.status==='exit'?'#95ffcf':'#8d9294';map.fillRect(at(exitPoint.x)-8,at(exitPoint.z)-3,16,6);
  for(const e of enemies){if(e.dead)continue;const p=e.avatar.group.position;map.beginPath();map.arc(at(p.x),at(p.z),e.boss?6:3.7,0,Math.PI*2);map.fillStyle=e.elite||e.boss?'#ffd27a':'#ff907c';map.fill();}
  const p=player.group.position;map.save();map.translate(at(p.x),at(p.z));map.rotate(yaw);map.beginPath();map.moveTo(0,-7);map.lineTo(4.5,5);map.lineTo(0,3);map.lineTo(-4.5,5);map.closePath();map.fillStyle='#fff4dc';map.fill();map.restore();
@@ -296,6 +330,10 @@ function expeditionHUD(){
  if(run.bountyTarget){
   const first=enemies.every(e=>!e.dead);
   $('route-status').textContent=exit?'悬赏 +'+run.bountyReward+' 晶片　·　前往出口':run.bountyTarget.dead?'悬赏 '+run.bountyReward+' 晶片待结　·　清除余敌':(first?'优先击败标记目标可得 48 晶片':'击败标记目标并清场可得 20 晶片')+'　·　T 转向';
+ }
+ if(run.rewardNode){
+  run.rewardNode.children[0].rotation.y=time*1.5;run.rewardNode.children[0].position.y=1.6+.12*Math.sin(time*3);
+  $('enemy-count').textContent='守卫已清除';$('route-name').textContent='领取'+rewardName();$('route-status').textContent='前往中央信标，靠近后按 F';
  }
  if(exit)updateExitTrail();
  $('rg-room-nav').dataset.mode=exit?'exit':'combat';marker.classList.toggle('hidden',!target);
@@ -328,13 +366,36 @@ function expeditionHUD(){
  $('hud').classList.toggle('rg-hp-low',hp<maxHp*.3);
  drawChamberMap();
 }
+function draftLeadPatron(){
+ return GIFT_PATRONS[run.draftPatron]||GIFT_PATRONS.ember;
+}
+function choosePatron(exclude=null){
+ const roll=seededRoll([run.seed,run.act,run.index,run.drawNumber,'patron'].join('/'));
+ const eligible=availableGifts().filter(t=>!t.weapon&&t.id!==run.retraining);
+ const ids=[...new Set(eligible.map(t=>giftPatron(t).id))];
+ const preferred=roomNow().patron||({ember:'ember',frost:'frost',arc:'shade',forge:'bastion'}[run.roomSchool]);
+ if(!exclude&&ids.includes(preferred))return preferred;
+ const route=giftRoute(run.trackedGift);
+ const pool=ids.length>1?ids.filter(id=>id!==exclude):ids;
+ const target=eligible.find(t=>route.includes(t.id)&&pool.includes(giftPatron(t).id));
+ if(target)return giftPatron(target).id;
+ if(run.roomsCleared===1&&pool.includes(chosenClass))return chosenClass;
+ const focus=eligible.filter(t=>!signatureGift(t)&&t.school===run.focus&&pool.includes(giftPatron(t).id));
+ if(focus.length&&roll()<.85)return giftPatron(focus[Math.floor(roll()*focus.length)]).id;
+ return shuffled(pool,roll)[0];
+}
 function presentPanel(title,subtitle,content,panel){
  const box=$('rg-panel'),previousPick=document.activeElement?.dataset?.pick;
  run.panel=panel;state='choice';input={};mouseDown=mouseRight=false;chargeTime=0;cancelMouseLock();document.exitPointerLock?.();
- const hero=heroNow();
- const portrait=panel==='draft'?'<aside class="rg-boon-art" aria-hidden="true">'+echoIllustration(regionArt[run.act],'','rg-boon-scene')+'<img class="rg-boon-hero" src="'+assetURL(chosenClass+'.webp')+'" alt=""><div><small>'+hero.en+'</small><h3>'+hero.name+'</h3><span>'+hero.tag+'</span></div></aside>':'';
+ let portrait='';
+ if(panel==='draft'&&!run.shopDraft||panel==='hammer'){
+  const p=panel==='hammer'?giftPatron(hammerBook()[0]):draftLeadPatron();
+  const displayName=p.kind==='companion'?HEROES[p.id].name:p.name;
+  portrait='<aside class="rg-boon-art" style="--patron:'+p.color+'" aria-hidden="true">'+echoIllustration(regionArt[run.act],'','rg-boon-scene')+'<img class="rg-boon-hero" src="'+assetURL(p.id+'.webp')+'" alt=""><div><small>'+p.en+'</small><h3>'+displayName+'</h3><span>'+p.tag+'</span></div></aside>';
+ }
  box.dataset.view=panel;
- box.innerHTML='<section>'+portrait+'<div class="rg-panel-content"><small class="rg-location">'+acts[run.act].name+'　/　第 '+(run.index+1)+' 室</small><h2 id="rg-panel-title">'+title+'</h2><p>'+subtitle+'</p>'+content+'</div></section>';
+ const subHtml=subtitle?'<p>'+subtitle+'</p>':'';
+ box.innerHTML='<section>'+portrait+'<div class="rg-panel-content"><small class="rg-location">'+acts[run.act].name+'　·　第 '+(run.index+1)+' 室</small><h2 id="rg-panel-title">'+title+'</h2>'+subHtml+content+'</div></section>';
  box.classList.remove('hidden');
  const buttons=Array.from(box.querySelectorAll('button:not(:disabled)'));
  (buttons.find(b=>b.dataset.pick===previousPick)||buttons[0])?.focus({preventScroll:true});
@@ -352,7 +413,8 @@ function advanceChamber(){
    const next=run.deck[run.index];
    if(b.type)next.type=b.type;
    next.reward=b.kind==='school'?'boon':b.kind==='hammer'?'hammer':b.kind==='vitality'?'vitality':b.kind==='coins'?'coins':b.kind==='elite'?'elite':b.kind==='trial'?'trial':'boon';
-   next.school=b.school||null;
+   next.school=b.school||null;next.patron=b.patron||null;
+   if(next.type==='fight'||next.type==='elite')next.name=acts[run.act].rooms[next.layout];
    next.label=b.label;
    if(next.type==='event')next.name='回响祭坛';
    else if(next.type==='trial')next.name='双系试炼庭';
@@ -362,55 +424,59 @@ function advanceChamber(){
  enterChamber();continuePlay();
 }
 function openHammerDraft(){
- const pool=hammerBook();
+ const pool=hammerBook().slice(0,3);
  if(!pool.length){openDraft();return;}
- const cards=pool.map(t=>card(t.id,t.name,t.desc,WEAPONS[t.weapon].short+' · 质变改造','#ffcf75'));
- presentPanel('锻炉质变','选择一项改变武器核心形态的质变改造。','<div class="rg-cards">'+cards.join('')+'</div>','hammer');
+ const cards=pool.map(t=>card(t.id,t.name,giftShortDesc(t),'武器质变 · '+WEAPONS[t.weapon].short,'#ffcf75'));
+ presentPanel('武器质变改造','选择 1 项重塑「'+WEAPONS[loadout[0]].short+'」招式形态','<div class="rg-cards">'+cards.join('')+'</div>','hammer');
 }
 const studyLabels={all:'推荐',skill:'技能',weapon:'武器',common:'通用'};
 function studyTabs(prefix,current,keys){
  return '<nav class="rg-tree-tabs rg-study-tabs" aria-label="天赋方向">'+keys.map(key=>'<button data-pick="'+prefix+key+'" aria-pressed="'+(key===current)+'">'+studyLabels[key]+'</button>').join('')+'</nav>';
 }
-function studyPool(key){return availableGifts().filter(t=>t.id!==run.retraining&&(key==='all'||giftCategory(t)===key));}
+function studyPool(key){
+ return availableGifts().filter(t=>t.id!==run.retraining&&(run.shopDraft||(!t.weapon&&giftPatron(t).id===run.draftPatron))&&(key==='all'||giftCategory(t)===key));
+}
 function giftOptions(previous=[],key='all'){
  const roll=seededRoll(JSON.stringify([run.seed,run.act,run.index,'draft',run.drawNumber,key,run.tabRolls[key]||0]));
- const shuffle=list=>shuffled(list,roll);
- const school=run.roomSchool||(run.focus&&roll()<.8?run.focus:shuffle(Object.keys(schools))[0]);
- const available=studyPool(key).filter(t=>!previous.includes(t));
- const route=giftRoute(run.trackedGift);
- const next=available.find(t=>route.includes(t.id)) || (run.roomsCleared===1?shuffle(available.filter(signatureGift))[0]:null);
- const elite=['elite','boss'].includes(roomNow().type);
- const ordered=weightedGifts(available,elite,roll);
- const family=ordered.filter(t=>t.school===school||t.needs.some(id=>giftById[id].school===school));
- const same=family.find(t=>t.school===school)||family[0];
- const other=ordered.find(t=>t.school!==school);
- return [...new Set([next,same,other,...ordered,...previous].filter(Boolean))].slice(0,3);
+ const pool=studyPool(key),route=giftRoute(run.trackedGift);
+ const ordered=weightedGifts(pool.filter(t=>!previous.includes(t)),['elite','boss','trial'].includes(roomNow().type),roll);
+ const tracked=ordered.find(t=>route.includes(t.id))||(run.roomsCleared===1?ordered.find(signatureGift):null);
+ return [...new Set([tracked,...ordered,...previous.filter(t=>pool.includes(t))].filter(Boolean))].slice(0,3);
 }
 function card(action,title,desc,label,color='#98d5bd',disabled=false){
  const talent=giftById[action],icon=talent?echoIllustration(action,'','rg-talent-art'):'';
  const rarity=talent?giftRarity(talent):'';
- return '<button class="rg-card" data-rarity="'+rarity+'" data-pick="'+action+'" style="--ink:'+color+'" '+(disabled?'disabled':'')+'>'+icon+'<small>'+(rarity?giftGrades[rarity].name+' · ':'')+label+'</small><strong>'+title+'</strong><span>'+desc+'</span></button>';
+ const rTag=rarity==='legendary'?'传说 · ':rarity==='resonant'?'稀有 · ':'';
+ return '<button class="rg-card" data-rarity="'+rarity+'" data-pick="'+action+'" style="--ink:'+color+'" '+(disabled?'disabled':'')+'>'+icon+'<small>'+rTag+label+'</small><strong>'+title+'</strong><span>'+desc+'</span></button>';
 }
 const paidRedrawCost=16;
 function openDraft(previous=[]){
+ if(!run.shopDraft&&(!run.draftPatron||!run.rewardNode))run.draftPatron=choosePatron();
  run.drawNumber++;run.tabRolls={};run.study='all';run.drawCache={all:giftOptions(previous)};run.offers=run.drawCache.all;renderDraft();
 }
 function renderDraft(){
  const route=giftRoute(run.trackedGift);
- const cards=run.offers.map(t=>{
-  let detail=giftDetail(t);
-  if(t.needs.length)detail+='<em>前置　'+t.needs.map(id=>giftById[id].name).join(' + ')+'</em>';
-  const opens=buildBook().filter(other=>!rank(t.id)&&!rank(other.id)&&other.needs.includes(t.id)&&other.needs.every(id=>id===t.id||rank(id))).map(other=>other.name);
-  if(opens.length)detail+='<em>选后可抽　'+opens.join('、')+'</em>';
-  const label=route.includes(t.id)?'追踪 · '+giftById[run.trackedGift].name:resonanceTier(t)||(rank(t.id)?'升至 '+(rank(t.id)+1)+' 级':'新天赋');
-  return card(t.id,t.name,detail,(t.weapon?WEAPONS[t.weapon].short:studyLabels[giftCategory(t)])+'　/　'+label,schools[t.school].color);
+ const offers=run.offers.slice(0,3);
+ const lead=draftLeadPatron();
+ const cards=offers.map(t=>{
+  const patron=giftPatron(t);
+  const tier=route.includes(t.id)?'追踪目标':t.needs.length>=2?(t.needs.some(id=>giftById[id].needs.length>=2)?'三系共鸣':'双系共鸣'):rank(t.id)?'升至 '+(rank(t.id)+1)+' 级':'';
+  const source=!run.shopDraft?(signatureGift(t)?'专属技能':'同伴天赋'):patron.kind==='weapon'?'武器强化 · '+WEAPONS[t.weapon].short:patron.kind==='skill'?'技能强化':patron.name;
+  const label=source+' · '+(tier||'第 '+(rank(t.id)+1)+' 阶');
+  return card(t.id,t.name,giftShortDesc(t),label,patron.color);
  }).join('');
- const price=run.redraw?'本幕免费':paidRedrawCost+' 晶片';
- const canRedraw=(run.redraw||run.coins>=paidRedrawCost)&&studyPool(run.study).length>run.offers.length;
- const focus=run.focus?'主修 '+schools[run.focus].name+' · 可在图谱更改':'首张天赋决定主修流派';
- presentPanel('选择回响',focus+'　｜　'+(schoolCounts()||'尚未取得天赋'),studyTabs('study-',run.study,Object.keys(studyLabels))+'<div class="rg-cards">'+(cards||'<p>这个方向的天赋已经点满。可切换其他方向。</p>')+'</div><footer><button data-pick="tree">查看天赋路线</button><span>持有 '+run.coins+' 晶片</span><button data-pick="redraw" '+(canRedraw?'':'disabled')+'>重抽 · '+price+'</button></footer>','draft');
+ const price=run.redraw?'免费':paidRedrawCost+' 晶片';
+ const canRedraw=(run.redraw||run.coins>=paidRedrawCost)&&studyPool(run.study).length>offers.length;
+ const heading=run.shopDraft?'整备站刻印':lead.kind==='companion'?HEROES[lead.id].name+'的助力':lead.name;
+ const tabs=run.shopDraft?studyTabs('study-',run.study,Object.keys(studyLabels)):'';
+ presentPanel(heading,'选择一项'+(run.shopDraft?'刻印':lead.tag.split(' · ')[1]+'天赋'),tabs+'<div class="rg-cards">'+(cards||'<p>该方向天赋已满。</p>')+'</div><footer><button data-pick="tree">天赋图谱</button><span>晶片 '+run.coins+'</span><button data-pick="redraw" '+(canRedraw?'':'disabled')+'>重抽 · '+price+'</button></footer>','draft');
 }
 function useGate(){
+ if(run.rewardNode){
+  if(state!=='playing'||player.group.position.distanceTo(run.rewardNode.position)>=2.6)return;
+  if(run.roomReward==='hammer'&&hammerBook().length)openHammerDraft();else openDraft();
+  return;
+ }
  if(run.status!=='exit'||distanceToGate()>=3.55)return;
  const g=nearestGate();
  if(g&&!run.pendingBranch)run.pendingBranch=g.choice;
@@ -424,10 +490,7 @@ function useGate(){
  }
  if(type==='shop'){openStation();return;}
  if(type==='event'){openAltar();return;}
- if(run.roomReward==='hammer'&&hammerBook().length){openHammerDraft();return;}
- if((run.roomReward==='vitality'||run.roomReward==='coins')||!availableGifts().length){advanceChamber();return;}
- if(run.roomReward==='elite'||run.roomReward==='trial')run.draftsLeft=1;
- openDraft();
+ advanceChamber();
 }
 const servicePrices={buy:40,heal:18,remove:20,swap:22,mod:28};
 function servicePanel(title,subtitle,cards,panel,back=false){
@@ -443,7 +506,7 @@ function canRetrain(id){
 }
 function openStation(){
  const cards=[
-  shopCard('buy','刻印天赋',run.shopBought?'本站刻印已领取。':'本站可额外挑选一次天赋。',run.shopBought||!availableGifts().length),
+  shopCard('buy','刻印天赋',run.shopBought?'本站刻印已领取。':'从武器、技能与通用刻印中挑选一项。',run.shopBought||!availableGifts().length),
   card('forge-hammer','锻炉质变','花费 46 晶片，为当前武器铭刻一项招式质变改造。','46 晶片','#ffcf75',run.coins<46||!hammerBook().length),
   shopCard('heal','修复护甲','回复 60 生命，并补充一个急救包。'),
   shopCard('swap','更换武器','从武器库选择一把替换当前武器。原武器的刻印保留。'),
@@ -502,10 +565,10 @@ function openAltar(){
  const deal=['kit','broker','distill'][run.act];
  const options={
   kit:card('kit','交付急救包','交出一个急救包，获得 32 晶片。','旧城委托','#e9bf82',raid.meds<1),
-  broker:card('broker','打捞刻印','支付 24 晶片，挑选一项天赋。','船坞打捞','#9bdabf',run.coins<24||!availableGifts().length),
+  broker:card('broker','打捞刻印','支付 24 晶片，挑选一项天赋。','船坞打捞','#9bdabf',run.coins<24||!availableGifts().some(t=>!t.weapon)),
   distill:card('distill','温室萃取','支付 22 晶片，永久提高本局生命上限 16 并回复 16。','温室培育','#9bdabf',run.coins<22)
  };
- const cards=[card('offer','献祭回响','消耗当前生命的 20%，挑选一项天赋。','祭坛交换','#ddacdc',!availableGifts().length),
+ const cards=[card('offer','献祭回响','消耗当前生命的 20%，挑选一项天赋。','祭坛交换','#ddacdc',!availableGifts().some(t=>!t.weapon)),
   card('rest','汲取泉水','回复 45 生命。','祭坛馈赠'),card('cash','收取晶片','获得 30 晶片。','祭坛馈赠','#e9bf82'),
   card('bounty','签下悬赏','下一战增援精英。优先击败它得 48 晶片，否则得 20。','追猎委托','#f1ac82'),options[deal]];
  for(const [id,c] of Object.entries(contracts))if(!run.contracts.includes(id))cards.push(card('pact-'+id,c.name,c.desc,'契约 · 持续至本局结束','#e59997'));
@@ -559,11 +622,11 @@ function chooseExpedition(action){
  if(panel==='hammer'){
   if(giftById[action]?.hammer&&acquireGift(action)){
    cue('prophecy');toast('质变完成 · '+giftById[action].name);
-   if(run.shopDraft){run.shopDraft=false;openStation();}else advanceChamber();
+   if(run.shopDraft){run.shopDraft=false;openStation();}else if(run.rewardNode)finishPickup();else advanceChamber();
   }return;
  }
  if(panel==='draft'){
-  if(action.startsWith('study-')&&Object.hasOwn(studyLabels,action.slice(6))){
+  if(run.shopDraft&&action.startsWith('study-')&&Object.hasOwn(studyLabels,action.slice(6))){
    run.study=action.slice(6);run.drawCache[run.study]??=giftOptions([],run.study);
    run.offers=run.drawCache[run.study];renderDraft();return;
   }
@@ -580,18 +643,19 @@ function chooseExpedition(action){
    run.focus??=giftById[action].school;
    toast('获得 '+giftById[action].name);
    if(run.shopDraft){run.shopDraft=false;run.retraining=null;openStation();}
-   else if(run.draftsLeft>0&&availableGifts().length){run.draftsLeft--;openDraft();}
+   else if(run.draftsLeft>0&&availableGifts().some(t=>!t.weapon)){run.draftsLeft--;run.draftPatron=choosePatron(roomNow().type==='trial'?run.draftPatron:null);openDraft();}
+   else if(run.rewardNode)finishPickup();
    else advanceChamber();
   }return;
  }
  if(['shop','mod','swap','equip','remove'].includes(panel)){transact(panel,action);return;}
  if(panel!=='event')return;
- if(action==='offer'&&availableGifts().length){hp=Math.max(1,Math.ceil(hp*.8));openDraft();return;}
+ if(action==='offer'&&availableGifts().some(t=>!t.weapon)){hp=Math.max(1,Math.ceil(hp*.8));openDraft();return;}
  if(action==='rest')hp=Math.min(maxHp,hp+45);
  else if(action==='cash')run.coins+=30;
  else if(action==='bounty')run.bountyPending=true;
  else if(action==='kit'&&run.act===0&&raid.meds>0){raid.meds--;run.coins+=32;}
- else if(action==='broker'&&run.act===1&&run.coins>=24&&availableGifts().length){run.coins-=24;openDraft();return;}
+ else if(action==='broker'&&run.act===1&&run.coins>=24&&availableGifts().some(t=>!t.weapon)){run.coins-=24;openDraft();return;}
  else if(action==='distill'&&run.act===2&&run.coins>=22){run.coins-=22;maxHp+=16;hp+=16;}
  else if(action.startsWith('pact-')){
   const id=action.slice(5);if(!Object.hasOwn(contracts,id)||run.contracts.includes(id))return;
@@ -646,7 +710,7 @@ function showMirrorDialog(){
   const pips=Array.from({length:u.max},(_,i)=>'<i class="'+(i<lv?'on':'')+'"></i>').join('');
   return '<article class="rg-mirror-item"><div><small>'+u.en+'</small><h3>'+u.name+' <span class="rg-pips">'+pips+'</span></h3><p>'+u.desc+'</p></div><button data-mirror="'+u.id+'" '+(can?'':'disabled')+'>'+(maxed?'已满级':'强化 · '+cost+' 残片')+'</button></article>';
  }).join('');
- guide.innerHTML='<section class="rg-sanctuary-modal"><header><div><small>MIRROR OF ECHOES · 永久成长</small><h2>回响之镜</h2></div><div class="rg-shard-pill">◈ 持有残片 <b>'+meta.shards+'</b></div><button data-close>返回圣所</button></header><p class="rg-modal-sub">无论胜败，远征中收集的回响残片都会带回圣所，在此铭刻为永久生效的异变潜能。</p><div class="rg-mirror-list">'+rows+'</div></section>';
+ guide.innerHTML='<section class="rg-sanctuary-modal"><header><div><small>MIRROR OF ECHOES</small><h2>回响之镜</h2></div><div class="rg-shard-pill">◈ 残片 <b>'+meta.shards+'</b></div><button data-close>返回圣所</button></header><p class="rg-modal-sub">消耗回响残片，永久强化异变潜能。</p><div class="rg-mirror-list">'+rows+'</div></section>';
  guide.classList.remove('hidden');
 }
 function showProphecyDialog(){
@@ -655,9 +719,9 @@ function showProphecyDialog(){
  const rows=prophecies.map(p=>{
   const done=meta.completed.includes(p.id),claimed=meta.claimed.includes(p.id);
   const btn=claimed?'<button disabled>已领取</button>':done?'<button class="rg-claim" data-claim="'+p.id+'">领取 +'+p.reward+' 残片</button>':'<button disabled>进行中</button>';
-  return '<article class="rg-mirror-item '+(done?'done':'')+'"><div><small>'+(claimed?'已完成':done?'可领取奖励':'命运预言')+'</small><h3>'+p.name+'</h3><p>'+p.desc+'</p></div>'+btn+'</article>';
+  return '<article class="rg-mirror-item '+(done?'done':'')+'"><div><small>'+(claimed?'已完成':done?'可领取':'命运预言')+'</small><h3>'+p.name+'</h3><p>'+p.desc+'</p></div>'+btn+'</article>';
  }).join('');
- guide.innerHTML='<section class="rg-sanctuary-modal"><header><div><small>FATED LIST · 远征目标</small><h2>共鸣预言碑</h2></div><div class="rg-shard-pill">◈ 持有残片 <b>'+meta.shards+'</b></div><button data-close>返回圣所</button></header><p class="rg-modal-sub">达成任意命运预言即可在圣所领取丰厚回响残片，哪怕中途折戟也能收获满满。</p><div class="rg-mirror-list">'+rows+'</div></section>';
+ guide.innerHTML='<section class="rg-sanctuary-modal"><header><div><small>FATED LIST</small><h2>共鸣预言碑</h2></div><div class="rg-shard-pill">◈ 残片 <b>'+meta.shards+'</b></div><button data-close>返回圣所</button></header><p class="rg-modal-sub">达成目标即可领取回响残片。</p><div class="rg-mirror-list">'+rows+'</div></section>';
  guide.classList.remove('hidden');
 }
 function startOpeningCinematic(){
@@ -683,19 +747,19 @@ function stepOpeningCinematic(dt){
  }else if(t<6.2){
   // Stage 2 (04_三域同框): Zelda BotW Cliff Leap Reveal — soaring above the bay to reveal all 3 sculpted Acts!
   const k=smooth((t-2.2)/4.0);
-  pos.set(Math.sin(k*Math.PI)*9.5,lerp(3.5,26.8,Math.pow(k,.72)),lerp(18.2,20.5,k));
-  look.set(lerp(0,1.5,k),lerp(4.2,-6.5,k),lerp(-65,-62,k));
+  pos.set(vistaEye.x*k+Math.sin(k*Math.PI)*4.2,lerp(3.5,vistaEye.y,Math.pow(k,.72)),lerp(18.2,vistaEye.z,k));
+  look.set(0,4.2,-65).lerp(vistaFocus,k);
   $('rg-cinematic').dataset.stage='2';
  }else if(t<8.6){
   // Stage 3 (03_镜光归台): Graceful sweep back down to the Sanctuary Compass Terrace & Hero
   const k=smooth((t-6.2)/2.4);
-  pos.set(lerp(0,3.2,k),lerp(26.8,4.0,k),lerp(20.5,31.4,k));
-  look.set(lerp(1.5,-.8,k),lerp(-6.5,1.6,k),lerp(-62,8.0,k));
+  pos.set(3.2,4.0,31.4).lerp(vistaEye,1-k);
+  look.set(-.8,1.6,8.0).lerp(vistaFocus,1-k);
   $('rg-cinematic').dataset.stage='3';
  }else{
   finishOpeningCinematic();return;
  }
- camera.position.copy(pos);camera.lookAt(look);camera.fov=lerp(52,64,smooth((t-1.8)/3.8));camera.updateProjectionMatrix();
+ camera.position.copy(pos);camera.lookAt(look);camera.fov=lerp(52,sanctuaryVistaFov(),smooth((t-1.8)/3.8)*(1-smooth((t-6.2)/2.4)));camera.updateProjectionMatrix();
 }
 function finishOpeningCinematic(){
  if(state!=='cinematic')return;
@@ -708,7 +772,7 @@ function showFieldGuide(act=0){
  const a=acts[act],guide=$('rg-guide');
  const tabs=acts.map((v,i)=>'<button data-region="'+i+'" aria-pressed="'+(i===act)+'">'+v.name+'</button>').join('');
  const traits=regionAffixes[act].map(id=>'<p><b>'+affixes[id].name+'</b>　'+affixes[id].rule+'</p>').join('');
- const small=Object.entries(monsters).map(([id,v])=>'<figure>'+echoIllustration(id,v.name,'')+'<figcaption>'+v.name+'<small>'+v.role+'</small></figcaption></figure>').join('');
+ const small=actRoster[act].map(id=>actVariants[id]).map(v=>'<figure>'+echoIllustration(v.kind,v.name,'')+'<figcaption>'+v.name+'<small>'+v.role+'</small></figcaption></figure>').join('');
  guide.innerHTML='<section><header><h2>远征图鉴</h2><button data-close>返回圣所</button></header><nav aria-label="选择区域">'+tabs+'</nav><div class="rg-guide-lead"><figure>'+echoIllustration(regionArt[act],a.name+'场景示意','rg-region-art')+'<figcaption>'+a.name+'<small>'+a.zone+'</small></figcaption></figure><figure>'+echoIllustration(bossArt[act],a.boss,'rg-boss-art')+'<figcaption>'+a.boss+'<small>区域首领</small></figcaption></figure></div><div class="rg-guide-creatures">'+small+'</div><section class="rg-affixes"><h3>区域词缀</h3>'+traits+'</section></section>';
  guide.classList.remove('hidden');guide.querySelector('[data-region="'+act+'"]').focus?.();
 }
@@ -716,7 +780,40 @@ function closeFieldGuide(){
  sanctuaryView='hero';
  $('rg-guide').classList.add('hidden');$('rg-open-guide')?.focus?.();
 }
+let lastCameraFrame=null;
+const cameraEventsKey='aberrant-echo-camera-v1';
+function readCameraEvents(){
+ try{const events=JSON.parse(localStorage.getItem(cameraEventsKey)||'[]');return Array.isArray(events)?events:[];}catch{return [];}
+}
+const cameraEvents=readCameraEvents();
+function sampleExpeditionCamera(seconds){
+ if(state!=='playing'){lastCameraFrame=null;return;}
+ const position=camera.position,rotation=camera.quaternion,hero=player.group.position;
+ const before=lastCameraFrame,tag=run.seed+'/'+run.act+'/'+run.index;
+ if(before&&before.tag===tag&&seconds>0){
+  const distance=position.distanceTo(before.position),angle=rotation.angleTo(before.rotation)*180/Math.PI;
+  const shifted=hero.distanceTo(before.hero);
+  if(distance>1||angle>12||shifted>1.25||seconds>.16&&seconds<2){
+   const event={version:GAME_VERSION,at:new Date().toISOString(),tag,seconds,distance,angle,shifted,
+    camera:position.toArray(),previousCamera:before.position.toArray(),rotation:rotation.toArray(),previousRotation:before.rotation.toArray(),
+    hero:hero.toArray(),previousHero:before.hero.toArray(),attack:raid.strike?.weapon||mouseDown||mouseRight||false,
+    locked:!!lockTarget,freeLook,bossIntro:bossIntroTime>0,shake,grounded};
+   if(cameraEvents.length<1||performance.now()-before.lastEvent>450){
+    cameraEvents.push(event);if(cameraEvents.length>96)cameraEvents.shift();
+    try{localStorage.setItem(cameraEventsKey,JSON.stringify(cameraEvents));}catch{}
+    before.lastEvent=performance.now();
+   }
+  }
+ }
+ lastCameraFrame={tag,position:position.clone(),rotation:rotation.clone(),hero:hero.clone(),lastEvent:before?.lastEvent??-Infinity};
+}
 function initializeExpedition(){
+ const exportCamera=document.createElement('button');
+ exportCamera.classList.add('secondary');exportCamera.textContent='导出镜头异常记录';
+ exportCamera.addEventListener('click',()=>{
+  const url=URL.createObjectURL(new Blob([JSON.stringify({version:GAME_VERSION,events:cameraEvents},null,2)],{type:'application/json'}));
+  const link=document.createElement('a');link.href=url;link.download='晴湾镜头诊断.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ });$('sound-pause').after(exportCamera);
  mouseHelp='长按中键 自由视角看正面 · M 天赋图谱 · T 转向 · V 锁定 · F 门 · H 急救';
  const panel=document.createElement('div');panel.id='rg-panel';panel.className='hidden';$('hud').after(panel);
  panel.setAttribute?.('role','dialog');panel.setAttribute?.('aria-labelledby','rg-panel-title');panel.setAttribute?.('aria-modal','true');
@@ -786,8 +883,4 @@ function initializeExpedition(){
  document.querySelector('.help-grid span:nth-child(4)').textContent='右键 · 第二普攻';
  document.querySelector('.help-grid span:nth-child(8)').textContent='X · 战术异能';
  document.querySelector('.menu-footer span').textContent='单人肉鸽 · 回响远征 '+GAME_VERSION;document.querySelector('.help-grid span:last-child').textContent='F · 选择下一扇门';
- // Automatically play the Zelda-style Grand Overlook Opening Cinematic in real browser sessions!
- if(typeof window!=='undefined'&&typeof document.body?.appendChild==='function'&&window.innerWidth>0){
-  setTimeout(()=>{if(state==='menu')startOpeningCinematic();},60);
- }
 }

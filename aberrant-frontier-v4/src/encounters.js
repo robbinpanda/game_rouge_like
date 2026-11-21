@@ -11,16 +11,48 @@ const affixes={
  split:{name:'分裂',rule:'死亡时分裂成两只弱体。燃烧或冻结可阻止分裂。'}
 };
 const regionAffixes=[['armored','furious'],['wet','armored'],['split','wet','furious']];
+const actVariants={
+ signalBloom:{kind:'bloom',name:'信号灯笼',hpMul:.95,spdAdd:.28,scale:.92,tint:0xffe3ac,glow:0xeb9e46,role:'平行灯列 · 穿过两列之间'},
+ buoyRay:{kind:'ray',name:'浮标水母',hpMul:1.06,spdAdd:.15,scale:.91,tint:0xb7f0de,glow:0x53d2c3,role:'滞空浮雷 · 趁停顿绕侧'},
+ irisRay:{kind:'ray',name:'旋瓣晶蛾',hpMul:1.12,spdAdd:.35,scale:.95,tint:0xe6d0ff,glow:0xd59bee,role:'旋瓣晶种 · 逆弧穿隙'},
+ railHound:{kind:'hound',name:'电轨猎犬',hpMul:1.12,spdAdd:.65,scale:1.05,tint:0xffccb0,glow:0xff8547,role:'双段电轨突袭'},
+ railCrab:{kind:'crab',name:'断轨重钳',hpMul:1.15,spdAdd:.25,scale:1.08,tint:0xf2c5a6,glow:0xe07e4a,role:'重钳横扫 / 震轨冲击'},
+ sniperRay:{kind:'ray',name:'高压狙鳐',hpMul:1.1,spdAdd:.3,scale:1.05,tint:0xb6ecff,glow:0x4ecfff,role:'双束交叉狙击'},
+ anchorCrab:{kind:'crab',name:'锚链铁卫',hpMul:1.22,spdAdd:.2,scale:1.12,tint:0xa9e0eb,glow:0x4cbcd4,role:'双重震波环 / 追身重砸'},
+ mortarBloom:{kind:'bloom',name:'水雷孢囊',hpMul:1.18,spdAdd:.2,scale:1.08,tint:0xb2f0dd,glow:0x52d6b4,role:'三连追踪水雷阵'},
+ tidalRay:{kind:'ray',name:'潮汐针鳐',hpMul:1.16,spdAdd:.45,scale:1.06,tint:0xa3ddff,glow:0x48b8ff,role:'五向广域针扇'},
+ prismHound:{kind:'hound',name:'晶化突袭犬',hpMul:1.24,spdAdd:.85,scale:1.10,tint:0xe5c4ff,glow:0xc578ff,role:'高速扑杀 / 落点晶爆环'},
+ prismCrab:{kind:'crab',name:'棱甲守卫',hpMul:1.28,spdAdd:.35,scale:1.14,tint:0xdcc2ff,glow:0xb36bff,role:'三束棱镜激光 / 近身震地'},
+ lotusBloom:{kind:'bloom',name:'镜莲晶囊',hpMul:1.25,spdAdd:.25,scale:1.12,tint:0xf7c2ff,glow:0xe86eff,role:'双环晶弹 / 追踪莲爆'}
+};
+const actRoster=[
+ ['railHound','railCrab','sniperRay','signalBloom'],
+ ['anchorCrab','tidalRay','mortarBloom','buoyRay'],
+ ['prismHound','prismCrab','lotusBloom','irisRay']
+];
 const hasAffix=(e,id)=>e.affixes?.includes(id);
 const conductivity=e=>hasAffix(e,'wet')?1.5:1;
-function summon(kind,x,z,{boss=false,elite=false,affixList=[],swarmer=false}={}){
- const spec=monsters[kind],avatar=makeCreature(kind,boss,elite);
+function summon(kind,x,z,{boss=false,elite=false,affixList=[],swarmer=false,variant=null,dmgScale=1}={}){
+ const vSpec=variant?actVariants[variant]:null;
+ const baseKind=vSpec?vSpec.kind:kind;
+ const spec=monsters[baseKind],avatar=makeCreature(baseKind,boss,elite);
  const spot=findSpawnPoint(x,z);avatar.group.position.set(spot.x,0,spot.z);contactShadow(avatar);
- const maxHp=boss?[820,1120,1450][run.act]:swarmer?Math.round(22+run.act*8):Math.round(spec.hp*(1+run.act*.19)*(elite?1.55:1));
- const e={avatar,kind,boss,elite,swarmer,name:boss?acts[run.act].boss:(swarmer?'晶屑 · ':elite?'精英 · ':'')+spec.name,hp:maxHp,maxHp,dead:false,charge:false,
-  attackDir:new THREE.Vector3(),stagger:0,windup:0,guard:0,poise:swarmer?35:100,aggro:0,slow:0,burn:0,frozen:0,recoil:0,heat:0,heatClock:1,
-  vy:0,attackIndex:0,cooldown:boss?.75:swarmer?.65:1+run.random(),recovery:0,flinchLock:0,phaseShift:false,transition:0,hitRadius:boss?2.05:swarmer?.65:.88,hitHeight:boss?2.35:swarmer?.85:1.28};
- if(swarmer)avatar.group.scale.multiplyScalar(.66);
+ const maxHp=boss?[960,1340,1780][run.act]:swarmer?Math.round(28+run.act*12):Math.round(spec.hp*(vSpec?vSpec.hpMul:1)*(1+run.act*.26)*(elite?1.6:1));
+ const baseName=boss?acts[run.act].boss:(vSpec?vSpec.name:spec.name);
+ const e={avatar,kind:baseKind,variant,dmgScale,boss,elite,swarmer,variantGlow:vSpec?vSpec.glow:0,speedBonus:vSpec?vSpec.spdAdd:0,
+  name:(swarmer?'晶屑 · ':elite&&!boss?'精英 · ':'')+baseName,hp:maxHp,maxHp,dead:false,charge:false,
+  attackDir:new THREE.Vector3(),stagger:0,windup:0,guard:0,poise:swarmer?38:100,aggro:0,slow:0,burn:0,frozen:0,recoil:0,heat:0,heatClock:1,
+  vy:0,attackIndex:0,cooldown:boss?.65:swarmer?.55:(.82+run.random()*.75),recovery:0,flinchLock:0,phaseShift:false,transition:0,hitRadius:boss?2.05:swarmer?.65:.88,hitHeight:boss?2.35:swarmer?.85:1.28};
+ if(swarmer)avatar.group.scale.multiplyScalar(.68);
+ else if(vSpec&&!boss)avatar.group.scale.multiplyScalar(vSpec.scale);
+ if(vSpec&&!boss&&avatar.instMat)avatar.instMat.color.setHex(vSpec.tint);
+ if(driftPatterns[variant]){
+  const fins=variant==='signalBloom'?1:variant==='buoyRay'?2:3;
+  for(let i=0;i<fins;i++){
+   const rim=mesh(driftCollar,chamberMat(vSpec.glow),0,1.38+i*.18,0,avatar.rig);
+   rim.rotation.set(variant==='signalBloom'?0:Math.PI/2,i*.6,i*.42);rim.castShadow=false;
+  }
+ }
  e.affixes=affixList;
  if(affixList.length)e.name=affixList.map(id=>affixes[id].name).join('·')+' · '+e.name;
  enemies.push(e);return e;
@@ -29,41 +61,55 @@ function splitCreature(e){
  if(!hasAffix(e,'split')||e.heat>0||e.burn>0||e.frozen>0)return;
  const p=e.avatar.group.position;
  for(const dx of [-1.3,1.3]){
-  const child=summon(e.kind,p.x+dx,p.z);
+  const child=summon(e.kind,p.x+dx,p.z,{variant:e.variant,dmgScale:e.dmgScale});
   child.hp=child.maxHp=Math.ceil(e.maxHp*.25);
   child.name='幼体 · '+child.name;child.avatar.group.scale.multiplyScalar(.72);
  }
 }
 function spawnRoomEnemies(room){
  run.waves=[];
- const pools=[['hound','crab','hound','ray'],['ray','crab','bloom','hound'],['bloom','hound','ray','crab']];
+ const actScale=[1.28,1.45,1.65][run.act]||1.28;
  if(room.type==='boss'){
-  const b=summon(['crab','ray','bloom'][run.act],0,-5,{boss:true});
+  const b=summon(['crab','ray','bloom'][run.act],0,-5,{boss:true,dmgScale:[1.22,1.38,1.55][run.act]});
   if(typeof window!=='undefined'&&window.innerWidth>0&&typeof document!=='undefined'&&document.pointerLockElement===canvas){
    bossIntroTime=1.15;bossIntroTarget=b;
   }
   return;
  }
- const pts=shuffled([[-6,-7],[6,-7],[-10,1],[10,1],[0,-9],[0,-1]]);
- const count=room.type==='elite'||room.type==='trial'?4+run.act:Math.min(5,2+run.act+(run.index>0?1:0));
- const pack=shuffled(pools[run.act]);
+ const pts=shuffled([[-7,-8],[7,-8],[-11,0],[11,0],[0,-10],[-4,-3],[4,-3],[0,-2]]);
+ const isStarter=run.act===0&&run.index===0;
+ const count=isStarter?2:(room.type==='elite'||room.type==='trial'?Math.min(7,5+run.act):Math.min(6,4+run.act));
+ const pack=shuffled(actRoster[run.act]);
  for(let i=0;i<count;i++){
   const local=shuffled(regionAffixes[run.act]);
   const pool=[...local,...shuffled(Object.keys(affixes).filter(id=>!local.includes(id)))];
   const base=run.roomsCleared>0&&(i===0||room.type==='elite'||room.type==='trial')?1:0;
-  const kind=run.act===0&&run.index===0?['hound','crab'][i]:pack[i%pack.length];
-  const enemy=summon(kind,...pts[i],{elite:(room.type==='elite'||room.type==='trial')&&i===0,affixList:pool.slice(0,base+run.depth)});
+  const variantId=isStarter?['railHound','signalBloom'][i]:pack[i%pack.length];
+  const vSpec=actVariants[variantId];
+  const enemy=summon(vSpec.kind,...pts[i%pts.length],{
+   variant:variantId,dmgScale:actScale,
+   elite:(room.type==='elite'||room.type==='trial')&&i===0,
+   affixList:pool.slice(0,base+run.depth)
+  });
   enemy.flank=i%2===0?-1:1;
  }
- if(run.index>0||run.act>0){
+ if(!isStarter){
+  const swarmPts=[[-9,-7],[9,-7],[0,-10],[-6,2],[6,2],[-3,-5],[3,-5]];
+  const w2Count=room.type==='elite'||room.type==='trial'?4+run.act:3+run.act;
   const wave2=[];
-  const swarmPts=[[-8,-6],[8,-6],[0,-9],[-5,2],[5,2]];
-  const swarmCount=room.type==='elite'||room.type==='trial'?4:3;
-  for(let i=0;i<swarmCount;i++){
-   const k=i===0?pack[(i+1)%pack.length]:(run.act===2?'bloom':'hound');
-   wave2.push({kind:k,x:swarmPts[i][0],z:swarmPts[i][1],swarmer:i>0,elite:i===0&&room.type==='trial'});
+  for(let i=0;i<w2Count;i++){
+   const vId=pack[(i+1)%pack.length];
+   wave2.push({kind:actVariants[vId].kind,variant:vId,dmgScale:actScale,x:swarmPts[i%swarmPts.length][0],z:swarmPts[i%swarmPts.length][1],swarmer:i>=2,elite:i===0&&room.type==='trial'});
   }
   run.waves.push(wave2);
+  if(room.type==='elite'||room.type==='trial'||(run.act>=1&&run.index>=2)){
+   const wave3=[];
+   for(let i=0;i<3;i++){
+    const vId=pack[(i+2)%pack.length];
+    wave3.push({kind:actVariants[vId].kind,variant:vId,dmgScale:actScale*1.06,x:swarmPts[(i+2)%swarmPts.length][0],z:swarmPts[(i+2)%swarmPts.length][1],swarmer:i===2,elite:i===0&&room.type==='elite'});
+   }
+   run.waves.push(wave3);
+  }
  }
 }
 function spawnNextWave(){
@@ -71,10 +117,10 @@ function spawnNextWave(){
  for(const w of wave){
   const spot=findSpawnPoint(w.x,w.z);
   pulseAt(new THREE.Vector3(spot.x,.1,spot.z),2.6,acts[run.act].accent);
-  const e=summon(w.kind,spot.x,spot.z,{swarmer:w.swarmer,elite:w.elite});
-  e.cooldown=.9;
+  const e=summon(w.kind,spot.x,spot.z,{swarmer:w.swarmer,elite:w.elite,variant:w.variant||null,dmgScale:w.dmgScale||1.28});
+  e.cooldown=.68;
  }
- cue('deploy');toast('增援波次抵达 · 连锁收割！');
+ cue('deploy');toast('增援波次抵达 · 小心包夹！');
 }
 function removeMark(h){if(h.floor)releaseFootprint(h.mesh);else ringPool.release(h.mesh);}
 function clearMarks(){for(const h of run.marks)removeMark(h);run.marks=[];}
@@ -87,13 +133,15 @@ function warn(e,kind,origin,aim,width,delay,damage,charged=false,arc=.93){
    to.copy(from).addScaledVector(dir,hit.distance);
   }
  }
+ const dmg=Math.round((damage||0)*(e?.dmgScale||1));
  const mesh=floorFootprint(kind,from,to,width,charged?0x3fbdff:0xff653d,arc);
- run.marks.push({owner:e,kind,from,to,width,remain:delay,duration:delay,damage,charged,mesh,floor:true,arc});
+ run.marks.push({owner:e,kind,from,to,width,remain:delay,duration:delay,damage:dmg,charged,mesh,floor:true,arc});
 }
 function prepareLaser(e,angles){
  const origin=e.avatar.group.position.clone();origin.y+=1.35;
  e.windup=e.boss?1.2:1.05;e.charge=true;
  e.attackHint='折光锁线 · 横移或反制';
+ const dmg=Math.round((e.boss?25:18)*(e.dmgScale||1));
  for(const angle of angles){
   const dir=e.attackDir.clone().applyAxisAngle(effectUp,angle);
   const end=sceneIntersection(origin,dir,e.boss?24:18,false);
@@ -103,7 +151,7 @@ function prepareLaser(e,angles){
   mesh.quaternion.setFromUnitVectors(effectUp,dir);
   mesh.scale.set(.035,end.distance,.035);
   run.marks.push({owner:e,kind:'laser',mesh,from:origin,to:end.point,dir,length:end.distance,width:radius,
-   duration:e.windup,remain:e.windup,damage:e.boss?25:18});
+   duration:e.windup,remain:e.windup,damage:dmg});
  }
 }
 function fireLaser(h){
@@ -146,9 +194,10 @@ function prepareCrystalWaves(e){
 }
 function fireCrystalWave(h){
  const e=h.owner;
+ const dmg=Math.round((e.boss?14:10)*(e.dmgScale||1));
  for(let i=0;i<h.count;i++){
   const a=h.angle+i*2*Math.PI/h.count,dir=new THREE.Vector3(Math.sin(a),0,Math.cos(a));
-  createProjectile(h.from,dir,e,e.boss?14:10,h.color);
+  createProjectile(h.from,dir,e,dmg,h.color);
   const shot=projectiles.at(-1);
   shot.m.geometry=crystalGeo;shot.m.scale.set(.18,.42,.18);
   shot.v.multiplyScalar(e.boss?.66:.55);shot.life=2.4;shot.crystalColor=h.color;
@@ -182,9 +231,58 @@ function signatureAttack(e,origin,target,forward){
   e.windup=.82;
  }
 }
+const driftOrbGeometry=new THREE.IcosahedronGeometry(1,1);
+const driftPearlGeometry=new THREE.SphereGeometry(1,12,8);
+const driftCollar=new THREE.TorusGeometry(.63,.045,6,30);
+const driftPatterns={
+ signalBloom:{lanes:3,waves:2,windup:.8,tempo:.48,speed:3.95,life:4.6,color:0xffa654},
+ buoyRay:{lanes:4,waves:1,windup:.95,tempo:0,speed:3.4,life:5.6,color:0x41ccd0},
+ irisRay:{lanes:6,waves:2,windup:.74,tempo:.58,speed:2.9,life:4.8,color:0xdf9aff}
+};
+function prepareDriftAttack(e){
+ const spec=driftPatterns[e.variant],side=new THREE.Vector3(e.attackDir.z,0,-e.attackDir.x);
+ const center=e.avatar.group.position.clone().setY(1.35);
+ e.windup=spec.windup+(spec.waves-1)*spec.tempo;e.cooldown=2.65;
+ e.attackHint=actVariants[e.variant].role;
+ for(let wave=0;wave<spec.waves;wave++)for(let i=0;i<spec.lanes;i++){
+  const lane=i-(spec.lanes-1)/2,from=center.clone(),dir=e.attackDir.clone();
+  if(e.variant==='signalBloom')from.addScaledVector(side,lane*1.65+wave*.6);
+  else if(e.variant==='buoyRay')dir.applyAxisAngle(effectUp,lane*.31);
+  else dir.applyAxisAngle(effectUp,i*2*Math.PI/spec.lanes+wave*.48);
+  from.addScaledVector(dir,.66);
+  if(obstructed(center,from))continue;
+  const delay=spec.windup+wave*spec.tempo,mesh=ringPool.acquire(driftOrbGeometry,from,spec.color,.6);
+  run.marks.push({kind:'drift',mesh,from,dir,owner:e,duration:delay,remain:delay,spec,wave});
+ }
+}
+const driftHaloMaterials=new Map();
+function driftHalo(color){
+ if(!driftHaloMaterials.has(color)){
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=64;
+  const ctx=canvas.getContext('2d'),gradient=ctx.createRadialGradient(32,32,0,32,32,32);
+  if(gradient){
+   gradient.addColorStop(0,'#ffffff');gradient.addColorStop(.19,'#ffffff');
+   gradient.addColorStop(.33,'#ffffff44');gradient.addColorStop(.45,'#ffffff16');
+   gradient.addColorStop(.54,'#ffffffbb');gradient.addColorStop(.60,'#ffffff33');gradient.addColorStop(1,'#ffffff00');
+   ctx.fillStyle=gradient;ctx.fillRect(0,0,64,64);
+  }
+  driftHaloMaterials.set(color,new THREE.SpriteMaterial({map:new THREE.CanvasTexture(canvas),color,transparent:true,depthWrite:false}));
+ }
+ const halo=new THREE.Sprite(driftHaloMaterials.get(color));halo.scale.setScalar(1.05);return halo;
+}
+function fireDriftShot(h){
+ const {owner,spec,from,dir}=h;
+ createProjectile(from,dir,owner,Math.round(10*owner.dmgScale),spec.color);
+ const shot=projectiles.at(-1);
+ shot.drift=owner.variant;shot.speed=spec.speed;shot.age=0;shot.spin=h.wave?-1:1;
+ shot.m.geometry=shot.drift==='buoyRay'?driftPearlGeometry:shot.drift==='irisRay'?crystalGeo:driftOrbGeometry;
+ shot.m.scale.set(.24,shot.drift==='irisRay'?.38:.24,.24);
+ shot.halo=driftHalo(spec.color);effects.add(shot.halo);shot.halo.position.copy(from);
+ shot.life=spec.life;shot.crystalColor=spec.color;shot.v.setLength(spec.speed);
+}
 function pattern(e){
  const p=e.avatar.group.position,t=player.group.position.clone().setY(0),dir=t.clone().sub(p).setY(0).normalize();
- const n=e.attackIndex++,angry=e.phaseShift,k=e.kind;
+ const n=e.attackIndex++,angry=e.phaseShift,k=e.kind,v=e.variant;
  if(dir.lengthSq()===0)dir.set(Math.sin(e.avatar.group.rotation.y),0,Math.cos(e.avatar.group.rotation.y));
  e.attackDir.copy(dir);e.charge=false;e.action=null;e.attackHint='';
  if(e.boss){
@@ -200,24 +298,71 @@ function pattern(e){
    if(mode===0){warn(e,'ring',p,p,7,.78,27,true);warn(e,'disc',p,p,3.4,1.4,25);e.windup=.78;}
    else prepareCrystalWaves(e);
   }
-  e.cooldown=angry?.62:.83;
- }else if(k==='hound'){
-  e.charge=n%3===2;e.windup=.55;e.action='rush';e.cooldown=.82;
-  e.attackHint=n%2===0?'裂脊扑击 · 横移':'扑击接爪波 · 留意第二条线';
-  warn(e,'line',p,p.clone().addScaledVector(dir,5.45),.83,e.windup,e.elite?22:15,e.charge);
-  if(n%2){
-   const side=new THREE.Vector3(dir.z,0,-dir.x).multiplyScalar((e.flank||1)*2.4);
-   warn(e,'line',p.clone().add(side),t.clone().addScaledVector(dir,1.2),.73,1.09,e.elite?18:12);
+  e.cooldown=angry?.54:.74;
+ }else if(driftPatterns[v]){prepareDriftAttack(e);
+ }else if(v==='sniperRay'&&n%2===0){
+  prepareLaser(e,[-.14,.14]);e.attackHint='高压交叉激光 · 穿隙闪避';e.cooldown=1.75;
+ }else if(v==='tidalRay'&&n%2===1){
+  e.windup=.64;e.cooldown=1.18;e.attackHint='五向潮汐针扇 · 借掩体规避';
+  for(const spread of [-.42,-.21,0,.21,.42]){
+   const shot=dir.clone().applyAxisAngle(effectUp,spread);
+   const end=sceneIntersection(p.clone().setY(1.44),shot,15,false).point;
+   warn(e,'line',p,end,.34,e.windup,0);
+   run.marks.at(-1).projectile=shot;
   }
- }
- else if(k==='crab'){
-  e.windup=n%2?.98:.73;e.charge=n%2===1;e.cooldown=.94;
+ }else if(v==='anchorCrab'){
+  e.windup=n%2?.86:.68;e.charge=n%2===1;e.cooldown=.82;
+  if(n%2===1){
+   e.attackHint='锚链双震波 · 跳开并躲第二环';
+   warn(e,'ring',p,p,4.8,e.windup,e.elite?28:22,true);
+   warn(e,'disc',t,t,2.35,e.windup+.52,e.elite?24:18,false);
+  }else{
+   e.attackHint='锚钳横扫 · 绕到侧后';
+   warn(e,'sector',p,t,4.8,e.windup,e.elite?28:21,false,1.28);
+  }
+ }else if(v==='mortarBloom'&&n%2===1){
+  e.windup=.82;e.cooldown=1.65;e.attackHint='三连水雷阵 · 持续移动';
+  const side=new THREE.Vector3(dir.z,0,-dir.x);
+  for(let i=0;i<3;i++){
+   const targetPt=t.clone().addScaledVector(side,(i-1)*2.4);
+   warn(e,'disc',targetPt,targetPt,2.15,.72+i*.32,e.elite?22:16,i===2);
+  }
+ }else if(v==='prismHound'){
+  e.charge=n%2===1;e.windup=.48;e.action='rush';e.cooldown=.72;
+  e.attackHint='晶化扑杀 + 落点晶爆环';
+  const dest=p.clone().addScaledVector(dir,5.8);
+  warn(e,'line',p,dest,.86,e.windup,e.elite?22:16,e.charge);
+  warn(e,'ring',dest,dest,3.8,e.windup+.46,e.elite?20:15,false);
+ }else if(v==='prismCrab'){
+  if(n%2===0){
+   prepareLaser(e,[-.24,0,.24]);e.attackHint='三束棱镜激光 · 侧闪或反制';e.cooldown=1.45;
+  }else{
+   e.windup=.72;e.charge=true;e.cooldown=.84;e.attackHint='棱甲震地 · 跳开或反制';
+   warn(e,'disc',p,p,4.45,e.windup,e.elite?30:23,true);
+  }
+ }else if(v==='lotusBloom'){
+  if(n%2===0){prepareCrystalWaves(e);warn(e,'disc',t,t,2.2,1.22,e.elite?22:17,false);e.cooldown=1.85;}
+  else{
+   e.windup=.8;e.cooldown=1.55;e.attackHint='镜莲追爆 · 连续闪避';
+   warn(e,'disc',t,t,2.3,.78,e.elite?22:17,false);
+   warn(e,'ring',t,t,4.6,1.28,e.elite?22:16,true);
+  }
+ }else if(k==='hound'){
+  e.charge=n%3===2;e.windup=v==='railHound'?.48:.55;e.action='rush';e.cooldown=v==='railHound'?.72:.82;
+  e.attackHint=n%2===0?'裂脊扑击 · 横移':'双段交错追扑 · 留意二段线';
+  warn(e,'line',p,p.clone().addScaledVector(dir,v==='railHound'?6.2:5.45),.83,e.windup,e.elite?22:15,e.charge);
+  if(n%2||v==='railHound'){
+   const side=new THREE.Vector3(dir.z,0,-dir.x).multiplyScalar((e.flank||1)*2.4);
+   warn(e,'line',p.clone().add(side),t.clone().addScaledVector(dir,1.4),.76,v==='railHound'?.94:1.09,e.elite?18:13);
+  }
+ }else if(k==='crab'){
+  e.windup=n%2?.92:.7;e.charge=n%2===1;e.cooldown=.86;
   e.attackHint=e.charge?'铆甲震地 · 跳开或反制':'钳刃横扫 · 绕到侧后';
-  warn(e,e.charge?'disc':'sector',p,t,e.charge?4.15:4.65,e.windup,e.elite?29:22,e.charge,1.23);
- }
- else if(k==='ray'&&n%2===0){prepareLaser(e,[0]);e.cooldown=2.1;}
+  warn(e,e.charge?'disc':'sector',p,t,e.charge?4.25:4.65,e.windup,e.elite?29:22,e.charge,1.23);
+  if(v==='railCrab'&&!e.charge)warn(e,'line',p,p.clone().addScaledVector(dir,7.2),1.05,e.windup+.45,16,false);
+ }else if(k==='ray'&&n%2===0){prepareLaser(e,[0]);e.cooldown=1.85;}
  else if(k==='ray'){
-  e.windup=.67;e.cooldown=1.35;e.attackHint='针刺散射 · 进入掩体';
+  e.windup=.67;e.cooldown=1.28;e.attackHint='针刺散射 · 进入掩体';
   for(const spread of [-.27,0,.27]){
    const shot=dir.clone().applyAxisAngle(effectUp,spread);
    const end=sceneIntersection(p.clone().setY(1.44),shot,15,false).point;
@@ -225,8 +370,8 @@ function pattern(e){
    run.marks.at(-1).projectile=shot;
   }
  }
- else if(n%2===0){prepareCrystalWaves(e);e.cooldown=2.3;}
- else{warn(e,'disc',t,t,e.elite?2.55:1.9,.92,e.elite?21:15);e.windup=.92;e.cooldown=2.0;}
+ else if(n%2===0){prepareCrystalWaves(e);e.cooldown=2.1;}
+ else{warn(e,'disc',t,t,e.elite?2.55:1.9,.92,e.elite?21:15);e.windup=.92;e.cooldown=1.85;}
  const clips=strikeClips[e.avatar.id],variant=e.boss&&n%(angry?3:2)!==0?1:0;
  playCreatureClip(e.avatar,clips[variant],e.windup/.70);
  cue('warning',p);
@@ -254,24 +399,28 @@ function awakenBoss(e){
  if(typeof applyBossPhaseAtmosphere==='function')applyBossPhaseAtmosphere(run.act);
  if(typeof calloutAt==='function')calloutAt(p,'第二形态觉醒！','gold');
  toast(e.name+' · 第二形态');
- if(run.act===2)for(const x of [-7,7])summon('bloom',x,-4);
+ if(run.act===1)for(const x of [-8,8])summon('ray',x,-4,{variant:'tidalRay',dmgScale:1.35});
+ if(run.act===2)for(const x of [-7,7])summon('bloom',x,-4,{variant:'lotusBloom',dmgScale:1.5});
 }
 function tickWarnings(dt){
  for(let i=run.marks.length-1;i>=0;i--){
   const h=run.marks[i],e=h.owner;h.remain-=dt;
   const progress=1-Math.max(0,h.remain/h.duration);
-  if(h.kind==='laser'){
+  if(h.kind==='drift'){h.mesh.scale.setScalar(.07+.16*progress);h.mesh.material.opacity=.44+.54*progress;}
+  else if(h.kind==='laser'){
    h.mesh.material.opacity=.55+.4*progress;
    h.mesh.scale.x=h.mesh.scale.z=.035+.055*progress;
   }else if(h.kind==='crystals')h.mesh.material.opacity=.48+.48*progress;
   else h.mesh.material.uniforms.amount.value=progress;
   const cancelled=h.cancelled||e.dead||e.stagger>1.1||e.frozen>0;
   if(cancelled||h.remain<=0){
-   if(!cancelled&&h.kind==='laser')fireLaser(h);
+   if(!cancelled&&h.kind==='drift')fireDriftShot(h);
+   else if(!cancelled&&h.kind==='laser')fireLaser(h);
    else if(!cancelled&&h.kind==='crystals')fireCrystalWave(h);
    else if(!cancelled&&h.projectile){
-    createProjectile(h.from.clone().setY(1.44),h.projectile,e,12,0x84edf6);
-    const shot=projectiles.at(-1);shot.v.multiplyScalar(.44);shot.life=1.45;shot.crystalColor=0x84edf6;
+    const shotDmg=Math.round(12*(e.dmgScale||1));
+    createProjectile(h.from.clone().setY(1.44),h.projectile,e,shotDmg,0x84edf6);
+    const shot=projectiles.at(-1);shot.v.multiplyScalar(.46);shot.life=1.5;shot.crystalColor=0x84edf6;
     if(h.projectile.angleTo(e.attackDir)<.02)cue('shot',h.from);
    }else if(!cancelled){
     const p=player.group.position;
@@ -308,23 +457,23 @@ function stepEncounter(dt){
    continue;
   }
   if(e.windup>0){e.windup-=dt;if(e.windup<=0){
-    if(e.action==='rush')e.rush=e.boss?8:4.5;
-    e.action=null;e.charge=false;e.recovery=e.boss?.42:.28;
+    if(e.action==='rush')e.rush=e.boss?8:4.8;
+    e.action=null;e.charge=false;e.recovery=e.boss?.38:.24;
    }continue;}
   if(e.rush>0){
-   const distance=Math.min(e.rush,dt*(e.boss?27:21));
+   const distance=Math.min(e.rush,dt*(e.boss?27:22));
    move(a.group,e.attackDir.x*distance,e.attackDir.z*distance,e.boss?1.1:.6);
    e.rush-=distance;continue;
   }
   if(e.recovery>0){e.recovery-=dt;continue;}
   const delta=p.clone().sub(q).setY(0),dist=delta.length(),dir=delta.normalize();
   a.group.rotation.y=Math.atan2(dir.x,dir.z);
-  e.cooldown-=dt*(hasAffix(e,'furious')&&e.hp<=e.maxHp*.5&&e.slow<=0?1.6:1);
-  const reach=e.boss?(run.act===0?9:16):e.kind==='hound'?4.6:e.kind==='crab'?3.15:14;
+  e.cooldown-=dt*(hasAffix(e,'furious')&&e.hp<=e.maxHp*.5&&e.slow<=0?1.65:1);
+  const reach=e.boss?(run.act===0?9:16):e.variant==='prismCrab'?12:e.kind==='hound'?5.2:e.kind==='crab'?3.4:14;
   const blocked=obstructed(q,p);
   const pending=run.marks.some(h=>h.owner===e&&!h.cancelled);
   if(e.cooldown<=0&&dist<=reach&&!blocked&&!pending){pattern(e);continue;}
-  const speed=(monsters[e.kind].speed+(e.phaseShift?.65:0))*(e.slow>0?.56:1);
+  const speed=(monsters[e.kind].speed+(e.speedBonus||0)+(e.phaseShift?.65:0))*(e.slow>0?.56:1);
   let dx=dir.x,dz=dir.z;
   if(!e.boss&&!blocked&&dist<reach*.82){
    const flank=e.flank||1;
@@ -342,6 +491,6 @@ function stepEncounter(dt){
   const oldX=q.x,oldZ=q.z;move(a.group,dx*speed*dt,dz*speed*dt,.6);e.walking=Math.hypot(q.x-oldX,q.z-oldZ)>.001;
  }
  const aliveCount=enemies.filter(e=>!e.dead).length;
- if(run.waves&&run.waves.length&&aliveCount<=1)spawnNextWave();
+ if(run.waves&&run.waves.length&&aliveCount<=2)spawnNextWave();
  else if(enemies.length&&aliveCount===0)completeChamber();
 }

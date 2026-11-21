@@ -14,4 +14,4 @@ for(const file of ['data.js','mouse-look.js','raid-rules.js'])game=game.replace(
 game=game.replace("function assetURL(name){return 'assets/'+name;}",()=>`const EMBEDDED_ASSETS=${JSON.stringify(assets)};function assetURL(name){return EMBEDDED_ASSETS[name];}`);
 if(/^import /m.test(game)||!game.includes('EMBEDDED_ASSETS='))throw new Error('Offline bundle still has unresolved imports or assets');
 html=html.replace('<script type="module" src="game.js"></script>',()=>'<script type="module">'+game.replace(/<\/script/gi,'<\\/script')+'</script>');
-const output=new URL(rogue?'../畸变前线-回响远征.html':'../畸变前线-第四版.html',import.meta.url);fs.writeFileSync(output,html);console.log('Offline V4: '+(fs.statSync(output).size/1024/1024).toFixed(1)+' MB');
+const output=new URL(rogue?'../畸变前线-回响远征.html':'../畸变前线-第四版.html',import.meta.url);const staged=new URL(output.href+'.building');fs.writeFileSync(staged,html);fs.renameSync(staged,output);console.log('Offline V4: '+(fs.statSync(output).size/1024/1024).toFixed(1)+' MB');

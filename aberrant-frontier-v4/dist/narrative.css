@@ -103,3 +103,105 @@
  .rg-camp-grid{grid-template-columns:1fr}
  #rg-bark{left:3vw;right:3vw;width:auto;bottom:188px}
 }
+
+#rg-opening-story {
+  position:fixed; inset:0; box-sizing:border-box; margin:auto; padding:0; border:0;
+  width:100%; max-width:none; height:100%; height:100dvh; max-height:none;
+  color:#203e40; background:#f6f3e9; font-family:"Microsoft YaHei",sans-serif;
+}
+#rg-opening-story[open] { display:flex; flex-direction:column; overflow:auto; }
+#rg-opening-story::backdrop { background:#162d30; }
+.rg-story-picture { flex:1 1 0; min-height:0; background:#132b2d; }
+.rg-story-picture img { display:block; width:100%; height:100%; object-fit:contain; }
+.rg-story-footer {
+  box-sizing:border-box; width:min(100%,1200px); margin:0 auto; padding:clamp(14px,2.7vh,32px) 5vw;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:clamp(16px,4vw,64px);
+}
+.rg-story-caption { max-width:46em; }
+.rg-story-page { color:#536c68; font-size:12px; letter-spacing:.1em; }
+.rg-story-caption h2 {
+  margin:5px 0 6px; font:600 clamp(22px,2.3vw,34px)/1.2 "Songti SC","SimSun",serif; color:#213d3b;
+}
+.rg-story-text { margin:0; font-size:clamp(15px,1.1vw,18px); line-height:1.75; color:#374e4b; }
+.rg-story-footer nav { display:flex; flex:none; gap:8px; }
+#rg-opening-story button {
+  appearance:none; cursor:pointer; border:1px solid #83968e; border-radius:3px;
+  background:transparent; color:#254b47; padding:8px 16px; min-height:40px; font:inherit; font-size:14px;
+}
+#rg-opening-story [data-story="next"] { background:#244f4b; color:#fff9e9; border-color:#244f4b; }
+#rg-opening-story .rg-story-skip {
+  position:absolute; top:max(16px,env(safe-area-inset-top)); right:max(18px,env(safe-area-inset-right));
+  color:#fff8e8; background:#172e30e8; border-color:#faf2df88; font-size:13px;
+}
+#rg-opening-story button:disabled { opacity:.38; cursor:default; }
+#rg-opening-story button:focus-visible { outline:2px solid #bc7c39; outline-offset:3px; }
+@media(max-width:720px) {
+  .rg-story-footer { display:grid; gap:14px; padding:16px 6vw max(18px,env(safe-area-inset-bottom)); }
+  .rg-story-footer nav { justify-content:flex-end; }
+}
+@media(orientation:portrait) {
+  #rg-opening-story[open] { justify-content:safe center; }
+  .rg-story-picture { flex:none; height:auto; aspect-ratio:16/9; }
+  .rg-story-footer { margin:0 auto; }
+}
+@media(max-height:480px) and (orientation:landscape) {
+  .rg-story-footer { display:flex; padding:8px 4vw; gap:12px; }
+  .rg-story-caption h2 { display:inline; margin-left:10px; font-size:20px; }
+  .rg-story-text { margin-top:4px; font-size:14px; line-height:1.4; }
+}
+
+/* Harbor field stationery: sea glass, uncoated paper, dark marine ink. */
+#rg-panel,#rg-guide,.modal {background:rgba(12,33,38,.70);backdrop-filter:blur(5px)}
+#rg-panel>section,#rg-guide>section,.modal>section {
+ border:1px solid #becabb;border-top:4px solid #86bcae;
+ box-shadow:0 18px 55px #081c2366;background:#193a3e;
+}
+#rg-panel .rg-panel-content {background:linear-gradient(105deg,#f5efde,#e6e4cf);color:#21443f;padding:clamp(16px,2.6vw,38px)}
+#rg-panel .rg-panel-content::after {display:none}
+#rg-panel h2 {color:#193e3b;font-family:"SimSun","Songti SC",serif;font-weight:700;letter-spacing:.06em}
+#rg-panel .rg-location,#rg-panel .rg-panel-content>p,#rg-panel footer>span {color:#506c60}
+#rg-panel .rg-voice-banner {margin:8px 0 14px;padding:8px 14px;background:#dbe2cf;color:#23443d;box-shadow:none;border:0;border-left:2px solid #6b8e79}
+#rg-panel .rg-voice-banner p,#rg-panel .rg-voice-who b,#rg-panel .rg-voice-who small {color:#294b41}
+#rg-panel .rg-voice-badge {display:none}
+#rg-panel .rg-cards {gap:6px}
+#rg-panel .rg-cards .rg-card,#rg-panel[data-view=draft] .rg-cards .rg-card {
+ border:0;border-bottom:1px solid #a9b5a4;border-left:3px solid #7f9e89;border-radius:0;clip-path:none;
+ background:#fbf8ed;color:#183e38;box-shadow:none;text-align:left;
+}
+#rg-panel .rg-card>small {color:#597566;letter-spacing:.09em}
+#rg-panel .rg-card>strong {color:#1b4039;font:700 21px/1.3 "SimSun","Songti SC",serif}
+#rg-panel .rg-card>span {color:#36584c;white-space:normal;line-height:1.55}
+#rg-panel .rg-cards .rg-card:is(:hover,:focus-visible):enabled {background:#d9e6d7;outline:2px solid #396d60;outline-offset:-2px}
+#rg-panel .rg-cards .rg-card:disabled {opacity:.58}
+#rg-panel .rg-card .rg-talent-art {background:#284d4a;border:1px solid #9eaf97;border-radius:4px;padding:2px}
+#rg-panel .rg-boon-art {border-right:0}
+#rg-panel .rg-boon-art::after {border:0;border-bottom:1px solid #fff1c888;inset:0 10% 6%}
+#rg-panel .rg-boon-art>div {background:linear-gradient(0deg,#15383bf2,#15383b00);left:0;right:0;bottom:0;padding:40px 9% 14%}
+#rg-panel[data-view=draft]>section:not(:has(.rg-boon-art)) {display:block;width:min(720px,94vw)}
+#rg-panel footer button,#rg-guide header button,.modal button.secondary {
+ background:#214a47;color:#f9f2db;border:1px solid #91aa96;border-radius:2px;padding:7px 12px;
+}
+#rg-panel .rg-tree,#rg-panel .rg-tree-tabs {color:#244a40}
+#rg-panel .rg-tree-tabs button {background:#31514b;color:#f7efdf}
+#rg-panel .rg-tree-tabs button[aria-pressed=true] {background:#e0bb80;color:#243f39}
+#rg-hub-prompt,#hud #prompt,.rg-speech-bubble,#rg-bark {
+ border-radius:2px;box-shadow:0 5px 18px #16383540;
+}
+.rg-speech-bubble {max-width:min(320px,66vw);padding:10px 16px 12px;background:#faf5e5;border:1px solid #aabaaa;border-top:3px solid var(--ink);text-shadow:none}
+.rg-speech-bubble b {color:#415f55;font:700 12px var(--ui);letter-spacing:.08em}
+.rg-speech-bubble span {color:#163f39;font:600 16px/1.6 "SimSun","Songti SC",serif}
+.rg-speech-bubble::after {background:#faf5e5;border-color:#aabaaa}
+#rg-hub-labels .rg-world-tag {font:600 12px var(--ui);border-radius:2px;background:#1b393be8;color:#f7f1df}
+#rg-hub-labels .rg-world-tag.active {background:#f2ead5;color:#153e36}
+#hud #rg-room-nav,#hud .zone-label,#rg-bark,.rg-dialogue-line {background:#17383de8;border-radius:2px;border-left:3px solid #87b9a5}
+#menu #loadout-menu {border-top:4px solid #8ab7a4;border-radius:0}
+#menu .weapon-choice.selected,#menu .hero-choice.selected {outline:2px solid #486d5e;outline-offset:-2px}
+#rg-guide nav button[aria-pressed=true] {background:#dfe6cd;color:#173c34}
+#rg-panel button:focus-visible,#rg-guide button:focus-visible,.modal button:focus-visible {outline:2px solid #e2b057;outline-offset:2px}
+@media(max-width:720px),(max-height:570px){
+ #rg-panel[data-view=draft]>section,#rg-panel[data-view=hammer]>section {grid-template-columns:1fr;overflow:auto;max-height:94vh}
+ #rg-panel .rg-boon-art {display:none}
+ #rg-panel .rg-panel-content {padding:14px 18px}
+ #rg-panel .rg-panel-content>p {margin:3px 0 6px}
+ #rg-panel .rg-card>strong {font-size:18px}
+}

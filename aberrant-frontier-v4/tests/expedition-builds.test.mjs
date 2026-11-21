@@ -7,7 +7,7 @@ test('first pick establishes a school, manual preference persists, HUD counts ra
  run("openDraft();const first=run.offers[0];chooseExpedition(first.id);expeditionHUD()");
  assert.ok(run("run.focus===first.school && $('rg-schools').textContent.includes(schools[first.school].name+' 1')"));
  run("showTree();chooseExpedition('focus-frost');chooseExpedition('back')");
- assert.ok(run("Array.from({length:100},(_,i)=>{run.drawNumber=i;return giftOptions().some(t=>t.school==='frost');}).filter(Boolean).length>=75"));
+ assert.ok(run("Array.from({length:100},(_,i)=>{run.drawNumber=i;return choosePatron()==='frost';}).filter(Boolean).length>=75"));
 });
 
 test('station protects dependencies on stowed weapons and resets gear on retry',()=>{

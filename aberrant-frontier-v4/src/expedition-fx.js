@@ -18,12 +18,15 @@ function floorFootprint(kind,from,to,width,color,arc=.9){
      edge=min(edge,(halfAngle-a)*max(.2,r));
     }
     if(edge<0.)discard;
-    float stroke=1.-smoothstep(.012,.048,edge);
-    float sweep=(1.-smoothstep(.01,.055,abs(flow-amount)))*smoothstep(.02,.14,amount);
-    float hatch=step(.77,fract((p.x+p.y)*14.))*.15;
-    float fill=1.-smoothstep(amount,amount+.025,flow);
-    float alpha=(.10+hatch*.42+fill*.32+max(stroke*.76,sweep*.48))*(1.-flare)+flare*(.37+stroke*.5);
-    gl_FragColor=vec4(mix(tint,vec3(1.,.92,.8),max(stroke*.39,flare*.46)),alpha);
+    float aa=max(fwidth(edge),.003);
+    float stroke=1.-smoothstep(.014,.014+aa,edge);
+    float inset=1.-smoothstep(.006,.006+aa,abs(edge-.07));
+    float cadence=mode==2.?p.y*5.:atan(p.y,p.x)*1.91;
+    float ticks=smoothstep(.86,.96,cos(cadence*6.283));
+    float sweep=1.-smoothstep(.012,.024+aa,abs(flow-amount));
+    float alpha=.08+.08*amount+.69*stroke+.47*inset*ticks+.3*sweep;
+    vec3 pigment=mix(tint,vec3(1.,.93,.73),stroke*.58+flare*.35);
+    gl_FragColor=vec4(pigment,min(.95,alpha+flare*.18));
     #include <colorspace_fragment>
    }`
  }));
